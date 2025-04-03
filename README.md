@@ -142,4 +142,4 @@ https://github.com/Sonmunsu0913/e-commerce-server/blob/654bf2444abe3f99eb68eb124
 
 ## 🗂️ ERD
 
-![ERD](docs/ERD/erd.png)
+https://github.com/Sonmunsu0913/e-commerce-server/blob/dd9f07090d015291628c4281c0693aab2c6a469f/docs/ERD/ERD.png
