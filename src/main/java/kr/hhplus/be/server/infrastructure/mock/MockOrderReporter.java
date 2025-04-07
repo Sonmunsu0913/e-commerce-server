@@ -1,9 +1,9 @@
-package kr.hhplus.be.server.Order.Service;
+package kr.hhplus.be.server.infrastructure.mock;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.stereotype.Component;
-import kr.hhplus.be.server.Order.DTO.OrderResponse;
+import kr.hhplus.be.server.application.order.dto.OrderResponse;
 
 @Component
 public class MockOrderReporter {

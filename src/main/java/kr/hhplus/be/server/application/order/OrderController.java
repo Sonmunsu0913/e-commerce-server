@@ -1,11 +1,11 @@
-package kr.hhplus.be.server.Order.Controller;
+package kr.hhplus.be.server.application.order;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
-import kr.hhplus.be.server.Order.DTO.OrderRequest;
-import kr.hhplus.be.server.Order.DTO.OrderResponse;
-import kr.hhplus.be.server.Order.Service.MockOrderReporter;
+import kr.hhplus.be.server.application.order.dto.OrderRequest;
+import kr.hhplus.be.server.application.order.dto.OrderResponse;
+import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

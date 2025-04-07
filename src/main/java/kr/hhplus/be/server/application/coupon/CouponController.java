@@ -1,11 +1,11 @@
-package kr.hhplus.be.server.Coupon.Controller;
+package kr.hhplus.be.server.application.coupon;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
 import java.util.*;
-import kr.hhplus.be.server.Coupon.DTO.CouponClaimRequest;
-import kr.hhplus.be.server.Coupon.DTO.CouponResponse;
+import kr.hhplus.be.server.application.coupon.dto.CouponClaimRequest;
+import kr.hhplus.be.server.application.coupon.dto.CouponResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

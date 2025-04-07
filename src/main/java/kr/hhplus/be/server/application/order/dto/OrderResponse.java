@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.Order.DTO;
+package kr.hhplus.be.server.application.order.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
