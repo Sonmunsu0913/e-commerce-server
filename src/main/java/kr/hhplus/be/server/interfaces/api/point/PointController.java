@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import kr.hhplus.be.server.application.point.service.PointHistoryService;
 import kr.hhplus.be.server.application.point.service.PointService;
 import kr.hhplus.be.server.domain.point.PointHistory;
 import kr.hhplus.be.server.domain.point.UserPoint;
@@ -21,9 +22,13 @@ import org.springframework.web.bind.annotation.*;
 public class PointController {
 
     private final PointService pointService;
+    private final PointHistoryService pointHistoryService;
 
-    public PointController(PointService pointService) {
+
+    public PointController(PointService pointService, PointHistoryService pointHistoryService) {
         this.pointService = pointService;
+        this.pointHistoryService = pointHistoryService;
+
     }
 
     @PostMapping("/charge")
@@ -42,13 +47,8 @@ public class PointController {
 
     @GetMapping("/{userId}/histories")
     @Operation(summary = "포인트 내역 조회", description = "사용자의 포인트 충전/사용 내역을 조회합니다.")
-    public ResponseEntity<List<PointHistoryResponse>> getHistories(@PathVariable Long userId) {
-        List<PointHistory> histories = pointService.getHistory(userId);
-        return ResponseEntity.ok(
-                histories.stream()
-                        .map(PointHistoryResponse::from)
-                        .collect(Collectors.toList())
-        );
+    public List<PointHistory> getHistory(@PathVariable long id) {
+        return pointHistoryService.getHistory(id);
     }
 
     @PostMapping("/use")

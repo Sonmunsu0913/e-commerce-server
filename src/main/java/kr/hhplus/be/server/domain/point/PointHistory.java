@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.point;
 
 public record PointHistory(
-        long id,
+        Long id,
         long userId,
         long amount,
         PointTransactionType type,

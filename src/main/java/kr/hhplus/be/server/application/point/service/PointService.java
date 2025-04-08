@@ -24,17 +24,20 @@ public class PointService {
         return pointRepository.findById(id);
     }
 
-    public List<PointHistory> getHistory(long id) {
-        return pointHistoryRepository.findAllByUserId(id);
-    }
-
     public UserPoint charge(long id, long amount) {
         UserPoint userPoint = pointRepository.findById(id);
         UserPoint chargedPoint = userPoint.charge(amount);
 
         pointRepository.save(chargedPoint);
-        pointHistoryRepository.save(id, amount, PointTransactionType.CHARGE, chargedPoint.updateMillis());
 
+        PointHistory history = new PointHistory(
+            null, // ID는 내부적으로 시퀀스에서 할당 (InMemory or JPA)
+            id,
+            amount,
+            PointTransactionType.CHARGE,
+            chargedPoint.updateMillis()
+        );
+        pointHistoryRepository.save(history);
         return chargedPoint;
     }
 
@@ -43,8 +46,15 @@ public class PointService {
         UserPoint usedPoint = userPoint.use(amount);
 
         pointRepository.save(usedPoint);
-        pointHistoryRepository.save(id, amount, PointTransactionType.USE, usedPoint.updateMillis());
 
+        PointHistory history = new PointHistory(
+            null,
+            id,
+            amount,
+            PointTransactionType.USE,
+            usedPoint.updateMillis()
+        );
+        pointHistoryRepository.save(history);
         return usedPoint;
     }
 }

@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.point;
 
 public record UserPoint(
-        long id,
+        Long id,
         long point,
         long updateMillis
 ) {
