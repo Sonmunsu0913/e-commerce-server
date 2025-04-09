@@ -1,7 +1,9 @@
 package kr.hhplus.be.server.interfaces.api.product.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
+@Getter
 public class PopularProductResponse {
 
     @Schema(description = "상품 ID", example = "1")
