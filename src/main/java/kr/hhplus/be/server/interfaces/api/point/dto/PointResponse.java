@@ -5,10 +5,10 @@ import kr.hhplus.be.server.domain.point.UserPoint;
 
 public class PointResponse {
 
-    private final long userId;
+    private final Long userId;
     private final long amount;
 
-    public PointResponse(long userId, long amount) {
+    public PointResponse(Long userId, long amount) {
         this.userId = userId;
         this.amount = amount;
     }
