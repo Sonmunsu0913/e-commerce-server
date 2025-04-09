@@ -8,4 +8,6 @@ public interface ProductSaleRepository {
 
     List<ProductSale> findSalesAfter(LocalDate fromDate);
 
+    void save(ProductSale sale);
+
 }

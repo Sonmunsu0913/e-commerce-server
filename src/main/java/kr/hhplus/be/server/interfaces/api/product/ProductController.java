@@ -27,17 +27,4 @@ public class ProductController {
 
     }
 
-    @GetMapping("/top")
-    @Operation(summary = "상위 상품 조회", description = "최근 3일간 가장 많이 팔린 상위 5개 상품을 조회합니다.")
-    public ResponseEntity<List<TopProductResponse>> topProducts() {
-        List<TopProductResponse> top = List.of(
-            new TopProductResponse(1, "콜라", 100),
-            new TopProductResponse(2, "사이다", 90),
-            new TopProductResponse(2, "환타", 75),
-            new TopProductResponse(2, "포카리스웨이트", 55),
-            new TopProductResponse(2, "헛개수", 20)
-        );
-        return ResponseEntity.ok(top);
-    }
-
 }

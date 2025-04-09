@@ -25,4 +25,12 @@ public class InMemoryProductRepository implements ProductRepository {
     public Optional<Product> findById(Long id) {
         return Optional.ofNullable(store.get(id));
     }
+
+    @Override
+    public List<Product> findAllByIdIn(List<Long> ids) {
+        return ids.stream()
+                .map(store::get)
+                .filter(Objects::nonNull)
+                .toList();
+    }
 }

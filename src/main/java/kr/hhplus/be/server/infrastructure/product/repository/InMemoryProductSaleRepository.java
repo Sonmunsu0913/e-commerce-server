@@ -7,9 +7,9 @@ import java.util.ArrayList;
 import java.util.List;
 import kr.hhplus.be.server.application.product.repository.ProductSaleRepository;
 import kr.hhplus.be.server.domain.product.ProductSale;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-@Component
+@Repository
 public class InMemoryProductSaleRepository implements ProductSaleRepository {
 
     private final List<ProductSale> sales = new ArrayList<>();
@@ -21,9 +21,10 @@ public class InMemoryProductSaleRepository implements ProductSaleRepository {
             .toList();
     }
 
-    // 임시 데이터 추가용 메서드
-    public void addSale(ProductSale sale) {
+    @Override
+    public void save(ProductSale sale) {
         sales.add(sale);
     }
+
 }
 
