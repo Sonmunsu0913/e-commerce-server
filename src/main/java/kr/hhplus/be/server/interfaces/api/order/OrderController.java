@@ -1,10 +1,12 @@
-package kr.hhplus.be.server.interfaces.api.coupon;
+package kr.hhplus.be.server.interfaces.api.order;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
-import kr.hhplus.be.server.application.order.dto.OrderRequest;
-import kr.hhplus.be.server.application.order.dto.OrderResponse;
+import kr.hhplus.be.server.application.order.service.OrderService;
+import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.interfaces.api.order.dto.OrderRequest;
+import kr.hhplus.be.server.interfaces.api.order.dto.OrderResponse;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,29 +16,24 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Order", description = "주문 API")
 public class OrderController {
 
+    private final OrderService orderService;
     private final MockOrderReporter reporter;
 
-    public OrderController(MockOrderReporter reporter) {
+    public OrderController(OrderService orderService, MockOrderReporter reporter) {
+        this.orderService = orderService;
         this.reporter = reporter;
     }
+
     @PostMapping
     @Operation(summary = "주문 및 결제", description = "상품을 주문하고 결제를 수행합니다.")
     public ResponseEntity<OrderResponse> order(@RequestBody OrderRequest request) {
-        OrderResponse response = new OrderResponse(
-            1234L,
-            6000,
-            1000,
-            5000,
-            8000,
-            LocalDateTime.now().toString()
-        );
 
-        // 외부 전송
+        OrderResponse response = orderService.placeOrder(request);
+
+        // 외부 데이터 플랫폼에 전송 (Mock)
         reporter.send(response);
 
-        // 외부 데이터 플랫폼 전송은 생략 (Mock 처리)
         return ResponseEntity.ok(response);
     }
-
 }
 
