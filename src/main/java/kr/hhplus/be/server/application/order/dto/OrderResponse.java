@@ -17,17 +17,17 @@ public class OrderResponse {
     private Integer finalPrice;
 
     @Schema(description = "결제 후 남은 잔액", example = "8000")
-    private Integer balanceAfterPayment;
+    private Integer pointAfterPayment;
 
     @Schema(description = "주문 시간", example = "2025-04-02T14:30:00")
     private String orderedAt;
 
-    public OrderResponse(Long orderId, Integer totalPrice, Integer discount, Integer finalPrice, Integer balanceAfterPayment, String orderedAt) {
+    public OrderResponse(Long orderId, Integer totalPrice, Integer discount, Integer finalPrice, Integer pointAfterPayment, String orderedAt) {
         this.orderId = orderId;
         this.totalPrice = totalPrice;
         this.discount = discount;
         this.finalPrice = finalPrice;
-        this.balanceAfterPayment = balanceAfterPayment;
+        this.pointAfterPayment = pointAfterPayment;
         this.orderedAt = orderedAt;
     }
 
@@ -47,8 +47,8 @@ public class OrderResponse {
         return finalPrice;
     }
 
-    public Integer getBalanceAfterPayment() {
-        return balanceAfterPayment;
+    public Integer getPointAfterPayment() {
+        return pointAfterPayment;
     }
 
     public String getOrderedAt() {
