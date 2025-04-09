@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.application.product.dto;
+package kr.hhplus.be.server.interfaces.api.product.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
@@ -19,15 +19,4 @@ public class PopularProductResponse {
         this.salesCount = salesCount;
     }
 
-    public Long getProductId() {
-        return productId;
-    }
-
-    public String getProductName() {
-        return productName;
-    }
-
-    public Long getSalesCount() {
-        return salesCount;
-    }
 }
