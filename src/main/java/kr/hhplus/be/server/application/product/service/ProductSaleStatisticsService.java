@@ -28,20 +28,20 @@ public class ProductSaleStatisticsService {
 
         List<ProductSale> sales = productSaleService.findSalesAfter(from);
 
-        Map<Long, Long> saleMap = ProductSaleStatistics.aggregateSales(sales);
-        List<Map.Entry<Long, Long>> topProducts = ProductSaleStatistics.topN(saleMap, 5);
-        List<Long> topProductIds = ProductSaleStatistics.extractProductIds(topProducts);
+        ProductSaleStatistics statistics = ProductSaleStatistics.of(sales);
+        List<Map.Entry<Long, Long>> topEntries = statistics.topN(5);
+        List<Long> productIds = statistics.extractProductIds(topEntries);
 
-        Map<Long, String> productNames = productRepository.findAllByIdIn(topProductIds).stream()
-                .collect(Collectors.toMap(Product::id, Product::name));
+        Map<Long, String> productNames = productRepository.findAllByIdIn(productIds).stream()
+            .collect(Collectors.toMap(Product::id, Product::name));
 
-        return topProducts.stream()
-                .map(entry -> {
-                    Long productId = entry.getKey();
-                    String name = productNames.getOrDefault(productId, "알 수 없음");
-                    return new PopularProductResponse(productId, name, entry.getValue());
-                })
-                .toList();
+        return topEntries.stream()
+            .map(entry -> {
+                Long productId = entry.getKey();
+                String name = productNames.getOrDefault(productId, "알 수 없음");
+                return new PopularProductResponse(productId, name, entry.getValue());
+            })
+            .toList();
     }
 
     private int parseRangeToDays(String range) {
@@ -55,4 +55,5 @@ public class ProductSaleStatisticsService {
         }
     }
 }
+
 
