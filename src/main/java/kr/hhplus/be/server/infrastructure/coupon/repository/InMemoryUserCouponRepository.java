@@ -15,7 +15,7 @@ public class InMemoryUserCouponRepository implements UserCouponRepository {
     @Override
     public void save(UserCoupon userCoupon) {
         userCouponStorage
-            .computeIfAbsent(userCoupon.getUserId(), k -> new ArrayList<>())
+            .computeIfAbsent(userCoupon.userId(), k -> new ArrayList<>())
             .add(userCoupon);
     }
 
@@ -23,7 +23,7 @@ public class InMemoryUserCouponRepository implements UserCouponRepository {
     public boolean existsByUserIdAndCouponId(Long userId, Long couponId) {
         return userCouponStorage.getOrDefault(userId, Collections.emptyList())
             .stream()
-            .anyMatch(c -> c.getCouponId().equals(couponId));
+            .anyMatch(c -> c.couponId().equals(couponId));
     }
 
     @Override

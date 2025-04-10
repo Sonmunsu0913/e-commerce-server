@@ -27,32 +27,30 @@ public class ProductSaleStatisticsService {
         LocalDate from = LocalDate.now().minusDays(days);
 
         List<ProductSale> sales = productSaleService.findSalesAfter(from);
-
         ProductSaleStatistics statistics = ProductSaleStatistics.of(sales);
-        List<Map.Entry<Long, Long>> topEntries = statistics.topN(5);
-        List<Long> productIds = statistics.extractProductIds(topEntries);
 
-        Map<Long, String> productNames = productRepository.findAllByIdIn(productIds).stream()
+        List<Map.Entry<Long, Long>> topEntries = statistics.topN(5);
+        Map<Long, String> productNames = productRepository.findAllByIdIn(statistics.extractProductIds(topEntries)).stream()
             .collect(Collectors.toMap(Product::id, Product::name));
 
         return topEntries.stream()
-            .map(entry -> {
-                Long productId = entry.getKey();
-                String name = productNames.getOrDefault(productId, "알 수 없음");
-                return new PopularProductResponse(productId, name, entry.getValue());
-            })
+            .map(entry -> new PopularProductResponse(
+                entry.getKey(),
+                productNames.getOrDefault(entry.getKey(), "알 수 없음"),
+                entry.getValue()
+            ))
             .toList();
     }
 
     private int parseRangeToDays(String range) {
-        try {
-            if (range.endsWith("d")) {
+        if (range.endsWith("d")) {
+            try {
                 return Integer.parseInt(range.replace("d", ""));
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("range 형식이 잘못되었습니다. 예: 3d");
             }
-            throw new IllegalArgumentException("지원하지 않는 range 형식입니다. ex) 3d");
-        } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("range 파라미터 형식이 잘못되었습니다.");
         }
+        throw new IllegalArgumentException("지원하지 않는 range 단위입니다. 예: 3d");
     }
 }
 

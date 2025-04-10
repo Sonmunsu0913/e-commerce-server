@@ -5,19 +5,19 @@ import kr.hhplus.be.server.domain.point.PointHistory;
 public class PointHistoryResponse {
     private final String type;
     private final long amount;
-    private final String timestamp;
+    private final String createdAt;
 
-    public PointHistoryResponse(String type, long amount, String timestamp) {
+    public PointHistoryResponse(String type, long amount, String createdAt) {
         this.type = type;
         this.amount = amount;
-        this.timestamp = timestamp;
+        this.createdAt = createdAt;
     }
 
     public static PointHistoryResponse from(PointHistory history) {
         return new PointHistoryResponse(
                 history.type().name(),
                 history.amount(),
-                String.valueOf(history.updateMillis())
+                history.createdAt().toString()
         );
     }
 }

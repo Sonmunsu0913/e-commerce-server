@@ -5,7 +5,7 @@ import kr.hhplus.be.server.application.point.repository.PointHistoryRepository;
 import kr.hhplus.be.server.domain.point.PointHistory;
 import org.springframework.stereotype.Repository;
 
-@Repository // 또는 @Component
+@Repository
 public class InMemoryPointHistoryRepository implements PointHistoryRepository {
 
     private final List<PointHistory> store = new ArrayList<>();
@@ -14,11 +14,11 @@ public class InMemoryPointHistoryRepository implements PointHistoryRepository {
     @Override
     public void save(PointHistory history) {
         PointHistory newHistory = new PointHistory(
-            sequence++, // 수동으로 ID 할당
+            sequence++,
             history.userId(),
             history.amount(),
             history.type(),
-            history.updateMillis()
+            history.createdAt()
         );
         store.add(newHistory);
     }
@@ -30,4 +30,5 @@ public class InMemoryPointHistoryRepository implements PointHistoryRepository {
             .toList();
     }
 }
+
 

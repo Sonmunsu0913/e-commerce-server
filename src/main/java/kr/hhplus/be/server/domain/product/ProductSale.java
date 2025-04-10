@@ -8,7 +8,4 @@ public record ProductSale(
     int quantity
 ) {
 
-    public LocalDate getSaleDate() {
-        return saleDate;
-    }
 }

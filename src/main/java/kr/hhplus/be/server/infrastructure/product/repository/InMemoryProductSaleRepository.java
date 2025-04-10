@@ -17,7 +17,7 @@ public class InMemoryProductSaleRepository implements ProductSaleRepository {
     @Override
     public List<ProductSale> findSalesAfter(LocalDate fromDate) {
         return sales.stream()
-            .filter(sale -> sale.getSaleDate().isAfter(fromDate.minusDays(1)))
+            .filter(sale -> sale.saleDate().isAfter(fromDate.minusDays(1)))
             .toList();
     }
 
