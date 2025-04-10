@@ -1,7 +1,9 @@
 package kr.hhplus.be.server.interfaces.api.order.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
+@Getter
 public class PaymentResultResponse {
 
     @Schema(description = "주문 ID", example = "1001")
@@ -32,28 +34,5 @@ public class PaymentResultResponse {
         this.paidAt = paidAt;
     }
 
-    public Long getOrderId() {
-        return orderId;
-    }
-
-    public Integer getPaidAmount() {
-        return paidAmount;
-    }
-
-    public Integer getDiscountAmount() {
-        return discountAmount;
-    }
-
-    public Integer getFinalPaidAmount() {
-        return finalPaidAmount;
-    }
-
-    public Integer getPointAfterPayment() {
-        return pointAfterPayment;
-    }
-
-    public String getPaidAt() {
-        return paidAt;
-    }
 }
 

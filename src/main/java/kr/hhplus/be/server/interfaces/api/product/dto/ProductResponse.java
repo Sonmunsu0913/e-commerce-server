@@ -1,7 +1,9 @@
 package kr.hhplus.be.server.interfaces.api.product.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
+@Getter
 public class ProductResponse {
 
     @Schema(description = "상품 ID", example = "1")
@@ -21,10 +23,6 @@ public class ProductResponse {
         this.name = name;
         this.price = price;
         this.stock = stock;
-    }
-
-    public String getName() {
-        return name;
     }
 }
 

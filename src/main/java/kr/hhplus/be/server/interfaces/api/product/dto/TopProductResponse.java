@@ -1,7 +1,9 @@
 package kr.hhplus.be.server.interfaces.api.product.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.Getter;
 
+@Getter
 public class TopProductResponse {
 
     @Schema(description = "상품 ID", example = "1")
@@ -19,15 +21,4 @@ public class TopProductResponse {
         this.salesCount = salesCount;
     }
 
-    public Integer getProductId() {
-        return productId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public Integer getSalesCount() {
-        return salesCount;
-    }
 }
