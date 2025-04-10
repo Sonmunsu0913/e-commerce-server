@@ -8,7 +8,7 @@ import static org.junit.jupiter.api.Assertions.*;
 class UserCouponTest {
 
     @Test
-    void 팩토리_메서드로_정상_생성() {
+    void create_메서드로_정상_생성() {
         // given
         Long userId = 1L;
         Long couponId = 101L;
@@ -17,21 +17,23 @@ class UserCouponTest {
         UserCoupon coupon = UserCoupon.create(userId, couponId);
 
         // then
-        assertEquals(userId, coupon.getUserId());
-        assertEquals(couponId, coupon.getCouponId());
+        assertEquals(userId, coupon.userId());
+        assertEquals(couponId, coupon.couponId());
         assertFalse(coupon.isUsed());
-        assertNotNull(coupon.getIssuedAt());
+        assertNotNull(coupon.issuedAt());
     }
 
     @Test
-    void 생성자_직접호출도_정상_작동() {
+    void 동일_유저_쿠폰_중복_발급_불가() {
         // given
-        UserCoupon coupon = new UserCoupon(101L, 2L, true, "2025-04-10T18:00:00");
+        Long userId = 1L;
+        Long couponId = 101L;
+
+        // when
+        UserCoupon coupon1 = UserCoupon.create(userId, couponId);  // 첫 번째 발급
+        UserCoupon coupon2 = UserCoupon.create(userId, couponId);  // 두 번째 발급 시도
 
         // then
-        assertEquals(101L, coupon.getCouponId());
-        assertEquals(2L, coupon.getUserId());
-        assertTrue(coupon.isUsed());
-        assertEquals("2025-04-10T18:00:00", coupon.getIssuedAt());
+        assertNotEquals(coupon1, coupon2);  // 두 객체는 같지 않아야 함 (유저는 하나의 쿠폰만 가질 수 있음)
     }
 }

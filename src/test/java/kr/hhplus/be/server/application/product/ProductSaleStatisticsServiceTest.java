@@ -47,7 +47,7 @@ class ProductSaleStatisticsServiceTest {
         );
 
         when(productSaleService.findSalesAfter(eq(from))).thenReturn(
-            mockSales.stream().filter(sale -> !sale.getSaleDate().isBefore(from)).toList()
+            mockSales.stream().filter(sale -> !sale.saleDate().isBefore(from)).toList()
         );
 
         when(productRepository.findAllByIdIn(any())).thenReturn(List.of(
