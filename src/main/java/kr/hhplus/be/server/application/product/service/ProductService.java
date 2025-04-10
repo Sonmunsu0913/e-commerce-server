@@ -16,7 +16,12 @@ public class ProductService {
 
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAll().stream()
-            .map(p -> new ProductResponse(p.id(), p.name(), p.price(), p.stock()))
+            .map(product -> new ProductResponse(
+                product.id(),
+                product.name(),
+                product.price(),
+                product.stock()
+            ))
             .toList();
     }
 }

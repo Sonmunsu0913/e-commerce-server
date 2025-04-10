@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.application.point.service;
 
+import java.time.LocalDateTime;
 import kr.hhplus.be.server.application.point.repository.PointHistoryRepository;
 import kr.hhplus.be.server.application.point.repository.PointRepository;
 import kr.hhplus.be.server.domain.point.PointHistory;
@@ -20,41 +21,36 @@ public class PointService {
         this.pointHistoryRepository = pointHistoryRepository;
     }
 
-    public UserPoint getPoint(long id) {
-        return pointRepository.findById(id);
+    public UserPoint getPoint(long userId) {
+        return pointRepository.findById(userId);
     }
 
-    public UserPoint charge(long id, long amount) {
-        UserPoint userPoint = pointRepository.findById(id);
-        UserPoint chargedPoint = userPoint.charge(amount);
-
-        pointRepository.save(chargedPoint);
-
-        PointHistory history = new PointHistory(
-            null, // ID는 내부적으로 시퀀스에서 할당 (InMemory or JPA)
-            id,
-            amount,
-            PointTransactionType.CHARGE,
-            chargedPoint.updateMillis()
-        );
-        pointHistoryRepository.save(history);
-        return chargedPoint;
+    public UserPoint charge(long userId, long amount) {
+        return updatePointWithHistory(userId, amount, PointTransactionType.CHARGE);
     }
 
-    public UserPoint use(long id, long amount) {
-        UserPoint userPoint = pointRepository.findById(id);
-        UserPoint usedPoint = userPoint.use(amount);
+    public UserPoint use(long userId, long amount) {
+        return updatePointWithHistory(userId, amount, PointTransactionType.USE);
+    }
 
-        pointRepository.save(usedPoint);
+    private UserPoint updatePointWithHistory(long userId, long amount, PointTransactionType type) {
+        UserPoint current = pointRepository.findById(userId);
+        UserPoint updated = switch (type) {
+            case CHARGE -> current.charge(amount);
+            case USE -> current.use(amount);
+        };
+
+        pointRepository.save(updated);
 
         PointHistory history = new PointHistory(
             null,
-            id,
+            userId,
             amount,
-            PointTransactionType.USE,
-            usedPoint.updateMillis()
+            type,
+            LocalDateTime.now()
         );
         pointHistoryRepository.save(history);
-        return usedPoint;
+
+        return updated;
     }
 }
