@@ -2,7 +2,7 @@ package kr.hhplus.be.server.application.coupon.service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kr.hhplus.be.server.application.coupon.dto.CouponResponse;
+import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
 import kr.hhplus.be.server.application.coupon.repository.CouponRepository;
 import kr.hhplus.be.server.application.coupon.repository.UserCouponRepository;
 import kr.hhplus.be.server.domain.coupon.Coupon;
