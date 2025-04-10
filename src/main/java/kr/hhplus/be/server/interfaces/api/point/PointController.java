@@ -47,8 +47,12 @@ public class PointController {
 
     @GetMapping("/{userId}/histories")
     @Operation(summary = "포인트 내역 조회", description = "사용자의 포인트 충전/사용 내역을 조회합니다.")
-    public List<PointHistory> getHistory(@PathVariable long id) {
-        return pointHistoryService.getHistory(id);
+    public ResponseEntity<List<PointHistoryResponse>> getHistory(@PathVariable("userId") long userId) {
+        List<PointHistoryResponse> history = pointHistoryService.getHistory(userId).stream()
+                .map(PointHistoryResponse::from)
+                .toList();
+
+        return ResponseEntity.ok(history);
     }
 
     @PostMapping("/use")

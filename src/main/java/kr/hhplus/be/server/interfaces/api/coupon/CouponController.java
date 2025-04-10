@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.interfaces.api.coupon;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponIssueRequest;
 import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
 import kr.hhplus.be.server.application.coupon.service.CouponService;
 import org.springframework.http.ResponseEntity;
@@ -20,20 +20,26 @@ public class CouponController {
         this.couponService = couponService;
     }
 
-    @GetMapping("/me")
-    @Operation(summary = "보유 쿠폰 목록 조회", description = "사용자가 발급받은 쿠폰 목록을 조회합니다.")
-    public ResponseEntity<List<CouponResponse>> getMyCoupons(@RequestParam Long userId) {
+    @GetMapping
+    @Operation(summary = "보유 쿠폰 목록 조회", description = "사용자가 보유한 쿠폰 목록을 조회합니다.")
+    public ResponseEntity<List<CouponResponse>> getMyCoupons(
+            @Parameter(description = "사용자 ID", example = "1")
+            @PathVariable Long userId
+    ) {
         List<CouponResponse> responses = couponService.getUserCoupons(userId);
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/{couponId}/issue")
-    @Operation(summary = "선착순 쿠폰 발급", description = "선착순으로 쿠폰을 발급받습니다.")
+    @PostMapping("/{couponId}")
+    @Operation(summary = "쿠폰 발급", description = "사용자가 지정한 쿠폰을 발급받습니다. (선착순 발급)")
     public ResponseEntity<CouponResponse> issueCoupon(
-        @PathVariable Long couponId,
-        @RequestBody CouponIssueRequest request
+            @Parameter(description = "사용자 ID", example = "1")
+            @PathVariable Long userId,
+
+            @Parameter(description = "발급할 쿠폰 ID", example = "101")
+            @PathVariable Long couponId
     ) {
-        CouponResponse response = couponService.issueCoupon(request.getUserId(), couponId);
+        CouponResponse response = couponService.issueCoupon(userId, couponId);
         return ResponseEntity.ok(response);
     }
 }
