@@ -1,17 +1,16 @@
 package kr.hhplus.be.server.domain.point;
 
 public record UserPoint(
-        Long id,
-        long point,
-        long updateMillis
+    Long id,
+    long point,
+    long updateMillis
 ) {
-
     public static UserPoint empty(long id) {
         return new UserPoint(id, 0, System.currentTimeMillis());
     }
 
     public UserPoint charge(long amount) {
-        if (this.point + amount > 1000000L) {
+        if (this.point + amount > 1_000_000L) {
             throw new IllegalStateException("최대 잔고를 넘을 수 없습니다. (최대: 1,000,000)");
         }
         return new UserPoint(this.id, this.point + amount, System.currentTimeMillis());

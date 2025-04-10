@@ -1,12 +1,14 @@
 package kr.hhplus.be.server.domain.coupon;
 
+import lombok.Getter;
+
+@Getter
 public class Coupon {
 
     private final Long id;
     private final String name;
     private final int discountAmount;
     private final int totalQuantity;
-
     private int issuedCount;
 
     public Coupon(Long id, String name, int discountAmount, int totalQuantity) {
@@ -22,26 +24,6 @@ public class Coupon {
             throw new IllegalStateException("모든 쿠폰이 소진되었습니다.");
         }
         issuedCount++;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getDiscountAmount() {
-        return discountAmount;
-    }
-
-    public int getIssuedCount() {
-        return issuedCount;
-    }
-
-    public int getTotalQuantity() {
-        return totalQuantity;
     }
 
     public boolean canIssue() {

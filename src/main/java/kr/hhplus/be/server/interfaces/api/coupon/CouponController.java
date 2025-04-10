@@ -30,16 +30,17 @@ public class CouponController {
         return ResponseEntity.ok(responses);
     }
 
-    @PostMapping("/{couponId}")
-    @Operation(summary = "쿠폰 발급", description = "사용자가 지정한 쿠폰을 발급받습니다. (선착순 발급)")
+    @PostMapping
+    @Operation(summary = "쿠폰 발급", description = "사용자가 아직 쿠폰을 발급받지 않았다면, 선착순으로 쿠폰을 발급합니다.")
     public ResponseEntity<CouponResponse> issueCoupon(
-            @Parameter(description = "사용자 ID", example = "1")
-            @PathVariable Long userId,
-
-            @Parameter(description = "발급할 쿠폰 ID", example = "101")
-            @PathVariable Long couponId
+        @Parameter(description = "사용자 ID", example = "1")
+        @PathVariable Long userId
     ) {
-        CouponResponse response = couponService.issueCoupon(userId, couponId);
+        final Long fixedCouponId = 1L;
+
+        // 서비스에서 발급 가능 여부를 확인하고 처리
+        CouponResponse response = couponService.issueCoupon(userId, fixedCouponId);
+
         return ResponseEntity.ok(response);
     }
 }

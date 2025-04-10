@@ -1,41 +1,35 @@
 package kr.hhplus.be.server.interfaces.api.coupon.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
 
-public class CouponResponse {
+public record CouponResponse(
 
     @Schema(description = "쿠폰 ID", example = "101")
-    private Long couponId;
+    Long couponId,
 
     @Schema(description = "할인 금액", example = "2000")
-    private Integer discountAmount;
+    Integer discountAmount,
 
     @Schema(description = "발급 시각", example = "2025-04-02T12:00:00")
-    private String issuedAt;
+    LocalDateTime issuedAt,
 
     @Schema(description = "사용 여부", example = "false")
-    private Boolean isUsed;
+    Boolean isUsed
 
-    public CouponResponse(Long couponId, Integer discountAmount, String issuedAt, Boolean isUsed) {
-        this.couponId = couponId;
-        this.discountAmount = discountAmount;
-        this.issuedAt = issuedAt;
-        this.isUsed = isUsed;
+) {
+
+    public String getName() {
+        return "5천원 할인 쿠폰"; // 예시: 쿠폰 이름을 반환
     }
 
-    public Long getCouponId() {
-        return couponId;
-    }
-
-    public Integer getDiscountAmount() {
-        return discountAmount;
-    }
-
-    public String getIssuedAt() {
-        return issuedAt;
-    }
-
-    public Boolean getIsUsed() {
-        return isUsed;
+    public static CouponResponse from(UserCoupon userCoupon, int discountAmount) {
+        return new CouponResponse(
+            userCoupon.couponId(),
+            discountAmount,
+            userCoupon.issuedAt(),
+            userCoupon.isUsed()
+        );
     }
 }
