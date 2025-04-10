@@ -11,15 +11,15 @@ public class CouponResponse {
     private Integer discountAmount;
 
     @Schema(description = "발급 시각", example = "2025-04-02T12:00:00")
-    private String claimedAt;
+    private String issuedAt;
 
     @Schema(description = "사용 여부", example = "false")
     private Boolean isUsed;
 
-    public CouponResponse(Long couponId, Integer discountAmount, String claimedAt, Boolean isUsed) {
+    public CouponResponse(Long couponId, Integer discountAmount, String issuedAt, Boolean isUsed) {
         this.couponId = couponId;
         this.discountAmount = discountAmount;
-        this.claimedAt = claimedAt;
+        this.issuedAt = issuedAt;
         this.isUsed = isUsed;
     }
 
@@ -31,8 +31,8 @@ public class CouponResponse {
         return discountAmount;
     }
 
-    public String getClaimedAt() {
-        return claimedAt;
+    public String getIssuedAt() {
+        return issuedAt;
     }
 
     public Boolean getIsUsed() {

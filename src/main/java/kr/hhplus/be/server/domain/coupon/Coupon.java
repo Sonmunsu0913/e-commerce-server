@@ -17,19 +17,19 @@ public class Coupon {
         this.issuedCount = 0;
     }
 
-    public void issue() {
-        if (!canIssue()) {
+    public void checkAndIncreaseIssuedCount() {
+        if (issuedCount >= totalQuantity) {
             throw new IllegalStateException("모든 쿠폰이 소진되었습니다.");
         }
         issuedCount++;
     }
 
-    public boolean canIssue() {
-        return issuedCount < totalQuantity;
-    }
-
     public Long getId() {
         return id;
+    }
+
+    public String getName() {
+        return name;
     }
 
     public int getDiscountAmount() {
@@ -42,5 +42,9 @@ public class Coupon {
 
     public int getTotalQuantity() {
         return totalQuantity;
+    }
+
+    public boolean canIssue() {
+        return issuedCount < totalQuantity;
     }
 }
