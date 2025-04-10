@@ -2,7 +2,7 @@ package kr.hhplus.be.server.application.coupon.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-public class CouponClaimRequest {
+public class CouponIssueRequest {
 
     @Schema(description = "사용자 ID", example = "1")
     private Long userId;
@@ -15,4 +15,5 @@ public class CouponClaimRequest {
         this.userId = userId;
     }
 }
+
 
