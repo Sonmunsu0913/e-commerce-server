@@ -37,7 +37,7 @@ public class OrderService {
         return order.toResponse((int) updated.point());
     }
 
-    public Order createOrder(Long userId, List<OrderItemRequest> items, Long couponId) {
+    private Order createOrder(Long userId, List<OrderItemRequest> items, Long couponId) {
         int discount = applyCoupon(couponId);
         Long orderId = generateOrderId();
 
