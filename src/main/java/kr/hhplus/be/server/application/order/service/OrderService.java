@@ -16,38 +16,26 @@ import java.util.List;
 public class OrderService {
 
     private final OrderRepository orderRepository;
-    private final PointService pointService;
-    private final MockOrderReporter reporter;
-
     private long nextOrderId = 1000L;
 
-    public OrderService(OrderRepository orderRepository,
-        PointService pointService,
-        MockOrderReporter reporter) {
+    public OrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
-        this.pointService = pointService;
-        this.reporter = reporter;
     }
 
-    // 주문 요청 처리 → Order 생성 → 포인트 차감 → 저장 및 응답 반환
-    public OrderResponse placeOrder(OrderRequest request) {
-        Order order = createOrder(request.getUserId(), request.getItems(), request.getCouponId());
-        UserPoint updated = pointService.use(order.getUserId(), order.getFinalPrice());
-
-        orderRepository.save(order);
-        reporter.send(order.toResponse((int) updated.point())); // optional: 외부 전송
-
-        return order.toResponse((int) updated.point());
-    }
-
-    // 주문 객체 생성 (쿠폰 할인 적용 포함)
-    private Order createOrder(Long userId, List<OrderItemRequest> items, Long couponId) {
+    /**
+     * 주문 객체 생성 및 저장 (포인트 차감/외부 전송은 facade에서 수행)
+     */
+    public Order createOrder(Long userId, List<OrderItemRequest> items, Long couponId) {
         int discount = applyCouponPolicy(couponId);
         long orderId = generateOrderId();
-        return new Order(orderId, userId, items, discount);
+        Order order = new Order(orderId, userId, items, discount);
+        orderRepository.save(order);
+        return order;
     }
 
-    // 쿠폰 ID가 101이면 1000원 할인
+    /**
+     * 쿠폰 정책 적용: ID가 101이면 1000원 할인
+     */
     protected int applyCouponPolicy(Long couponId) {
         return (couponId != null && couponId.equals(101L)) ? 1000 : 0;
     }
@@ -55,4 +43,13 @@ public class OrderService {
     private long generateOrderId() {
         return nextOrderId++;
     }
+
+    /**
+     * 주문 ID로 주문 조회 (Facade에서 결제 시 사용)
+     */
+    public Order getOrderOrThrow(Long orderId) {
+        return orderRepository.findById(orderId)
+            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+    }
 }
+

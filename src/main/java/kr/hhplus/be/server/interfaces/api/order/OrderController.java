@@ -3,6 +3,7 @@ package kr.hhplus.be.server.interfaces.api.order;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.time.LocalDateTime;
+import kr.hhplus.be.server.application.order.service.OrderFacade;
 import kr.hhplus.be.server.application.order.service.OrderService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.interfaces.api.order.dto.OrderRequest;
@@ -16,23 +17,17 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Order", description = "주문 API")
 public class OrderController {
 
-    private final OrderService orderService;
-    private final MockOrderReporter reporter;
+    private final OrderFacade orderFacade;
 
-    public OrderController(OrderService orderService, MockOrderReporter reporter) {
-        this.orderService = orderService;
-        this.reporter = reporter;
+    public OrderController(OrderFacade orderFacade) {
+        this.orderFacade = orderFacade;
     }
 
     @PostMapping
     @Operation(summary = "주문 및 결제", description = "상품을 주문하고 결제를 수행합니다.")
     public ResponseEntity<OrderResponse> order(@RequestBody OrderRequest request) {
-
-        OrderResponse response = orderService.placeOrder(request);
-
-        // 외부 데이터 플랫폼에 전송 (Mock)
-        reporter.send(response);
-
+        // 주문 + 결제 + 포인트 차감 + 상품 판매기록 + 전송까지 모두 Facade에서 처리
+        OrderResponse response = orderFacade.placeOrder(request);
         return ResponseEntity.ok(response);
     }
 }
