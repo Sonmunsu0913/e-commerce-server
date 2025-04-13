@@ -33,4 +33,9 @@ public class InMemoryProductRepository implements ProductRepository {
                 .filter(Objects::nonNull)
                 .toList();
     }
+
+    @Override
+    public void save(Product product) {
+        store.put(product.id(), product);
+    }
 }
