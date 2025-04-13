@@ -14,6 +14,7 @@ public class PointHistoryService {
         this.pointHistoryRepository = pointHistoryRepository;
     }
 
+    // 사용자의 포인트 이력 조회
     public List<PointHistory> getHistory(long userId) {
         return pointHistoryRepository.findAllByUserId(userId);
     }
