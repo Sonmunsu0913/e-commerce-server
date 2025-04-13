@@ -35,10 +35,7 @@ public class PointService {
 
     private UserPoint updatePointWithHistory(long userId, long amount, PointTransactionType type) {
         UserPoint current = pointRepository.findById(userId);
-        UserPoint updated = switch (type) {
-            case CHARGE -> current.charge(amount);
-            case USE -> current.use(amount);
-        };
+        UserPoint updated = current.handle(type, amount);
 
         pointRepository.save(updated);
 

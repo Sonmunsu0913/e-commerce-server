@@ -1,10 +1,8 @@
 package kr.hhplus.be.server.application.coupon.service;
 
-import kr.hhplus.be.server.application.coupon.repository.CouponItemRepository;
 import kr.hhplus.be.server.application.coupon.repository.CouponRepository;
 import kr.hhplus.be.server.application.coupon.repository.UserCouponRepository;
 import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.CouponItem;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
 import org.springframework.stereotype.Service;
@@ -16,15 +14,12 @@ public class CouponService {
 
     private final CouponRepository couponRepository;
     private final UserCouponRepository userCouponRepository;
-    private final CouponItemRepository couponItemRepository;
 
 
     public CouponService(CouponRepository couponRepository,
-        UserCouponRepository userCouponRepository,
-        CouponItemRepository couponItemRepository) {
+        UserCouponRepository userCouponRepository) {
         this.couponRepository = couponRepository;
         this.userCouponRepository = userCouponRepository;
-        this.couponItemRepository = couponItemRepository;
     }
 
     public List<CouponResponse> getUserCoupons(Long userId) {
@@ -45,22 +40,23 @@ public class CouponService {
             throw new IllegalStateException("이미 발급받은 쿠폰입니다.");
         }
 
-        // 2. 발급 가능한 쿠폰이 남아 있는지 확인
+        // 2. 쿠폰 존재 여부 및 발급 가능 여부 확인
         Coupon coupon = couponRepository.findById(couponId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 쿠폰입니다."));
 
-        // 발급 가능한 쿠폰 중 하나를 찾음
-        CouponItem couponItem = couponItemRepository.findFirstByCouponTypeAndIssuedFalse(couponId)
-            .orElseThrow(() -> new IllegalStateException("발급 가능한 쿠폰이 없습니다."));
+        if (!coupon.canIssue()) {
+            throw new IllegalStateException("발급 가능한 쿠폰이 없습니다.");
+        }
 
-        // 3. 발급
-        couponItem.markIssued(); // 쿠폰을 발급 상태로 변경
-        couponItemRepository.save(couponItem);  // 발급된 쿠폰 상태 저장
+        // 3. 발급 처리
+        coupon.issue(); // 발급 수량 증가
+        couponRepository.save(coupon); // 저장 (DB 연동 시 필요)
 
-        UserCoupon userCoupon = UserCoupon.create(userId, couponId);  // 유저와 쿠폰 정보 저장
+        UserCoupon userCoupon = UserCoupon.create(userId, couponId);
         userCouponRepository.save(userCoupon);
 
-        // 4. 쿠폰 발급 완료 후 응답 반환
+        // 4. 응답 반환
         return CouponResponse.from(userCoupon, coupon.getDiscountAmount());
     }
+
 }

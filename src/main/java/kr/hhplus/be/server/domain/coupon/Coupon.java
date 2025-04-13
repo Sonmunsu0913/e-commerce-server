@@ -19,9 +19,9 @@ public class Coupon {
         this.issuedCount = 0;
     }
 
-    public void checkAndIncreaseIssuedCount() {
-        if (issuedCount >= totalQuantity) {
-            throw new IllegalStateException("모든 쿠폰이 소진되었습니다.");
+    public void issue() {
+        if (!canIssue()) {
+            throw new IllegalStateException("발급 가능한 쿠폰이 없습니다.");
         }
         issuedCount++;
     }
@@ -30,3 +30,4 @@ public class Coupon {
         return issuedCount < totalQuantity;
     }
 }
+

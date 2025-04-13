@@ -22,5 +22,10 @@ public class InMemoryCouponRepository implements CouponRepository {
     public Optional<Coupon> findById(Long couponId) {
         return Optional.ofNullable(couponStorage.get(couponId));
     }
+
+    @Override
+    public void save(Coupon coupon) {
+        couponStorage.put(coupon.getId(), coupon);
+    }
 }
 

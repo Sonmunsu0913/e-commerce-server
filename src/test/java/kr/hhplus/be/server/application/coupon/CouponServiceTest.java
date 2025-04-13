@@ -1,11 +1,10 @@
 package kr.hhplus.be.server.application.coupon;
 
-import kr.hhplus.be.server.application.coupon.repository.CouponItemRepository;
+import java.util.Optional;
 import kr.hhplus.be.server.application.coupon.repository.CouponRepository;
 import kr.hhplus.be.server.application.coupon.repository.UserCouponRepository;
 import kr.hhplus.be.server.application.coupon.service.CouponService;
 import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.CouponItem;
 import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -18,9 +17,8 @@ class CouponServiceTest {
 
     private final UserCouponRepository userCouponRepository = Mockito.mock(UserCouponRepository.class);
     private final CouponRepository couponRepository = Mockito.mock(CouponRepository.class);
-    private final CouponItemRepository couponItemRepository = Mockito.mock(CouponItemRepository.class);
 
-    private final CouponService couponService = new CouponService(couponRepository, userCouponRepository, couponItemRepository);
+    private final CouponService couponService = new CouponService(couponRepository, userCouponRepository);
 
     @Test
     void 동일_유저_중복_발급_시_예외_발생() {
@@ -44,12 +42,10 @@ class CouponServiceTest {
         // given
         Long userId = 1L;
         Long couponId = 101L;
-        Coupon coupon = new Coupon(couponId, "5천원 할인", 5000, 10);
-        CouponItem couponItem = new CouponItem(couponId);
+        Coupon coupon = new Coupon(couponId, "5천원 할인 쿠폰", 5000, 10);
 
         when(userCouponRepository.existsByUserIdAndCouponId(userId, couponId)).thenReturn(false);
-        when(couponRepository.findById(couponId)).thenReturn(java.util.Optional.of(coupon));
-        when(couponItemRepository.findFirstByCouponTypeAndIssuedFalse(couponId)).thenReturn(java.util.Optional.of(couponItem));
+        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
 
         // when
         CouponResponse response = couponService.issueCoupon(userId, couponId);
@@ -57,5 +53,7 @@ class CouponServiceTest {
         // then
         assertNotNull(response);
         assertEquals("5천원 할인 쿠폰", response.getName());
+        assertEquals(5000, response.discountAmount());
     }
+
 }

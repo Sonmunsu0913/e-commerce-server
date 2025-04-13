@@ -22,4 +22,12 @@ public record UserPoint(
         }
         return new UserPoint(this.id, this.point - amount, System.currentTimeMillis());
     }
+
+    public UserPoint handle(PointTransactionType type, long amount) {
+        return switch (type) {
+            case CHARGE -> this.charge(amount);
+            case USE -> this.use(amount);
+        };
+    }
 }
+
