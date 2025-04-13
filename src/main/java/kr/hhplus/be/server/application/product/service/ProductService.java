@@ -14,6 +14,7 @@ public class ProductService {
         this.productRepository = productRepository;
     }
 
+    // 전체 상품 목록을 조회하고 DTO로 매핑
     public List<ProductResponse> getAllProducts() {
         return productRepository.findAll().stream()
             .map(product -> new ProductResponse(
@@ -25,3 +26,4 @@ public class ProductService {
             .toList();
     }
 }
+
