@@ -30,26 +30,30 @@ public class PaymentService {
         this.productSaleService = productSaleService;
     }
 
+    // 주문 ID 기반으로 결제를 진행하고 결과 반환
     public PaymentResultResponse pay(Long orderId) {
         Order order = getOrderOrThrow(orderId);
-        validatePayment(order);
+        validatePayment(order); // 포인트 충분한지 확인
         UserPoint updated = pointService.use(order.getUserId(), order.getFinalPrice());
-        recordSales(order.getItems());
 
+        recordSales(order.getItems()); // 상품 판매 기록
         return toPaymentResult(order, updated.point());
     }
 
+    // 존재하지 않는 주문일 경우 예외
     private Order getOrderOrThrow(Long orderId) {
         return orderRepository.findById(orderId)
             .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
     }
 
+    // 결제 가능 여부 확인 (잔액 부족 시 예외)
     private void validatePayment(Order order) {
         Payment payment = new Payment(order);
         UserPoint current = pointService.getPoint(order.getUserId());
         payment.validateEnoughPoint((int) current.point());
     }
 
+    // 각 상품별로 판매 이력 기록
     private void recordSales(List<OrderItemRequest> items) {
         LocalDate today = LocalDate.now();
         for (OrderItemRequest item : items) {
@@ -59,6 +63,7 @@ public class PaymentService {
         }
     }
 
+    // 응답 포맷 생성
     private PaymentResultResponse toPaymentResult(Order order, long pointAfterPayment) {
         return new PaymentResultResponse(
             order.getOrderId(),

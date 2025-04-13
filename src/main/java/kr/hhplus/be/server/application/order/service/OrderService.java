@@ -29,28 +29,30 @@ public class OrderService {
         this.reporter = reporter;
     }
 
+    // 주문 요청 처리 → Order 생성 → 포인트 차감 → 저장 및 응답 반환
     public OrderResponse placeOrder(OrderRequest request) {
         Order order = createOrder(request.getUserId(), request.getItems(), request.getCouponId());
-
         UserPoint updated = pointService.use(order.getUserId(), order.getFinalPrice());
 
         orderRepository.save(order);
-        reporter.send(order.toResponse((int) updated.point()));
+        reporter.send(order.toResponse((int) updated.point())); // optional: 외부 전송
 
         return order.toResponse((int) updated.point());
     }
 
+    // 주문 객체 생성 (쿠폰 할인 적용 포함)
     private Order createOrder(Long userId, List<OrderItemRequest> items, Long couponId) {
         int discount = applyCouponPolicy(couponId);
         long orderId = generateOrderId();
         return new Order(orderId, userId, items, discount);
     }
 
-    private long generateOrderId() {
-        return nextOrderId++;
-    }
-
+    // 쿠폰 ID가 101이면 1000원 할인
     protected int applyCouponPolicy(Long couponId) {
         return (couponId != null && couponId.equals(101L)) ? 1000 : 0;
+    }
+
+    private long generateOrderId() {
+        return nextOrderId++;
     }
 }
