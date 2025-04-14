@@ -8,7 +8,6 @@ import java.util.List;
 import kr.hhplus.be.server.application.coupon.usecase.GetUserCouponsUseCase;
 import kr.hhplus.be.server.application.coupon.usecase.IssueCouponUseCase;
 import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
-import kr.hhplus.be.server.application.coupon.service.CouponService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
