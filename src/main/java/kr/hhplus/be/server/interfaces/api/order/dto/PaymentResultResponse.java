@@ -3,6 +3,8 @@ package kr.hhplus.be.server.interfaces.api.order.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class PaymentResultResponse {
 
@@ -22,10 +24,10 @@ public class PaymentResultResponse {
     private Integer pointAfterPayment;
 
     @Schema(description = "결제 시각", example = "2025-04-08T13:00:00")
-    private String paidAt;
+    private LocalDateTime paidAt;
 
     public PaymentResultResponse(Long orderId, Integer paidAmount, Integer discountAmount,
-        Integer finalPaidAmount, Integer pointAfterPayment, String paidAt) {
+        Integer finalPaidAmount, Integer pointAfterPayment, LocalDateTime paidAt) {
         this.orderId = orderId;
         this.paidAmount = paidAmount;
         this.discountAmount = discountAmount;
