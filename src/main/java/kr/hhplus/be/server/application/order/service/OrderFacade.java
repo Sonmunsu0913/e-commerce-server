@@ -4,7 +4,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import kr.hhplus.be.server.application.point.usecase.GetUserPointUseCase;
 import kr.hhplus.be.server.application.point.usecase.UsePointUseCase;
-import kr.hhplus.be.server.application.product.service.ProductSaleService;
+import kr.hhplus.be.server.application.product.usecase.RecordProductSaleUseCase;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
 import kr.hhplus.be.server.domain.point.UserPoint;
@@ -22,17 +22,17 @@ public class OrderFacade {
     private final PaymentService paymentService;
     private final UsePointUseCase usePointUseCase;
     private final GetUserPointUseCase getUserPointUseCase;
-    private final ProductSaleService productSaleService;
+    private final RecordProductSaleUseCase recordProductSaleUseCase;
     private final MockOrderReporter reporter;
 
     public OrderFacade(OrderService orderService, PaymentService paymentService,
                        UsePointUseCase usePointUseCase, GetUserPointUseCase getUserPointUseCase,
-                       ProductSaleService productSaleService, MockOrderReporter reporter) {
+                       RecordProductSaleUseCase recordProductSaleUseCase, MockOrderReporter reporter) {
         this.orderService = orderService;
         this.paymentService = paymentService;
         this.usePointUseCase = usePointUseCase;
         this.getUserPointUseCase = getUserPointUseCase;
-        this.productSaleService = productSaleService;
+        this.recordProductSaleUseCase = recordProductSaleUseCase;
         this.reporter = reporter;
     }
 
@@ -56,7 +56,7 @@ public class OrderFacade {
         // 5. 판매 기록 저장
         LocalDate today = LocalDate.now();
         for (OrderItemRequest item : request.getItems()) {
-            productSaleService.recordSale(new ProductSale(item.productId(), today, item.quantity()));
+            recordProductSaleUseCase.execute(new ProductSale(item.productId(), today, item.quantity()));
         }
 
         // 6. 응답 생성 및 외부 시스템 전송 (mock)
@@ -81,7 +81,7 @@ public class OrderFacade {
 
         // 5. 각 상품별 판매 기록 저장
         for (OrderItemRequest item : order.getItems()) {
-            productSaleService.recordSale(
+            recordProductSaleUseCase.execute(
                     new ProductSale(item.productId(), LocalDate.now(), item.quantity())
             );
         }
