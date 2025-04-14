@@ -51,6 +51,7 @@ public class PointService {
             userId,
             amount,
             type,
+            LocalDateTime.now(),
             LocalDateTime.now()
         );
         pointHistoryRepository.save(history);
