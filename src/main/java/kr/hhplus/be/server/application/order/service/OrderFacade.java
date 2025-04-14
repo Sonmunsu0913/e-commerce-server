@@ -1,7 +1,8 @@
 package kr.hhplus.be.server.application.order.service;
 
-import java.time.LocalDate;
-import java.time.LocalDateTime;
+import kr.hhplus.be.server.application.order.usecase.CreateOrderUseCase;
+import kr.hhplus.be.server.application.order.usecase.GetOrderUseCase;
+import kr.hhplus.be.server.application.order.usecase.ValidatePaymentUseCase;
 import kr.hhplus.be.server.application.point.usecase.GetUserPointUseCase;
 import kr.hhplus.be.server.application.point.usecase.UsePointUseCase;
 import kr.hhplus.be.server.application.product.usecase.RecordProductSaleUseCase;
@@ -15,21 +16,30 @@ import kr.hhplus.be.server.interfaces.api.order.dto.OrderResponse;
 import kr.hhplus.be.server.interfaces.api.order.dto.PaymentResultResponse;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 @Service
 public class OrderFacade {
 
-    private final OrderService orderService;
-    private final PaymentService paymentService;
+    private final CreateOrderUseCase createOrderUseCase;
+    private final GetOrderUseCase getOrderUseCase;
+    private final ValidatePaymentUseCase validatePaymentUseCase;
     private final UsePointUseCase usePointUseCase;
     private final GetUserPointUseCase getUserPointUseCase;
     private final RecordProductSaleUseCase recordProductSaleUseCase;
     private final MockOrderReporter reporter;
 
-    public OrderFacade(OrderService orderService, PaymentService paymentService,
-                       UsePointUseCase usePointUseCase, GetUserPointUseCase getUserPointUseCase,
-                       RecordProductSaleUseCase recordProductSaleUseCase, MockOrderReporter reporter) {
-        this.orderService = orderService;
-        this.paymentService = paymentService;
+    public OrderFacade(CreateOrderUseCase createOrderUseCase,
+                       GetOrderUseCase getOrderUseCase,
+                       ValidatePaymentUseCase validatePaymentUseCase,
+                       UsePointUseCase usePointUseCase,
+                       GetUserPointUseCase getUserPointUseCase,
+                       RecordProductSaleUseCase recordProductSaleUseCase,
+                       MockOrderReporter reporter) {
+        this.createOrderUseCase = createOrderUseCase;
+        this.getOrderUseCase = getOrderUseCase;
+        this.validatePaymentUseCase = validatePaymentUseCase;
         this.usePointUseCase = usePointUseCase;
         this.getUserPointUseCase = getUserPointUseCase;
         this.recordProductSaleUseCase = recordProductSaleUseCase;
@@ -38,7 +48,7 @@ public class OrderFacade {
 
     public OrderResponse placeOrder(OrderRequest request) {
         // 1. 주문 생성
-        Order order = orderService.createOrder(
+        Order order = createOrderUseCase.execute(
                 request.getUserId(),
                 request.getItems(),
                 request.getCouponId()
@@ -48,7 +58,7 @@ public class OrderFacade {
         UserPoint current = getUserPointUseCase.execute(order.getUserId());
 
         // 3. 결제 가능 여부 검증 (포인트 부족 시 예외 발생)
-        paymentService.validatePayment(order, (int) current.point());
+        validatePaymentUseCase.execute(order, (int) current.point());
 
         // 4. 포인트 차감
         UserPoint updated = usePointUseCase.execute(order.getUserId(), order.getFinalPrice());
@@ -68,13 +78,13 @@ public class OrderFacade {
 
     public PaymentResultResponse pay(Long orderId) {
         // 1. 주문 ID로 주문 조회 (존재하지 않으면 예외 발생)
-        Order order = paymentService.getOrderOrThrow(orderId);
+        Order order = getOrderUseCase.execute(orderId);
 
         // 2. 사용자 현재 포인트 조회
         UserPoint current = getUserPointUseCase.execute(order.getUserId());
 
         // 3. 포인트가 결제 금액보다 충분한지 검증
-        paymentService.validatePayment(order, (int) current.point());
+        validatePaymentUseCase.execute(order, (int) current.point());
 
         // 4. 포인트 차감 (결제)
         UserPoint updated = usePointUseCase.execute(order.getUserId(), order.getFinalPrice());
@@ -92,8 +102,8 @@ public class OrderFacade {
                 order.getTotalPrice(),
                 order.getDiscount(),
                 order.getFinalPrice(),
-                (int) updated.point(),               // 결제 후 잔액
-                LocalDateTime.now().toString()       // 결제 시각
+                (int) updated.point(),
+                LocalDateTime.now()
         );
     }
 }
