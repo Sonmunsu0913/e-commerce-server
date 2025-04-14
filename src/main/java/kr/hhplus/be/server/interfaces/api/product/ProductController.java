@@ -3,10 +3,8 @@ package kr.hhplus.be.server.interfaces.api.product;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.*;
-import kr.hhplus.be.server.application.product.service.ProductService;
 import kr.hhplus.be.server.application.product.usecase.GetAllProductsUseCase;
 import kr.hhplus.be.server.interfaces.api.product.dto.ProductResponse;
-import kr.hhplus.be.server.interfaces.api.product.dto.TopProductResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

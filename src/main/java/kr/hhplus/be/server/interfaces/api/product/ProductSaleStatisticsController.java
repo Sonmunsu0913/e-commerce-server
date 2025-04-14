@@ -4,7 +4,6 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import kr.hhplus.be.server.application.product.service.ProductSaleStatisticsService;
 import kr.hhplus.be.server.application.product.usecase.GetTopSellingProductsUseCase;
 import kr.hhplus.be.server.interfaces.api.product.dto.PopularProductResponse;
 import org.springframework.http.ResponseEntity;
