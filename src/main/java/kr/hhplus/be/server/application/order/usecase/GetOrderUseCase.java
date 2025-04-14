@@ -14,8 +14,11 @@ public class GetOrderUseCase {
     }
 
     public Order execute(Long orderId) {
-        return orderRepository.findById(orderId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문입니다."));
+        Order order = orderRepository.findById(orderId);
+        if (order == null) {
+            throw new IllegalArgumentException("존재하지 않는 주문입니다.");
+        }
+        return order;
     }
 }
 

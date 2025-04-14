@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "orders")
+@Table(name = "order")
 public class OrderEntity {
 
     @Id

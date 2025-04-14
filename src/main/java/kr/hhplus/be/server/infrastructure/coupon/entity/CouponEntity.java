@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 
 @Entity
-@Table(name = "coupons")
+@Table(name = "coupon")
 public class CouponEntity {
 
     @Id
