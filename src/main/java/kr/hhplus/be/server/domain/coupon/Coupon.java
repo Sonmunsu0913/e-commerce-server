@@ -37,5 +37,10 @@ public class Coupon {
     public boolean canIssue() {
         return issuedCount < totalQuantity;
     }
+
+
+    public void setIssuedCount(int issuedCount) {
+        this.issuedCount = issuedCount;
+    }
 }
 
