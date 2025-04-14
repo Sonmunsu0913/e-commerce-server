@@ -46,16 +46,4 @@ public record UserPoint(
         return new UserPoint(this.id, this.point - amount, this.createdAt, LocalDateTime.now());
     }
 
-    /**
-     * 트랜잭션 타입에 따라 충전 또는 사용을 처리함
-     * @param type 포인트 트랜잭션 타입 (CHARGE 또는 USE)
-     * @param amount 포인트 액수
-     * @return 변경된 UserPoint 객체
-     */
-    public UserPoint handle(PointTransactionType type, long amount) {
-        return switch (type) {
-            case CHARGE -> this.charge(amount);
-            case USE -> this.use(amount);
-        };
-    }
 }
