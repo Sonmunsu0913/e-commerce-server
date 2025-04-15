@@ -1,8 +1,9 @@
 package kr.hhplus.be.server.interfaces.api.point.dto;
 
-import io.swagger.v3.oas.annotations.media.Schema;
 import kr.hhplus.be.server.domain.point.UserPoint;
+import lombok.Getter;
 
+@Getter
 public class PointResponse {
 
     private final Long userId;
