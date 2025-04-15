@@ -6,12 +6,14 @@ import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * 쿠폰 발급 UseCase
  * - 사용자가 쿠폰을 발급받지 않았고, 수량이 남아있는 경우 쿠폰을 발급한다.
  */
 @Service
+@Transactional
 public class IssueCouponUseCase {
 
     private final CouponRepository couponRepository;

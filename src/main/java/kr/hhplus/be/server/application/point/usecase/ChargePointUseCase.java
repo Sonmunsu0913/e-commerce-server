@@ -6,8 +6,10 @@ import kr.hhplus.be.server.domain.point.*;
 
 import java.time.LocalDateTime;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional
 public class ChargePointUseCase {
 
     private final PointRepository pointRepository;
