@@ -29,9 +29,9 @@ public class RecordProductSaleUseCase {
                 .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다: " + sale.productId()));
 
         // 3. 재고 감소
-        product.reduceStock(sale.quantity());
+        Product updatedProduct = product.reduceStock(sale.quantity());
 
         // 4. 상품 저장
-        productRepository.save(product);
+        productRepository.save(updatedProduct);
     }
 }
