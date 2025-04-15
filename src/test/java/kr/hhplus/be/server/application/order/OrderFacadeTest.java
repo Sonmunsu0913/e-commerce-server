@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.application.order.service.OrderFacade;
+import kr.hhplus.be.server.application.order.facade.OrderFacade;
 import kr.hhplus.be.server.application.order.usecase.CreateOrderUseCase;
 import kr.hhplus.be.server.application.order.usecase.ValidatePaymentUseCase;
 import kr.hhplus.be.server.application.point.usecase.GetUserPointUseCase;

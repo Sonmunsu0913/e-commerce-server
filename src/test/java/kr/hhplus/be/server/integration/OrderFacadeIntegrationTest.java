@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.integration;
 
 import kr.hhplus.be.server.application.coupon.repository.CouponRepository;
-import kr.hhplus.be.server.application.order.service.OrderFacade;
+import kr.hhplus.be.server.application.order.facade.OrderFacade;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;

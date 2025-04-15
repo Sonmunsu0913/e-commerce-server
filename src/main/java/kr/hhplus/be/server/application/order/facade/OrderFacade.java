@@ -21,7 +21,7 @@ import java.time.LocalDateTime;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
-@Transactional
+//@Transactional
 public class OrderFacade {
 
     private final CreateOrderUseCase createOrderUseCase;
