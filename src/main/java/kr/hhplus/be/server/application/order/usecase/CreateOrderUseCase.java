@@ -3,11 +3,11 @@ package kr.hhplus.be.server.application.order.usecase;
 import kr.hhplus.be.server.application.order.repository.OrderRepository;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class CreateOrderUseCase {
 
     private final OrderRepository orderRepository;

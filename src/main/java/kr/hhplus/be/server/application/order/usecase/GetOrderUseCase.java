@@ -2,9 +2,9 @@ package kr.hhplus.be.server.application.order.usecase;
 
 import kr.hhplus.be.server.application.order.repository.OrderRepository;
 import kr.hhplus.be.server.domain.order.Order;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class GetOrderUseCase {
 
     private final OrderRepository orderRepository;

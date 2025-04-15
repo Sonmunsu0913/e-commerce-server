@@ -5,15 +5,15 @@ import kr.hhplus.be.server.application.coupon.repository.UserCouponRepository;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
-import org.springframework.stereotype.Component;
 
 import java.util.List;
+import org.springframework.stereotype.Service;
 
 /**
  * 사용자 보유 쿠폰 목록 조회 UseCase
  * - 사용자가 발급받은 쿠폰 정보를 조회하고 쿠폰 할인 금액을 함께 반환한다.
  */
-@Component
+@Service
 public class GetUserCouponsUseCase {
 
     private final CouponRepository couponRepository;

@@ -4,12 +4,12 @@ import kr.hhplus.be.server.application.product.repository.ProductRepository;
 import kr.hhplus.be.server.application.product.repository.ProductSaleRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSale;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 /**
  * 상품 판매 기록 + 재고 감소 유스케이스
  */
-@Component
+@Service
 public class RecordProductSaleUseCase {
 
     private final ProductSaleRepository productSaleRepository;

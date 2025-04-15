@@ -6,17 +6,17 @@ import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSale;
 import kr.hhplus.be.server.domain.product.ProductSaleStatistics;
 import kr.hhplus.be.server.interfaces.api.product.dto.PopularProductResponse;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+import org.springframework.stereotype.Service;
 
 /**
  * 인기 상품 조회 유스케이스 (최근 n일 기준)
  */
-@Component
+@Service
 public class GetTopSellingProductsUseCase {
 
     private final ProductSaleRepository productSaleRepository;

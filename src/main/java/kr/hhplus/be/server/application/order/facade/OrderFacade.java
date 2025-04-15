@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.application.order.service;
+package kr.hhplus.be.server.application.order.facade;
 
 import kr.hhplus.be.server.application.order.usecase.CreateOrderUseCase;
 import kr.hhplus.be.server.application.order.usecase.GetOrderUseCase;

@@ -3,11 +3,11 @@ package kr.hhplus.be.server.application.point.usecase;
 import kr.hhplus.be.server.application.point.repository.PointHistoryRepository;
 import kr.hhplus.be.server.application.point.repository.PointRepository;
 import kr.hhplus.be.server.domain.point.*;
-import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class UsePointUseCase {
 
     private final PointRepository pointRepository;
