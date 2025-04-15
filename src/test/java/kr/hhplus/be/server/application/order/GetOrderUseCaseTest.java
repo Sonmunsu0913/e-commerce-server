@@ -26,13 +26,13 @@ class GetOrderUseCaseTest {
 
     @Test
     void 주문_조회_정상() {
-        Long orderId = 10L;
-        Order order = new Order(orderId, 1L, List.of(), 0);
+        Long id = 10L;
+        Order order = new Order(id, 1L, List.of(), 0);
 
-        when(orderRepository.findById(orderId)).thenReturn(order);
+        when(orderRepository.findById(id)).thenReturn(order);
 
-        Order result = useCase.execute(orderId);
-        assertEquals(orderId, result.getOrderId());
+        Order result = useCase.execute(id);
+        assertEquals(id, result.getId());
     }
 
     @Test

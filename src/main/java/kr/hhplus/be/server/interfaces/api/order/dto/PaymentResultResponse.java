@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 public class PaymentResultResponse {
 
     @Schema(description = "주문 ID", example = "1001")
-    private Long orderId;
+    private Long id;
 
     @Schema(description = "총 결제 금액", example = "12000")
     private Integer paidAmount;
@@ -26,9 +26,9 @@ public class PaymentResultResponse {
     @Schema(description = "결제 시각", example = "2025-04-08T13:00:00")
     private LocalDateTime paidAt;
 
-    public PaymentResultResponse(Long orderId, Integer paidAmount, Integer discountAmount,
+    public PaymentResultResponse(Long id, Integer paidAmount, Integer discountAmount,
         Integer finalPaidAmount, Integer pointAfterPayment, LocalDateTime paidAt) {
-        this.orderId = orderId;
+        this.id = id;
         this.paidAmount = paidAmount;
         this.discountAmount = discountAmount;
         this.finalPaidAmount = finalPaidAmount;

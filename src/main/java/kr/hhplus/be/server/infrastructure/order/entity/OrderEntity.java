@@ -14,7 +14,7 @@ public class OrderEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long orderId;
+    private Long id;
 
     private Long userId;
 
@@ -28,8 +28,8 @@ public class OrderEntity {
 
     protected OrderEntity() {}
 
-    public OrderEntity(Long orderId, Long userId, List<OrderItemEntity> items, int discount) {
-        this.orderId = orderId;
+    public OrderEntity(Long id, Long userId, List<OrderItemEntity> items, int discount) {
+        this.id = id;
         this.userId = userId;
         this.items = items;
         this.totalPrice = items.stream().mapToInt(OrderItemEntity::subtotal).sum();
@@ -38,8 +38,8 @@ public class OrderEntity {
         this.orderedAt = LocalDateTime.now().toString();
     }
 
-    public Long getOrderId() {
-        return orderId;
+    public Long getId() {
+        return id;
     }
 
     public static OrderEntity from(Order order) {
@@ -47,7 +47,7 @@ public class OrderEntity {
                 .map(OrderItemEntity::from)
                 .collect(Collectors.toList());
         return new OrderEntity(
-                order.getOrderId(),
+                order.getId(),
                 order.getUserId(),
                 itemEntities,
                 order.getDiscount()
@@ -58,7 +58,7 @@ public class OrderEntity {
         List<OrderItemRequest> itemRequests = items.stream()
                 .map(OrderItemEntity::toRequest)
                 .collect(Collectors.toList());
-        return new Order(orderId, userId, itemRequests, discount);
+        return new Order(id, userId, itemRequests, discount);
     }
 }
 

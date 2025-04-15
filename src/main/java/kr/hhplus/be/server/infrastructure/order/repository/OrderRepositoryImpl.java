@@ -17,13 +17,13 @@ public class OrderRepositoryImpl implements OrderRepository {
     @Override
     public Order save(Order order) {
         OrderEntity saved = jpaOrderRepository.save(OrderEntity.from(order));
-        return order.withOrderId(saved.getOrderId()); // 새로운 Order 리턴
+        return order.withOrderId(saved.getId()); // 새로운 Order 리턴
     }
 
     @Override
-    public Order findById(Long orderId) {
-        return jpaOrderRepository.findById(orderId)
+    public Order findById(Long id) {
+        return jpaOrderRepository.findById(id)
                 .map(OrderEntity::toDomain)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문: " + orderId));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 주문: " + id));
     }
 }

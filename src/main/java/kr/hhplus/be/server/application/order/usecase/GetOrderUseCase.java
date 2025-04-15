@@ -13,8 +13,8 @@ public class GetOrderUseCase {
         this.orderRepository = orderRepository;
     }
 
-    public Order execute(Long orderId) {
-        Order order = orderRepository.findById(orderId);
+    public Order execute(Long id) {
+        Order order = orderRepository.findById(id);
         if (order == null) {
             throw new IllegalArgumentException("존재하지 않는 주문입니다.");
         }

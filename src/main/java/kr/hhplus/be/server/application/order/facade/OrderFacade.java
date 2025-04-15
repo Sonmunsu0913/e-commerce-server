@@ -78,9 +78,9 @@ public class OrderFacade {
         return response;
     }
 
-    public PaymentResultResponse pay(Long orderId) {
+    public PaymentResultResponse pay(Long id) {
         // 1. 주문 ID로 주문 조회 (존재하지 않으면 예외 발생)
-        Order order = getOrderUseCase.execute(orderId);
+        Order order = getOrderUseCase.execute(id);
 
         // 2. 사용자 현재 포인트 조회
         UserPoint current = getUserPointUseCase.execute(order.getUserId());
@@ -100,7 +100,7 @@ public class OrderFacade {
 
         // 6. 결제 결과 응답 생성 후 반환
         return new PaymentResultResponse(
-                order.getOrderId(),
+                order.getId(),
                 order.getTotalPrice(),
                 order.getDiscount(),
                 order.getFinalPrice(),

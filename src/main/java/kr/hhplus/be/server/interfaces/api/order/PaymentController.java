@@ -21,11 +21,11 @@ public class PaymentController {
         this.orderFacade = orderFacade;
     }
 
-    @PostMapping("/{orderId}")
+    @PostMapping("/{id}")
     @Operation(summary = "주문 결제", description = "주문 ID를 기반으로 결제를 수행합니다.")
-    public ResponseEntity<PaymentResultResponse> pay(@PathVariable Long orderId) {
+    public ResponseEntity<PaymentResultResponse> pay(@PathVariable Long id) {
         // 향후 별도 결제 처리 로직이 필요할 경우 확장 가능
-        PaymentResultResponse result = orderFacade.pay(orderId);
+        PaymentResultResponse result = orderFacade.pay(id);
         return ResponseEntity.ok(result);
     }
 }

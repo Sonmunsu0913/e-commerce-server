@@ -11,7 +11,7 @@ class OrderTest {
 
     @Test
     void 주문_정상_생성_및_필드_계산() {
-        Long orderId = 1001L;
+        Long id = 1001L;
         Long userId = 1L;
         List<OrderItemRequest> items = List.of(
             new OrderItemRequest(1L, "떡볶이", 5000, 2),
@@ -19,7 +19,7 @@ class OrderTest {
         );
         int discount = 1000;
 
-        Order order = new Order(orderId, userId, items, discount);
+        Order order = new Order(id, userId, items, discount);
 
         assertEquals(11500, order.getTotalPrice());
         assertEquals(1000, order.getDiscount());
@@ -36,7 +36,7 @@ class OrderTest {
 
         OrderResponse response = order.toResponse(7000);
 
-        assertEquals(1002L, response.getOrderId());
+        assertEquals(1002L, response.getId());
         assertEquals(6000, response.getTotalPrice());
         assertEquals(500, response.getDiscount());
         assertEquals(5500, response.getFinalPrice());

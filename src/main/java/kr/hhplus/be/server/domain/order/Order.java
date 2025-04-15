@@ -16,7 +16,7 @@ import lombok.Getter;
 @Table(name = "`order`")
 public class Order {
 
-    private final Long orderId;                     // 주문 고유 ID
+    private final Long id;                          // 주문 고유 ID
     private final Long userId;                      // 주문한 사용자 ID
     private final List<OrderItemRequest> items;     // 주문한 상품 목록
     private final int totalPrice;                   // 전체 주문 금액 (할인 전)
@@ -29,13 +29,13 @@ public class Order {
      * - 주문 ID, 사용자 ID, 상품 목록, 할인 금액을 받아 주문 정보를 구성한다.
      * - totalPrice, finalPrice, orderedAt 값을 자동 계산/생성한다.
      *
-     * @param orderId 주문 ID
+     * @param id 주문 ID
      * @param userId 사용자 ID
      * @param items 주문한 상품 목록
      * @param discount 할인 금액
      */
-    public Order(Long orderId, Long userId, List<OrderItemRequest> items, int discount) {
-        this.orderId = orderId;
+    public Order(Long id, Long userId, List<OrderItemRequest> items, int discount) {
+        this.id = id;
         this.userId = userId;
         this.items = items;
         this.totalPrice = items.stream().mapToInt(OrderItemRequest::subtotal).sum();  // 주문 상품들의 총 금액 계산
@@ -52,7 +52,7 @@ public class Order {
      */
     public OrderResponse toResponse(int pointAfterPayment) {
         return new OrderResponse(
-            orderId,
+            id,
             totalPrice,
             discount,
             finalPrice,
@@ -65,12 +65,12 @@ public class Order {
      * 기존 주문 객체에서 주문 ID만 새로 지정하여 새로운 주문 객체를 생성합니다.
      * - 주로 주문 ID가 생성 시점에 결정되는 경우 (예: DB에서 시퀀스로 할당) 사용됩니다.
      *
-     * @param newOrderId 새로 할당할 주문 ID
+     * @param newId 새로 할당할 주문 ID
      * @return 주문 ID가 적용된 새 Order 객체
      */
-    public Order withOrderId(Long newOrderId) {
+    public Order withOrderId(Long newId) {
         return new Order(
-                newOrderId,
+                newId,
                 this.userId,
                 this.items,
                 this.discount

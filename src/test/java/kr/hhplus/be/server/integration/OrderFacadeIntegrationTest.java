@@ -57,7 +57,7 @@ class OrderFacadeIntegrationTest {
         OrderResponse result = orderFacade.placeOrder(request);
 
         assertThat(result).isNotNull();
-        assertThat(result.getOrderId()).isNotNull();
+        assertThat(result.getId()).isNotNull();
         assertThat(result.getFinalPrice()).isEqualTo(9000);
         assertThat(result.getPointAfterPayment()).isEqualTo(11000);
     }

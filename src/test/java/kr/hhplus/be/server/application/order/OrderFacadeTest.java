@@ -67,7 +67,7 @@ class OrderFacadeTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getOrderId()).isEqualTo(order.getOrderId());
+        assertThat(result.getId()).isEqualTo(order.getId());
         assertThat(result.getPointAfterPayment()).isEqualTo((int) updatedPoint.point());
         then(reporter).should().send(result);
     }
@@ -103,7 +103,7 @@ class OrderFacadeTest {
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getOrderId()).isEqualTo(order.getOrderId());
+        assertThat(result.getId()).isEqualTo(order.getId());
         assertThat(result.getDiscount()).isEqualTo(discount);
         assertThat(result.getFinalPrice()).isEqualTo(finalPrice);
         assertThat(result.getPointAfterPayment()).isEqualTo((int) updatedPoint.point());
