@@ -34,10 +34,11 @@ public class GetUserCouponsUseCase {
         return userCoupons.stream()
                 .map(uc -> {
                     Coupon coupon = couponRepository.findById(uc.couponId())
-                            .orElse(null);
-                    return CouponResponse.from(uc, coupon != null ? coupon.getDiscountAmount() : 0);
+                            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 쿠폰입니다: " + uc.couponId()));
+                    return CouponResponse.from(uc, coupon);
                 })
                 .toList();
     }
+
 }
 
