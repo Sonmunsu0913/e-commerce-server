@@ -50,6 +50,6 @@ public class IssueCouponUseCase {
         userCouponRepository.save(userCoupon);
 
         // 5. 응답 반환
-        return CouponResponse.from(userCoupon, coupon.getDiscountAmount());
+        return CouponResponse.from(userCoupon, coupon);
     }
 }

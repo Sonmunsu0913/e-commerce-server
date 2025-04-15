@@ -18,10 +18,8 @@ public class CreateOrderUseCase {
 
     public Order execute(Long userId, List<OrderItemRequest> items, Long couponId) {
         int discount = applyCouponPolicy(couponId);
-        Long orderId = null; // ID는 DB에서 자동 생성 또는 외부에서 지정
-        Order order = new Order(orderId, userId, items, discount);
-        orderRepository.save(order);
-        return order;
+        Order order = new Order(null, userId, items, discount);
+        return orderRepository.save(order); // 저장된 order 반환 (with ID)
     }
 
     private int applyCouponPolicy(Long couponId) {

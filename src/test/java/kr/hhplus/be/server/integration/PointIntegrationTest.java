@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.integration;
 
-import jakarta.persistence.EntityManager;
 import java.time.LocalDateTime;
 import kr.hhplus.be.server.application.point.repository.PointRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
@@ -13,7 +12,6 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
-import static org.hamcrest.Matchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc

@@ -9,10 +9,11 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "order")
+@Table(name = "`order`")
 public class OrderEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
     private Long userId;
@@ -35,6 +36,10 @@ public class OrderEntity {
         this.discount = discount;
         this.finalPrice = this.totalPrice - discount;
         this.orderedAt = LocalDateTime.now().toString();
+    }
+
+    public Long getOrderId() {
+        return orderId;
     }
 
     public static OrderEntity from(Order order) {

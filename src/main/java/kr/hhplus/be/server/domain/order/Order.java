@@ -16,13 +16,13 @@ import lombok.Getter;
 @Table(name = "`order`")
 public class Order {
 
-    private final Long orderId;              // 주문 고유 ID
-    private final Long userId;               // 주문한 사용자 ID
-    private final List<OrderItemRequest> items;  // 주문한 상품 목록
-    private final int totalPrice;            // 전체 주문 금액 (할인 전)
-    private final int discount;              // 적용된 할인 금액
-    private final int finalPrice;            // 실제 결제 금액 (할인 적용 후)
-    private final String orderedAt;          // 주문 시각 (ISO-8601 문자열)
+    private final Long orderId;                     // 주문 고유 ID
+    private final Long userId;                      // 주문한 사용자 ID
+    private final List<OrderItemRequest> items;     // 주문한 상품 목록
+    private final int totalPrice;                   // 전체 주문 금액 (할인 전)
+    private final int discount;                     // 적용된 할인 금액
+    private final int finalPrice;                   // 실제 결제 금액 (할인 적용 후)
+    private final String orderedAt;                 // 주문 시각 (ISO-8601 문자열)
 
     /**
      * 주문 생성자
@@ -58,6 +58,22 @@ public class Order {
             finalPrice,
             pointAfterPayment,
             orderedAt
+        );
+    }
+
+    /**
+     * 기존 주문 객체에서 주문 ID만 새로 지정하여 새로운 주문 객체를 생성합니다.
+     * - 주로 주문 ID가 생성 시점에 결정되는 경우 (예: DB에서 시퀀스로 할당) 사용됩니다.
+     *
+     * @param newOrderId 새로 할당할 주문 ID
+     * @return 주문 ID가 적용된 새 Order 객체
+     */
+    public Order withOrderId(Long newOrderId) {
+        return new Order(
+                newOrderId,
+                this.userId,
+                this.items,
+                this.discount
         );
     }
 }

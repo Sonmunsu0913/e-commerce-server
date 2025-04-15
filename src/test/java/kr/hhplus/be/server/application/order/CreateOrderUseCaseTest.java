@@ -3,6 +3,7 @@ package kr.hhplus.be.server.application.order;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
 
 import java.util.List;
 import kr.hhplus.be.server.application.order.repository.OrderRepository;
@@ -29,11 +30,17 @@ class CreateOrderUseCaseTest {
         Long userId = 1L;
         Long couponId = 101L;
         List<OrderItemRequest> items = List.of(
-            new OrderItemRequest(1L, "라면", 3000, 2)
+                new OrderItemRequest(1L, "라면", 3000, 2)
         );
 
+        // given: save 시 결과로 반환할 Order 객체 정의
+        Order fakeOrder = new Order(1L, userId, items, 1000);
+        when(orderRepository.save(any())).thenReturn(fakeOrder);
+
+        // when
         Order result = useCase.execute(userId, items, couponId);
 
+        // then
         assertEquals(userId, result.getUserId());
         assertEquals(6000, result.getTotalPrice());
         assertEquals(1000, result.getDiscount());
@@ -47,6 +54,9 @@ class CreateOrderUseCaseTest {
         List<OrderItemRequest> items = List.of(
             new OrderItemRequest(2L, "김밥", 2000, 1)
         );
+
+        Order fakeOrder = new Order(1L, userId, items, 0);
+        when(orderRepository.save(any())).thenReturn(fakeOrder);
 
         Order result = useCase.execute(userId, items, null);
 

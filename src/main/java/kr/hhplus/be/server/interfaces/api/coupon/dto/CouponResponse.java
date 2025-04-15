@@ -2,6 +2,8 @@ package kr.hhplus.be.server.interfaces.api.coupon.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import java.time.LocalDateTime;
+
+import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 
 public record CouponResponse(
@@ -16,20 +18,20 @@ public record CouponResponse(
     LocalDateTime issuedAt,
 
     @Schema(description = "사용 여부", example = "false")
-    Boolean isUsed
+    Boolean isUsed,
+
+    @Schema(description = "쿠폰 이름", example = "5천원 할인 쿠폰")
+    String name
 
 ) {
 
-    public String getName() {
-        return "5천원 할인 쿠폰"; // 예시: 쿠폰 이름을 반환
-    }
-
-    public static CouponResponse from(UserCoupon userCoupon, int discountAmount) {
+    public static CouponResponse from(UserCoupon userCoupon, Coupon coupon) {
         return new CouponResponse(
-            userCoupon.couponId(),
-            discountAmount,
-            userCoupon.issuedAt(),
-            userCoupon.isUsed()
+                userCoupon.couponId(),
+                coupon.getDiscountAmount(),
+                userCoupon.issuedAt(),
+                userCoupon.isUsed(),
+                coupon.getName()
         );
     }
 }

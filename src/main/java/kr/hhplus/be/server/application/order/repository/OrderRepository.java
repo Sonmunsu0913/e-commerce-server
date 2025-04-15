@@ -8,7 +8,7 @@ public interface OrderRepository {
     Order findById(Long orderId);
 
     // 주문 저장
-    void save(Order order);
+    Order save(Order order);
 
 }
 

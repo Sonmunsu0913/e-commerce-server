@@ -15,8 +15,9 @@ public class OrderRepositoryImpl implements OrderRepository {
     }
 
     @Override
-    public void save(Order order) {
-        jpaOrderRepository.save(OrderEntity.from(order));
+    public Order save(Order order) {
+        OrderEntity saved = jpaOrderRepository.save(OrderEntity.from(order));
+        return order.withOrderId(saved.getOrderId()); // 새로운 Order 리턴
     }
 
     @Override

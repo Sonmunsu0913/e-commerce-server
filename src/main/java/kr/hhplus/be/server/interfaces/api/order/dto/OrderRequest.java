@@ -17,6 +17,10 @@ public class OrderRequest {
     @Schema(description = "사용할 쿠폰 ID (선택)", example = "101")
     private Long couponId;
 
+    public OrderRequest() {
+        // Jackson 역직렬화용
+    }
+
     public OrderRequest(Long userId, List<OrderItemRequest> items, Long couponId) {
         this.userId = userId;
         this.items = items;

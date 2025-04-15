@@ -1,10 +1,8 @@
 package kr.hhplus.be.server.application.product;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.util.Optional;
@@ -17,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
@@ -44,9 +43,14 @@ class RecordProductSaleUseCaseTest {
         useCase.execute(sale);
 
         // then
-        assertEquals(7, product.stock());
         verify(productSaleRepository).save(sale);
-        verify(productRepository).save(product);
+
+        // Product 객체가 새로 생성되므로 save()된 객체를 캡처해서 검사
+        ArgumentCaptor<Product> captor = ArgumentCaptor.forClass(Product.class);
+        verify(productRepository).save(captor.capture());
+
+        Product savedProduct = captor.getValue();
+        assertThat(savedProduct.stock()).isEqualTo(7);  // 10 - 3
     }
 
     @Test
