@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.concurrency;
 
-import kr.hhplus.be.server.application.point.repository.PointRepository;
+import kr.hhplus.be.server.domain.point.PointRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
-import kr.hhplus.be.server.application.point.usecase.UsePointUseCase;
+import kr.hhplus.be.server.domain.point.service.UsePointService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ class UsePointConcurrencyTest {
     PointRepository pointRepository;
 
     @Autowired
-    UsePointUseCase usePointUseCase;
+    UsePointService usePointService;
 
     @BeforeEach
     void setUp() {
@@ -39,7 +39,7 @@ class UsePointConcurrencyTest {
         for (int i = 0; i < threadCount; i++) {
             executor.submit(() -> {
                 try {
-                    usePointUseCase.execute(1L, 1_000L); // 각 스레드가 1000원씩 차감
+                    usePointService.execute(1L, 1_000L); // 각 스레드가 1000원씩 차감
                 } catch (Exception ignored) {
                 } finally {
                     latch.countDown();

@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.infrastructure.order.entity;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
+import kr.hhplus.be.server.domain.order.OrderItemCommand;
 
 @Entity
 @Table(
@@ -24,6 +24,10 @@ public class OrderItemEntity {
 
     private int quantity;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "order_id")
+    private OrderEntity order;
+
     protected OrderItemEntity() {}
 
     public OrderItemEntity(Long productId, int quantity) {
@@ -35,12 +39,20 @@ public class OrderItemEntity {
         return price * quantity;
     }
 
-    public static OrderItemEntity from(OrderItemRequest request) {
+    public static OrderItemEntity from(OrderItemCommand request) {
         return new OrderItemEntity(request.productId(), request.quantity());
     }
 
-    public OrderItemRequest toRequest() {
-        return new OrderItemRequest(productId, productName, price, quantity);
+    public OrderItemCommand toRequest() {
+        return new OrderItemCommand(productId, productName, price, quantity);
+    }
+
+    public void setOrder(OrderEntity order) {
+        this.order = order;
+    }
+
+    public OrderEntity getOrder() {
+        return order;
     }
 }
 

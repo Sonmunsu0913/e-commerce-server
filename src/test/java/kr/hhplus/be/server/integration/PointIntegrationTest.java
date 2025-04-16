@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.integration;
 
 import java.time.LocalDateTime;
-import kr.hhplus.be.server.application.point.repository.PointRepository;
+import kr.hhplus.be.server.domain.point.PointRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

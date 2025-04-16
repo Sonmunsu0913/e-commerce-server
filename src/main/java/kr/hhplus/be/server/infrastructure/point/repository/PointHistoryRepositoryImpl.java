@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.infrastructure.point.repository;
 
-import kr.hhplus.be.server.application.point.repository.PointHistoryRepository;
+import kr.hhplus.be.server.domain.point.PointHistoryRepository;
 import kr.hhplus.be.server.domain.point.PointHistory;
 import kr.hhplus.be.server.infrastructure.point.entity.PointHistoryEntity;
 import org.springframework.stereotype.Repository;

@@ -3,11 +3,11 @@ package kr.hhplus.be.server.integration;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import kr.hhplus.be.server.application.coupon.repository.CouponRepository;
-import kr.hhplus.be.server.application.coupon.repository.UserCouponRepository;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
+import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
-import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
+import kr.hhplus.be.server.interfaces.api.coupon.CouponResponse;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

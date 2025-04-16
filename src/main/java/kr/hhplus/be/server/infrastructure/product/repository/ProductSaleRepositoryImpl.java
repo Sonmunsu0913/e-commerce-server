@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.infrastructure.product.repository;
 
 import kr.hhplus.be.server.domain.product.ProductSale;
-import kr.hhplus.be.server.application.product.repository.ProductSaleRepository;
+import kr.hhplus.be.server.domain.product.ProductSaleRepository;
 import kr.hhplus.be.server.infrastructure.product.entity.ProductSaleEntity;
 import org.springframework.stereotype.Repository;
 

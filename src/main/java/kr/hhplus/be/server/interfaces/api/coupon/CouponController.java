@@ -5,9 +5,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
-import kr.hhplus.be.server.application.coupon.usecase.GetUserCouponsUseCase;
-import kr.hhplus.be.server.application.coupon.usecase.IssueCouponUseCase;
-import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
+import kr.hhplus.be.server.domain.coupon.service.GetUserCouponsService;
+import kr.hhplus.be.server.domain.coupon.service.IssueCouponService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,12 +15,12 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Coupon", description = "쿠폰 API")
 public class CouponController {
 
-    private final GetUserCouponsUseCase getUserCouponsUseCase;
-    private final IssueCouponUseCase issueCouponUseCase;
+    private final GetUserCouponsService getUserCouponsService;
+    private final IssueCouponService issueCouponService;
 
-    public CouponController(GetUserCouponsUseCase getUserCouponsUseCase, IssueCouponUseCase issueCouponUseCase) {
-        this.getUserCouponsUseCase = getUserCouponsUseCase;
-        this.issueCouponUseCase = issueCouponUseCase;
+    public CouponController(GetUserCouponsService getUserCouponsService, IssueCouponService issueCouponService) {
+        this.getUserCouponsService = getUserCouponsService;
+        this.issueCouponService = issueCouponService;
     }
 
     @GetMapping("/{userId}")
@@ -30,7 +29,7 @@ public class CouponController {
             @Parameter(description = "사용자 ID", example = "1")
             @PathVariable Long userId
     ) {
-        return ResponseEntity.ok(getUserCouponsUseCase.execute(userId));
+        return ResponseEntity.ok(getUserCouponsService.execute(userId));
     }
 
     @PostMapping("/{userId}")
@@ -40,7 +39,7 @@ public class CouponController {
             @PathVariable Long userId
     ) {
         final Long fixedCouponId = 1L;
-        return ResponseEntity.ok(issueCouponUseCase.execute(userId, fixedCouponId));
+        return ResponseEntity.ok(issueCouponService.execute(userId, fixedCouponId));
     }
 }
 

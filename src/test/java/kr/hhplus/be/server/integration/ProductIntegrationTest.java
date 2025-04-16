@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.integration;
 
-import kr.hhplus.be.server.application.product.repository.ProductRepository;
-import kr.hhplus.be.server.application.product.repository.ProductSaleRepository;
+import kr.hhplus.be.server.domain.product.ProductRepository;
+import kr.hhplus.be.server.domain.product.ProductSaleRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSale;
 import org.junit.jupiter.api.Test;
