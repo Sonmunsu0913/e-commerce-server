@@ -2,7 +2,7 @@ package kr.hhplus.be.server.domain.order.service;
 
 import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderItemRequest;
+import kr.hhplus.be.server.domain.order.OrderItemCommand;
 
 import java.util.List;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class CreateOrderService {
         this.orderRepository = orderRepository;
     }
 
-    public Order execute(Long userId, List<OrderItemRequest> items, Long couponId) {
+    public Order execute(Long userId, List<OrderItemCommand> items, Long couponId) {
         int discount = applyCouponPolicy(couponId);
         Order order = new Order(null, userId, items, discount);
         return orderRepository.save(order); // 저장된 order 반환 (with ID)

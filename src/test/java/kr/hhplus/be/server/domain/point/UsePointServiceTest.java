@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.application.point;
+package kr.hhplus.be.server.domain.point;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -8,10 +8,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
-import kr.hhplus.be.server.domain.point.PointHistoryRepository;
-import kr.hhplus.be.server.domain.point.PointRepository;
 import kr.hhplus.be.server.domain.point.service.UsePointService;
-import kr.hhplus.be.server.domain.point.UserPoint;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

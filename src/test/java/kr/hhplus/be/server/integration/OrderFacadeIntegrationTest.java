@@ -4,7 +4,7 @@ import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.application.order.OrderFacade;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.point.UserPoint;
-import kr.hhplus.be.server.domain.order.OrderItemRequest;
+import kr.hhplus.be.server.domain.order.OrderItemCommand;
 import kr.hhplus.be.server.interfaces.api.order.OrderRequest;
 import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
 import kr.hhplus.be.server.domain.point.PointRepository;
@@ -49,8 +49,8 @@ class OrderFacadeIntegrationTest {
 
     @Test
     void 실제_주문이_정상적으로_처리된다() {
-        List<OrderItemRequest> items = List.of(
-                new OrderItemRequest(1L, "고양이 화과자", 5000, 2)
+        List<OrderItemCommand> items = List.of(
+                new OrderItemCommand(1L, "고양이 화과자", 5000, 2)
         );
         OrderRequest request = new OrderRequest(userId, items, 101L);
 

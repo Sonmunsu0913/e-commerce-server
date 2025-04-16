@@ -1,8 +1,6 @@
-package kr.hhplus.be.server.application.order;
+package kr.hhplus.be.server.domain.order;
 
 import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
-import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderItemRequest;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
@@ -17,7 +15,7 @@ class ValidatePaymentServiceTest {
     void 포인트가_충분하면_예외_없음() {
         // given
         Order order = new Order(1L, 1L, List.of(
-            new OrderItemRequest(1L, "라면", 3000, 2)
+            new OrderItemCommand(1L, "라면", 3000, 2)
         ), 0); // 총액: 6000
 
         int currentPoint = 10000;
@@ -30,7 +28,7 @@ class ValidatePaymentServiceTest {
     void 포인트가_부족하면_예외발생() {
         // given
         Order order = new Order(1L, 1L, List.of(
-            new OrderItemRequest(1L, "김밥", 2000, 3)
+            new OrderItemCommand(1L, "김밥", 2000, 3)
         ), 0); // 총액: 6000
 
         int currentPoint = 4000;

@@ -6,7 +6,7 @@ import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
 import kr.hhplus.be.server.domain.point.service.GetUserPointService;
 import kr.hhplus.be.server.domain.point.service.UsePointService;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.OrderItemRequest;
+import kr.hhplus.be.server.domain.order.OrderItemCommand;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.product.ProductSale;
 import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
@@ -66,7 +66,7 @@ public class OrderFacade {
 
         // 5. 판매 기록 저장
         LocalDate today = LocalDate.now();
-        for (OrderItemRequest item : request.getItems()) {
+        for (OrderItemCommand item : request.getItems()) {
             recordProductSaleService.execute(new ProductSale(item.productId(), today, item.quantity()));
         }
 
@@ -91,7 +91,7 @@ public class OrderFacade {
         UserPoint updated = usePointService.execute(order.getUserId(), order.getFinalPrice());
 
         // 5. 각 상품별 판매 기록 저장
-        for (OrderItemRequest item : order.getItems()) {
+        for (OrderItemCommand item : order.getItems()) {
             recordProductSaleService.execute(
                     new ProductSale(item.productId(), LocalDate.now(), item.quantity())
             );

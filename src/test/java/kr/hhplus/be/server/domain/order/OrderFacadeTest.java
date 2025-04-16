@@ -1,16 +1,15 @@
-package kr.hhplus.be.server.application.order;
+package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.application.order.OrderFacade;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
 import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
 import kr.hhplus.be.server.domain.point.service.GetUserPointService;
 import kr.hhplus.be.server.domain.point.service.UsePointService;
-import kr.hhplus.be.server.domain.order.OrderItemRequest;
 import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
 import kr.hhplus.be.server.interfaces.api.order.OrderRequest;
 import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
 import kr.hhplus.be.server.domain.point.UserPoint;
-import kr.hhplus.be.server.domain.order.Order;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -43,8 +42,8 @@ class OrderFacadeTest {
     void 주문을_정상적으로_완료하면_리포팅까지_진행된다() {
         // given
         Long userId = 1L;
-        List<OrderItemRequest> items = List.of(
-                new OrderItemRequest(1L, "화과자", 5000, 3)
+        List<OrderItemCommand> items = List.of(
+                new OrderItemCommand(1L, "화과자", 5000, 3)
         );
         OrderRequest request = new OrderRequest(userId, items, null);
 
@@ -76,8 +75,8 @@ class OrderFacadeTest {
         // given
         Long userId = 1L;
         Long couponId = 101L;
-        List<OrderItemRequest> items = List.of(
-                new OrderItemRequest(1L, "화과자", 5000, 3) // 총 15,000원
+        List<OrderItemCommand> items = List.of(
+                new OrderItemCommand(1L, "화과자", 5000, 3) // 총 15,000원
         );
         OrderRequest request = new OrderRequest(userId, items, couponId);
 

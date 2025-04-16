@@ -17,7 +17,7 @@ public class Order {
 
     private final Long id;                          // 주문 고유 ID
     private final Long userId;                      // 주문한 사용자 ID
-    private final List<OrderItemRequest> items;     // 주문한 상품 목록
+    private final List<OrderItemCommand> items;     // 주문한 상품 목록
     private final int totalPrice;                   // 전체 주문 금액 (할인 전)
     private final int discount;                     // 적용된 할인 금액
     private final int finalPrice;                   // 실제 결제 금액 (할인 적용 후)
@@ -33,11 +33,11 @@ public class Order {
      * @param items 주문한 상품 목록
      * @param discount 할인 금액
      */
-    public Order(Long id, Long userId, List<OrderItemRequest> items, int discount) {
+    public Order(Long id, Long userId, List<OrderItemCommand> items, int discount) {
         this.id = id;
         this.userId = userId;
         this.items = items;
-        this.totalPrice = items.stream().mapToInt(OrderItemRequest::subtotal).sum();  // 주문 상품들의 총 금액 계산
+        this.totalPrice = items.stream().mapToInt(OrderItemCommand::subtotal).sum();  // 주문 상품들의 총 금액 계산
         this.discount = discount;
         this.finalPrice = totalPrice - discount;  // 할인 적용 후 결제 금액
         this.orderedAt = LocalDateTime.now().toString();  // 주문 시각 저장

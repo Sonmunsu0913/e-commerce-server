@@ -11,7 +11,7 @@ import kr.hhplus.be.server.infrastructure.point.entity.UserPointEntity;
 import kr.hhplus.be.server.infrastructure.point.repository.JpaUserPointRepository;
 import kr.hhplus.be.server.infrastructure.product.entity.ProductEntity;
 import kr.hhplus.be.server.infrastructure.product.repository.JpaProductRepository;
-import kr.hhplus.be.server.domain.order.OrderItemRequest;
+import kr.hhplus.be.server.domain.order.OrderItemCommand;
 import kr.hhplus.be.server.interfaces.api.order.OrderRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -56,7 +56,7 @@ class OrderConcurrencyTest {
                 try {
                     OrderRequest request = new OrderRequest(
                             1L,
-                            List.of(new OrderItemRequest(1L, "재고 테스트 상품", 1000, 3))  // ✔️ 모든 필드 포함
+                            List.of(new OrderItemCommand(1L, "재고 테스트 상품", 1000, 3))  // ✔️ 모든 필드 포함
                     );
                     return restTemplate.postForEntity("/api/order", request, String.class);
                 } finally {

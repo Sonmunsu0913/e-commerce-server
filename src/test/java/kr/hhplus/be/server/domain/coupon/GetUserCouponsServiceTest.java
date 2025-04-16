@@ -1,15 +1,11 @@
-package kr.hhplus.be.server.application.coupon;
+package kr.hhplus.be.server.domain.coupon;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import kr.hhplus.be.server.domain.coupon.CouponRepository;
-import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.coupon.service.GetUserCouponsService;
-import kr.hhplus.be.server.domain.coupon.Coupon;
-import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.interfaces.api.coupon.CouponResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

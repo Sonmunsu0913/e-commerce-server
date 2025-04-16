@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.application.product;
+package kr.hhplus.be.server.domain.product;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.*;
@@ -6,10 +6,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import kr.hhplus.be.server.domain.product.ProductRepository;
-import kr.hhplus.be.server.domain.product.ProductSaleRepository;
-import kr.hhplus.be.server.domain.product.Product;
-import kr.hhplus.be.server.domain.product.ProductSale;
 import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
