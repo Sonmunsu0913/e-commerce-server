@@ -1,15 +1,15 @@
-package kr.hhplus.be.server.domain.point.usecase;
+package kr.hhplus.be.server.domain.point.service;
 
 import kr.hhplus.be.server.domain.point.PointRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetUserPointUseCase {
+public class GetUserPointService {
 
     private final PointRepository pointRepository;
 
-    public GetUserPointUseCase(PointRepository pointRepository) {
+    public GetUserPointService(PointRepository pointRepository) {
         this.pointRepository = pointRepository;
     }
 

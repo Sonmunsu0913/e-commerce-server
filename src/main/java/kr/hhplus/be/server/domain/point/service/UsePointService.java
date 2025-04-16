@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.point.usecase;
+package kr.hhplus.be.server.domain.point.service;
 
 import kr.hhplus.be.server.domain.point.PointHistoryRepository;
 import kr.hhplus.be.server.domain.point.PointRepository;
@@ -10,19 +10,19 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class ChargePointUseCase {
+public class UsePointService {
 
     private final PointRepository pointRepository;
     private final PointHistoryRepository pointHistoryRepository;
 
-    public ChargePointUseCase(PointRepository pointRepository, PointHistoryRepository pointHistoryRepository) {
+    public UsePointService(PointRepository pointRepository, PointHistoryRepository pointHistoryRepository) {
         this.pointRepository = pointRepository;
         this.pointHistoryRepository = pointHistoryRepository;
     }
 
     public UserPoint execute(long userId, long amount) {
         UserPoint current = pointRepository.findById(userId);
-        UserPoint updated = current.charge(amount);
+        UserPoint updated = current.use(amount);
         pointRepository.save(updated);
 
         LocalDateTime now = LocalDateTime.now();
@@ -30,7 +30,7 @@ public class ChargePointUseCase {
             null,
             userId,
             amount,
-            PointTransactionType.CHARGE,
+            PointTransactionType.USE,
             now,
             now
         );

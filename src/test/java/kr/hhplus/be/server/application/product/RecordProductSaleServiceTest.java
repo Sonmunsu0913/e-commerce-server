@@ -8,9 +8,9 @@ import java.time.LocalDate;
 import java.util.Optional;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.product.ProductSaleRepository;
-import kr.hhplus.be.server.domain.product.usecase.RecordProductSaleUseCase;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSale;
+import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,7 +19,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class RecordProductSaleUseCaseTest {
+class RecordProductSaleServiceTest {
 
     @Mock
     ProductSaleRepository productSaleRepository;
@@ -28,7 +28,7 @@ class RecordProductSaleUseCaseTest {
     ProductRepository productRepository;
 
     @InjectMocks
-    RecordProductSaleUseCase useCase;
+    RecordProductSaleService useCase;
 
     @Test
     void 판매기록_저장과_재고_차감_정상() {

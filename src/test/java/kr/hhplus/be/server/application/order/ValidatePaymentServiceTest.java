@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.domain.order.usecase.ValidatePaymentUseCase;
+import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItemRequest;
 import org.junit.jupiter.api.Test;
@@ -9,9 +9,9 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-class ValidatePaymentUseCaseTest {
+class ValidatePaymentServiceTest {
 
-    private final ValidatePaymentUseCase useCase = new ValidatePaymentUseCase();
+    private final ValidatePaymentService useCase = new ValidatePaymentService();
 
     @Test
     void 포인트가_충분하면_예외_없음() {

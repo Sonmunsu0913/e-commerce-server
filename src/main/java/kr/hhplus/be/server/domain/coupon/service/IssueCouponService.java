@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.coupon.usecase;
+package kr.hhplus.be.server.domain.coupon.service;
 
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
@@ -14,12 +14,12 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Service
 @Transactional
-public class IssueCouponUseCase {
+public class IssueCouponService {
 
     private final CouponRepository couponRepository;
     private final UserCouponRepository userCouponRepository;
 
-    public IssueCouponUseCase(CouponRepository couponRepository, UserCouponRepository userCouponRepository) {
+    public IssueCouponService(CouponRepository couponRepository, UserCouponRepository userCouponRepository) {
         this.couponRepository = couponRepository;
         this.userCouponRepository = userCouponRepository;
     }

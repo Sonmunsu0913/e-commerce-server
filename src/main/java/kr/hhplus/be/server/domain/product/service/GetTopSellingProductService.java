@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.product.usecase;
+package kr.hhplus.be.server.domain.product.service;
 
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.product.ProductSaleRepository;
@@ -17,12 +17,12 @@ import org.springframework.stereotype.Service;
  * 인기 상품 조회 유스케이스 (최근 n일 기준)
  */
 @Service
-public class GetTopSellingProductsUseCase {
+public class GetTopSellingProductService {
 
     private final ProductSaleRepository productSaleRepository;
     private final ProductRepository productRepository;
 
-    public GetTopSellingProductsUseCase(ProductSaleRepository productSaleRepository, ProductRepository productRepository) {
+    public GetTopSellingProductService(ProductSaleRepository productSaleRepository, ProductRepository productRepository) {
         this.productSaleRepository = productSaleRepository;
         this.productRepository = productRepository;
     }

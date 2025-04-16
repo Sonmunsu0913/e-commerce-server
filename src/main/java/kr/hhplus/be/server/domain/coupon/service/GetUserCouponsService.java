@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.coupon.usecase;
+package kr.hhplus.be.server.domain.coupon.service;
 
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
  * - 사용자가 발급받은 쿠폰 정보를 조회하고 쿠폰 할인 금액을 함께 반환한다.
  */
 @Service
-public class GetUserCouponsUseCase {
+public class GetUserCouponsService {
 
     private final CouponRepository couponRepository;
     private final UserCouponRepository userCouponRepository;
 
-    public GetUserCouponsUseCase(CouponRepository couponRepository, UserCouponRepository userCouponRepository) {
+    public GetUserCouponsService(CouponRepository couponRepository, UserCouponRepository userCouponRepository) {
         this.couponRepository = couponRepository;
         this.userCouponRepository = userCouponRepository;
     }

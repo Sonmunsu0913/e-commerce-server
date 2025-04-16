@@ -9,7 +9,7 @@ import java.time.LocalDate;
 import java.util.List;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.product.ProductSaleRepository;
-import kr.hhplus.be.server.domain.product.usecase.GetTopSellingProductsUseCase;
+import kr.hhplus.be.server.domain.product.service.GetTopSellingProductService;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSale;
 import kr.hhplus.be.server.interfaces.api.product.PopularProductResponse;
@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class GetTopSellingProductsUseCaseTest {
+class GetTopSellingProductServiceTest {
 
     @Mock
     ProductSaleRepository productSaleRepository;
@@ -29,7 +29,7 @@ class GetTopSellingProductsUseCaseTest {
     ProductRepository productRepository;
 
     @InjectMocks
-    GetTopSellingProductsUseCase useCase;
+    GetTopSellingProductService useCase;
 
     @Test
     void 인기상품_정상조회() {

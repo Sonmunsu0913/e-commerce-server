@@ -1,11 +1,11 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.domain.order.usecase.CreateOrderUseCase;
-import kr.hhplus.be.server.domain.order.usecase.ValidatePaymentUseCase;
-import kr.hhplus.be.server.domain.point.usecase.GetUserPointUseCase;
-import kr.hhplus.be.server.domain.point.usecase.UsePointUseCase;
-import kr.hhplus.be.server.domain.product.usecase.RecordProductSaleUseCase;
+import kr.hhplus.be.server.domain.order.service.CreateOrderService;
+import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
+import kr.hhplus.be.server.domain.point.service.GetUserPointService;
+import kr.hhplus.be.server.domain.point.service.UsePointService;
 import kr.hhplus.be.server.domain.order.OrderItemRequest;
+import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
 import kr.hhplus.be.server.interfaces.api.order.OrderRequest;
 import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
@@ -32,11 +32,11 @@ class OrderFacadeTest {
     @InjectMocks
     private OrderFacade orderFacade;
 
-    @Mock private CreateOrderUseCase createOrderUseCase;
-    @Mock private ValidatePaymentUseCase validatePaymentUseCase;
-    @Mock private UsePointUseCase usePointUseCase;
-    @Mock private GetUserPointUseCase getUserPointUseCase;
-    @Mock private RecordProductSaleUseCase recordProductSaleUseCase;
+    @Mock private CreateOrderService createOrderService;
+    @Mock private ValidatePaymentService validatePaymentService;
+    @Mock private UsePointService usePointService;
+    @Mock private GetUserPointService getUserPointService;
+    @Mock private RecordProductSaleService recordProductSaleService;
     @Mock private MockOrderReporter reporter;
 
     @Test
@@ -54,11 +54,11 @@ class OrderFacadeTest {
         UserPoint updatedPoint = new UserPoint(userId, 5000, LocalDateTime.now(), LocalDateTime.now());
 
         // mocking
-        given(getUserPointUseCase.execute(userId)).willReturn(currentPointInfo);
-        given(createOrderUseCase.execute(userId, items, null)).willReturn(order);
-        willDoNothing().given(validatePaymentUseCase).execute(order, (int) currentPointInfo.point());
-        given(usePointUseCase.execute(userId, order.getFinalPrice())).willReturn(updatedPoint);
-        willDoNothing().given(recordProductSaleUseCase).execute(any());
+        given(getUserPointService.execute(userId)).willReturn(currentPointInfo);
+        given(createOrderService.execute(userId, items, null)).willReturn(order);
+        willDoNothing().given(validatePaymentService).execute(order, (int) currentPointInfo.point());
+        given(usePointService.execute(userId, order.getFinalPrice())).willReturn(updatedPoint);
+        willDoNothing().given(recordProductSaleService).execute(any());
         willDoNothing().given(reporter).send(any());
 
         // when
@@ -90,11 +90,11 @@ class OrderFacadeTest {
         UserPoint updatedPoint = new UserPoint(userId, 20000 - finalPrice, LocalDateTime.now(), LocalDateTime.now());
 
         // mocking
-        given(getUserPointUseCase.execute(userId)).willReturn(currentPointInfo);
-        given(createOrderUseCase.execute(userId, items, couponId)).willReturn(order);
-        willDoNothing().given(validatePaymentUseCase).execute(order, (int) currentPointInfo.point());
-        given(usePointUseCase.execute(userId, order.getFinalPrice())).willReturn(updatedPoint);
-        willDoNothing().given(recordProductSaleUseCase).execute(any());
+        given(getUserPointService.execute(userId)).willReturn(currentPointInfo);
+        given(createOrderService.execute(userId, items, couponId)).willReturn(order);
+        willDoNothing().given(validatePaymentService).execute(order, (int) currentPointInfo.point());
+        given(usePointService.execute(userId, order.getFinalPrice())).willReturn(updatedPoint);
+        willDoNothing().given(recordProductSaleService).execute(any());
         willDoNothing().given(reporter).send(any());
 
         // when

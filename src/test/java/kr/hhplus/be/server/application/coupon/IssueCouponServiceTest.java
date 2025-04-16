@@ -10,7 +10,7 @@ import static org.mockito.Mockito.when;
 import java.util.Optional;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
-import kr.hhplus.be.server.domain.coupon.usecase.IssueCouponUseCase;
+import kr.hhplus.be.server.domain.coupon.service.IssueCouponService;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.interfaces.api.coupon.CouponResponse;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class IssueCouponUseCaseTest {
+class IssueCouponServiceTest {
 
     @Mock
     UserCouponRepository userCouponRepository;
@@ -29,7 +29,7 @@ class IssueCouponUseCaseTest {
     CouponRepository couponRepository;
 
     @InjectMocks
-    IssueCouponUseCase useCase;
+    IssueCouponService useCase;
 
     @Test
     void 쿠폰_정상_발급() {

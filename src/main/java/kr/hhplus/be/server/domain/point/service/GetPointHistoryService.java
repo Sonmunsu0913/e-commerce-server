@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.point.usecase;
+package kr.hhplus.be.server.domain.point.service;
 
 import kr.hhplus.be.server.domain.point.PointHistory;
 import kr.hhplus.be.server.domain.point.PointHistoryRepository;
@@ -7,11 +7,11 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetPointHistoryUseCase {
+public class GetPointHistoryService {
 
     private final PointHistoryRepository pointHistoryRepository;
 
-    public GetPointHistoryUseCase(PointHistoryRepository pointHistoryRepository) {
+    public GetPointHistoryService(PointHistoryRepository pointHistoryRepository) {
         this.pointHistoryRepository = pointHistoryRepository;
     }
 

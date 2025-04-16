@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import kr.hhplus.be.server.domain.point.PointRepository;
-import kr.hhplus.be.server.domain.point.usecase.GetUserPointUseCase;
+import kr.hhplus.be.server.domain.point.service.GetUserPointService;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -14,13 +14,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class GetUserPointUseCaseTest {
+class GetUserPointServiceTest {
 
     @Mock
     PointRepository pointRepository;
 
     @InjectMocks
-    GetUserPointUseCase useCase;
+    GetUserPointService useCase;
 
     @Test
     void 포인트_조회_정상() {

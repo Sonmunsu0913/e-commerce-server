@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import kr.hhplus.be.server.domain.product.ProductRepository;
-import kr.hhplus.be.server.domain.product.usecase.GetAllProductsUseCase;
+import kr.hhplus.be.server.domain.product.service.GetProductService;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.interfaces.api.product.ProductResponse;
 import org.junit.jupiter.api.Test;
@@ -15,13 +15,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class GetAllProductsUseCaseTest {
+class GetProductServiceTest {
 
     @Mock
     ProductRepository productRepository;
 
     @InjectMocks
-    GetAllProductsUseCase useCase;
+    GetProductService useCase;
 
     @Test
     void 전체_상품_조회() {

@@ -7,7 +7,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import kr.hhplus.be.server.domain.order.OrderRepository;
-import kr.hhplus.be.server.domain.order.usecase.CreateOrderUseCase;
+import kr.hhplus.be.server.domain.order.service.CreateOrderService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItemRequest;
 import org.junit.jupiter.api.Test;
@@ -17,13 +17,13 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class CreateOrderUseCaseTest {
+class CreateOrderServiceTest {
 
     @Mock
     OrderRepository orderRepository;
 
     @InjectMocks
-    CreateOrderUseCase useCase;
+    CreateOrderService useCase;
 
     @Test
     void 주문_생성_정상() {

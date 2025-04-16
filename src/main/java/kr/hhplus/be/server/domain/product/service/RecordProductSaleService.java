@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.product.usecase;
+package kr.hhplus.be.server.domain.product.service;
 
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.product.ProductSaleRepository;
@@ -10,12 +10,12 @@ import org.springframework.stereotype.Service;
  * 상품 판매 기록 + 재고 감소 유스케이스
  */
 @Service
-public class RecordProductSaleUseCase {
+public class RecordProductSaleService {
 
     private final ProductSaleRepository productSaleRepository;
     private final ProductRepository productRepository;
 
-    public RecordProductSaleUseCase(ProductSaleRepository productSaleRepository, ProductRepository productRepository) {
+    public RecordProductSaleService(ProductSaleRepository productSaleRepository, ProductRepository productRepository) {
         this.productSaleRepository = productSaleRepository;
         this.productRepository = productRepository;
     }

@@ -1,15 +1,15 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.domain.order.usecase.CreateOrderUseCase;
-import kr.hhplus.be.server.domain.order.usecase.GetOrderUseCase;
-import kr.hhplus.be.server.domain.order.usecase.ValidatePaymentUseCase;
-import kr.hhplus.be.server.domain.point.usecase.GetUserPointUseCase;
-import kr.hhplus.be.server.domain.point.usecase.UsePointUseCase;
-import kr.hhplus.be.server.domain.product.usecase.RecordProductSaleUseCase;
+import kr.hhplus.be.server.domain.order.service.CreateOrderService;
+import kr.hhplus.be.server.domain.order.service.GetOrderService;
+import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
+import kr.hhplus.be.server.domain.point.service.GetUserPointService;
+import kr.hhplus.be.server.domain.point.service.UsePointService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItemRequest;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.product.ProductSale;
+import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
 import kr.hhplus.be.server.interfaces.api.order.OrderRequest;
 import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
@@ -23,51 +23,51 @@ import java.time.LocalDateTime;
 //@Transactional
 public class OrderFacade {
 
-    private final CreateOrderUseCase createOrderUseCase;
-    private final GetOrderUseCase getOrderUseCase;
-    private final ValidatePaymentUseCase validatePaymentUseCase;
-    private final UsePointUseCase usePointUseCase;
-    private final GetUserPointUseCase getUserPointUseCase;
-    private final RecordProductSaleUseCase recordProductSaleUseCase;
+    private final CreateOrderService createOrderService;
+    private final GetOrderService getOrderService;
+    private final ValidatePaymentService validatePaymentService;
+    private final UsePointService usePointService;
+    private final GetUserPointService getUserPointService;
+    private final RecordProductSaleService recordProductSaleService;
     private final MockOrderReporter reporter;
 
-    public OrderFacade(CreateOrderUseCase createOrderUseCase,
-                       GetOrderUseCase getOrderUseCase,
-                       ValidatePaymentUseCase validatePaymentUseCase,
-                       UsePointUseCase usePointUseCase,
-                       GetUserPointUseCase getUserPointUseCase,
-                       RecordProductSaleUseCase recordProductSaleUseCase,
+    public OrderFacade(CreateOrderService createOrderService,
+                       GetOrderService getOrderService,
+                       ValidatePaymentService validatePaymentService,
+                       UsePointService usePointService,
+                       GetUserPointService getUserPointService,
+                       RecordProductSaleService recordProductSaleService,
                        MockOrderReporter reporter) {
-        this.createOrderUseCase = createOrderUseCase;
-        this.getOrderUseCase = getOrderUseCase;
-        this.validatePaymentUseCase = validatePaymentUseCase;
-        this.usePointUseCase = usePointUseCase;
-        this.getUserPointUseCase = getUserPointUseCase;
-        this.recordProductSaleUseCase = recordProductSaleUseCase;
+        this.createOrderService = createOrderService;
+        this.getOrderService = getOrderService;
+        this.validatePaymentService = validatePaymentService;
+        this.usePointService = usePointService;
+        this.getUserPointService = getUserPointService;
+        this.recordProductSaleService = recordProductSaleService;
         this.reporter = reporter;
     }
 
     public OrderResponse placeOrder(OrderRequest request) {
         // 1. 주문 생성
-        Order order = createOrderUseCase.execute(
+        Order order = createOrderService.execute(
                 request.getUserId(),
                 request.getItems(),
                 request.getCouponId()
         );
 
         // 2. 사용자 현재 포인트 조회
-        UserPoint current = getUserPointUseCase.execute(order.getUserId());
+        UserPoint current = getUserPointService.execute(order.getUserId());
 
         // 3. 결제 가능 여부 검증 (포인트 부족 시 예외 발생)
-        validatePaymentUseCase.execute(order, (int) current.point());
+        validatePaymentService.execute(order, (int) current.point());
 
         // 4. 포인트 차감
-        UserPoint updated = usePointUseCase.execute(order.getUserId(), order.getFinalPrice());
+        UserPoint updated = usePointService.execute(order.getUserId(), order.getFinalPrice());
 
         // 5. 판매 기록 저장
         LocalDate today = LocalDate.now();
         for (OrderItemRequest item : request.getItems()) {
-            recordProductSaleUseCase.execute(new ProductSale(item.productId(), today, item.quantity()));
+            recordProductSaleService.execute(new ProductSale(item.productId(), today, item.quantity()));
         }
 
         // 6. 응답 생성 및 외부 시스템 전송 (mock)
@@ -79,20 +79,20 @@ public class OrderFacade {
 
     public PaymentResultResponse pay(Long id) {
         // 1. 주문 ID로 주문 조회 (존재하지 않으면 예외 발생)
-        Order order = getOrderUseCase.execute(id);
+        Order order = getOrderService.execute(id);
 
         // 2. 사용자 현재 포인트 조회
-        UserPoint current = getUserPointUseCase.execute(order.getUserId());
+        UserPoint current = getUserPointService.execute(order.getUserId());
 
         // 3. 포인트가 결제 금액보다 충분한지 검증
-        validatePaymentUseCase.execute(order, (int) current.point());
+        validatePaymentService.execute(order, (int) current.point());
 
         // 4. 포인트 차감 (결제)
-        UserPoint updated = usePointUseCase.execute(order.getUserId(), order.getFinalPrice());
+        UserPoint updated = usePointService.execute(order.getUserId(), order.getFinalPrice());
 
         // 5. 각 상품별 판매 기록 저장
         for (OrderItemRequest item : order.getItems()) {
-            recordProductSaleUseCase.execute(
+            recordProductSaleService.execute(
                     new ProductSale(item.productId(), LocalDate.now(), item.quantity())
             );
         }

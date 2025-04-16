@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.order.usecase;
+package kr.hhplus.be.server.domain.order.service;
 
 import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.order.Order;
@@ -10,11 +10,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional
-public class CreateOrderUseCase {
+public class CreateOrderService {
 
     private final OrderRepository orderRepository;
 
-    public CreateOrderUseCase(OrderRepository orderRepository) {
+    public CreateOrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 

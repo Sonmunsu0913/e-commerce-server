@@ -1,15 +1,15 @@
-package kr.hhplus.be.server.domain.order.usecase;
+package kr.hhplus.be.server.domain.order.service;
 
 import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.order.Order;
 import org.springframework.stereotype.Service;
 
 @Service
-public class GetOrderUseCase {
+public class GetOrderService {
 
     private final OrderRepository orderRepository;
 
-    public GetOrderUseCase(OrderRepository orderRepository) {
+    public GetOrderService(OrderRepository orderRepository) {
         this.orderRepository = orderRepository;
     }
 

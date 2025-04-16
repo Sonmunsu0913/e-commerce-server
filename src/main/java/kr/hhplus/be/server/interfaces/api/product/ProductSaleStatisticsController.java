@@ -4,7 +4,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
-import kr.hhplus.be.server.domain.product.usecase.GetTopSellingProductsUseCase;
+import kr.hhplus.be.server.domain.product.service.GetTopSellingProductService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,10 +13,10 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "ProductSaleStatistics", description = "상품 판매 통계 관련 API")
 public class ProductSaleStatisticsController {
 
-    private final GetTopSellingProductsUseCase getTopSellingProductsUseCase;
+    private final GetTopSellingProductService getTopSellingProductService;
 
-    public ProductSaleStatisticsController(GetTopSellingProductsUseCase getTopSellingProductsUseCase) {
-        this.getTopSellingProductsUseCase = getTopSellingProductsUseCase;
+    public ProductSaleStatisticsController(GetTopSellingProductService getTopSellingProductService) {
+        this.getTopSellingProductService = getTopSellingProductService;
     }
 
     @GetMapping("/popular")
@@ -28,7 +28,7 @@ public class ProductSaleStatisticsController {
             @Parameter(description = "조회 기간 범위 (예: 3d는 최근 3일)")
             @RequestParam(name = "range", defaultValue = "3d") String range
     ) {
-        List<PopularProductResponse> response = getTopSellingProductsUseCase.execute(range);
+        List<PopularProductResponse> response = getTopSellingProductService.execute(range);
         return ResponseEntity.ok(response);
     }
 

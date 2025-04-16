@@ -1,16 +1,14 @@
 package kr.hhplus.be.server.application.point;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-import java.time.LocalDateTime;
 import kr.hhplus.be.server.domain.point.PointHistoryRepository;
 import kr.hhplus.be.server.domain.point.PointRepository;
-import kr.hhplus.be.server.domain.point.usecase.UsePointUseCase;
+import kr.hhplus.be.server.domain.point.service.ChargePointService;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,7 +17,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-class UsePointUseCaseTest {
+class ChargePointServiceTest {
 
     @Mock
     PointRepository pointRepository;
@@ -28,38 +26,27 @@ class UsePointUseCaseTest {
     PointHistoryRepository pointHistoryRepository;
 
     @InjectMocks
-    UsePointUseCase useCase;
+    ChargePointService useCase;
 
     @Test
-    void 포인트_정상_사용() {
-        // given
+    void 포인트_충전_정상() {
+        // given: 사용자 ID와 초기 포인트 상태, 충전할 금액을 설정하고 Mock 리턴값을 정의
         long userId = 1L;
-        long amount = 3000L;
-        UserPoint current = new UserPoint(userId, 5000L, LocalDateTime.now(), LocalDateTime.now());
+        long amount = 5000L;
+        UserPoint current = UserPoint.empty(userId);
 
         when(pointRepository.findById(userId)).thenReturn(current);
         doNothing().when(pointRepository).save(any());
         doNothing().when(pointHistoryRepository).save(any());
 
-        // when
+        // when: 충전 유즈케이스 실행
         UserPoint result = useCase.execute(userId, amount);
 
-        // then
-        assertEquals(2000L, result.point());
+        // then: 충전 결과와 포인트 이력 저장이 정상적으로 수행됐는지 검증
+        assertEquals(5000L, result.point());
         verify(pointRepository).save(any());
         verify(pointHistoryRepository).save(any());
     }
 
-    @Test
-    void 포인트_부족_사용_예외() {
-        // given
-        long userId = 1L;
-        long amount = 10_000L;
-        UserPoint current = new UserPoint(userId, 3000L, LocalDateTime.now(), LocalDateTime.now());
-
-        when(pointRepository.findById(userId)).thenReturn(current);
-
-        // when & then
-        assertThrows(IllegalStateException.class, () -> useCase.execute(userId, amount));
-    }
 }
+
