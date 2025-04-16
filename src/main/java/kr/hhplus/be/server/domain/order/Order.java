@@ -3,8 +3,7 @@ package kr.hhplus.be.server.domain.order;
 import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.*;
-import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
-import kr.hhplus.be.server.interfaces.api.order.dto.OrderResponse;
+import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
 import lombok.Getter;
 
 /**

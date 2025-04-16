@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.infrastructure.order.entity;
 
 import jakarta.persistence.*;
-import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
+import kr.hhplus.be.server.domain.order.OrderItemRequest;
 
 @Entity
 @Table(name = "order_item")

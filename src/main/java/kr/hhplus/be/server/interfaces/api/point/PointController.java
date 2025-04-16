@@ -2,9 +2,11 @@ package kr.hhplus.be.server.interfaces.api.point;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kr.hhplus.be.server.application.point.usecase.*;
 import kr.hhplus.be.server.domain.point.UserPoint;
-import kr.hhplus.be.server.interfaces.api.point.dto.*;
+import kr.hhplus.be.server.domain.point.usecase.ChargePointUseCase;
+import kr.hhplus.be.server.domain.point.usecase.GetPointHistoryUseCase;
+import kr.hhplus.be.server.domain.point.usecase.GetUserPointUseCase;
+import kr.hhplus.be.server.domain.point.usecase.UsePointUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

@@ -6,9 +6,9 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.LocalDate;
 import java.util.Optional;
-import kr.hhplus.be.server.application.product.repository.ProductRepository;
-import kr.hhplus.be.server.application.product.repository.ProductSaleRepository;
-import kr.hhplus.be.server.application.product.usecase.RecordProductSaleUseCase;
+import kr.hhplus.be.server.domain.product.ProductRepository;
+import kr.hhplus.be.server.domain.product.ProductSaleRepository;
+import kr.hhplus.be.server.domain.product.usecase.RecordProductSaleUseCase;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSale;
 import org.junit.jupiter.api.Test;

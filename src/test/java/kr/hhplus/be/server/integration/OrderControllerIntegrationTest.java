@@ -1,9 +1,8 @@
 package kr.hhplus.be.server.integration;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import kr.hhplus.be.server.application.point.repository.PointRepository;
-import kr.hhplus.be.server.application.product.repository.ProductRepository;
-import kr.hhplus.be.server.application.coupon.repository.CouponRepository;
+import kr.hhplus.be.server.domain.point.PointRepository;
+import kr.hhplus.be.server.domain.product.ProductRepository;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.coupon.Coupon;

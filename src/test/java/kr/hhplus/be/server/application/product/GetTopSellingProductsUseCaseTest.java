@@ -7,12 +7,12 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDate;
 import java.util.List;
-import kr.hhplus.be.server.application.product.repository.ProductRepository;
-import kr.hhplus.be.server.application.product.repository.ProductSaleRepository;
-import kr.hhplus.be.server.application.product.usecase.GetTopSellingProductsUseCase;
+import kr.hhplus.be.server.domain.product.ProductRepository;
+import kr.hhplus.be.server.domain.product.ProductSaleRepository;
+import kr.hhplus.be.server.domain.product.usecase.GetTopSellingProductsUseCase;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSale;
-import kr.hhplus.be.server.interfaces.api.product.dto.PopularProductResponse;
+import kr.hhplus.be.server.interfaces.api.product.PopularProductResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

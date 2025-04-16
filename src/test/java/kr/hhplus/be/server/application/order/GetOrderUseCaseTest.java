@@ -6,8 +6,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import kr.hhplus.be.server.application.order.repository.OrderRepository;
-import kr.hhplus.be.server.application.order.usecase.GetOrderUseCase;
+import kr.hhplus.be.server.domain.order.OrderRepository;
+import kr.hhplus.be.server.domain.order.usecase.GetOrderUseCase;
 import kr.hhplus.be.server.domain.order.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

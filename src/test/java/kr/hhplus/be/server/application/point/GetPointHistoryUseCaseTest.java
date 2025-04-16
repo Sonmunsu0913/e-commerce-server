@@ -5,9 +5,10 @@ import static org.mockito.Mockito.when;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import kr.hhplus.be.server.application.point.repository.PointHistoryRepository;
+import kr.hhplus.be.server.domain.point.PointHistoryRepository;
 import kr.hhplus.be.server.domain.point.PointHistory;
 import kr.hhplus.be.server.domain.point.PointTransactionType;
+import kr.hhplus.be.server.domain.point.usecase.GetPointHistoryUseCase;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -21,7 +22,7 @@ class GetPointHistoryUseCaseTest {
     PointHistoryRepository pointHistoryRepository;
 
     @InjectMocks
-    kr.hhplus.be.server.application.point.usecase.GetPointHistoryUseCase useCase;
+    GetPointHistoryUseCase useCase;
 
     @Test
     void 포인트_이력_정상_조회() {

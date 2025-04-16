@@ -2,7 +2,7 @@ package kr.hhplus.be.server.infrastructure.order.entity;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
+import kr.hhplus.be.server.domain.order.OrderItemRequest;
 
 import java.time.LocalDateTime;
 import java.util.List;

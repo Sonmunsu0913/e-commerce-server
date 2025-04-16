@@ -5,12 +5,12 @@ import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
-import kr.hhplus.be.server.application.coupon.repository.CouponRepository;
-import kr.hhplus.be.server.application.coupon.repository.UserCouponRepository;
-import kr.hhplus.be.server.application.coupon.usecase.GetUserCouponsUseCase;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
+import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
+import kr.hhplus.be.server.domain.coupon.usecase.GetUserCouponsUseCase;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
-import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
+import kr.hhplus.be.server.interfaces.api.coupon.CouponResponse;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

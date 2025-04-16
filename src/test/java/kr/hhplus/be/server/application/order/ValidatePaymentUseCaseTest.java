@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.application.order.usecase.ValidatePaymentUseCase;
+import kr.hhplus.be.server.domain.order.usecase.ValidatePaymentUseCase;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
+import kr.hhplus.be.server.domain.order.OrderItemRequest;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

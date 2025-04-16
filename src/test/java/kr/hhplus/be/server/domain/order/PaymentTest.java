@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.domain.order;
 
-import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;

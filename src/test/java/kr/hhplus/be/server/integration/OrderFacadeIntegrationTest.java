@@ -1,14 +1,14 @@
 package kr.hhplus.be.server.integration;
 
-import kr.hhplus.be.server.application.coupon.repository.CouponRepository;
-import kr.hhplus.be.server.application.order.facade.OrderFacade;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
+import kr.hhplus.be.server.application.order.OrderFacade;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.point.UserPoint;
-import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
-import kr.hhplus.be.server.interfaces.api.order.dto.OrderRequest;
-import kr.hhplus.be.server.interfaces.api.order.dto.OrderResponse;
-import kr.hhplus.be.server.application.point.repository.PointRepository;
-import kr.hhplus.be.server.application.product.repository.ProductRepository;
+import kr.hhplus.be.server.domain.order.OrderItemRequest;
+import kr.hhplus.be.server.interfaces.api.order.OrderRequest;
+import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
+import kr.hhplus.be.server.domain.point.PointRepository;
+import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
 
 import org.junit.jupiter.api.BeforeEach;

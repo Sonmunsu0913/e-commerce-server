@@ -1,15 +1,14 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.application.order.facade.OrderFacade;
-import kr.hhplus.be.server.application.order.usecase.CreateOrderUseCase;
-import kr.hhplus.be.server.application.order.usecase.ValidatePaymentUseCase;
-import kr.hhplus.be.server.application.point.usecase.GetUserPointUseCase;
-import kr.hhplus.be.server.application.point.usecase.UsePointUseCase;
-import kr.hhplus.be.server.application.product.usecase.RecordProductSaleUseCase;
-import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
+import kr.hhplus.be.server.domain.order.usecase.CreateOrderUseCase;
+import kr.hhplus.be.server.domain.order.usecase.ValidatePaymentUseCase;
+import kr.hhplus.be.server.domain.point.usecase.GetUserPointUseCase;
+import kr.hhplus.be.server.domain.point.usecase.UsePointUseCase;
+import kr.hhplus.be.server.domain.product.usecase.RecordProductSaleUseCase;
+import kr.hhplus.be.server.domain.order.OrderItemRequest;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
-import kr.hhplus.be.server.interfaces.api.order.dto.OrderRequest;
-import kr.hhplus.be.server.interfaces.api.order.dto.OrderResponse;
+import kr.hhplus.be.server.interfaces.api.order.OrderRequest;
+import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.order.Order;
 

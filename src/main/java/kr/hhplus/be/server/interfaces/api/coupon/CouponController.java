@@ -5,9 +5,8 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
-import kr.hhplus.be.server.application.coupon.usecase.GetUserCouponsUseCase;
-import kr.hhplus.be.server.application.coupon.usecase.IssueCouponUseCase;
-import kr.hhplus.be.server.interfaces.api.coupon.dto.CouponResponse;
+import kr.hhplus.be.server.domain.coupon.usecase.GetUserCouponsUseCase;
+import kr.hhplus.be.server.domain.coupon.usecase.IssueCouponUseCase;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 

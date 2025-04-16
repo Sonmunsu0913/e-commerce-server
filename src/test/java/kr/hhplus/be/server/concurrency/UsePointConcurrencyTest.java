@@ -1,8 +1,8 @@
 package kr.hhplus.be.server.concurrency;
 
-import kr.hhplus.be.server.application.point.repository.PointRepository;
+import kr.hhplus.be.server.domain.point.PointRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
-import kr.hhplus.be.server.application.point.usecase.UsePointUseCase;
+import kr.hhplus.be.server.domain.point.usecase.UsePointUseCase;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

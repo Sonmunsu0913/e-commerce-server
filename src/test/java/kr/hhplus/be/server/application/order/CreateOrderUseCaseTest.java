@@ -6,10 +6,10 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import kr.hhplus.be.server.application.order.repository.OrderRepository;
-import kr.hhplus.be.server.application.order.usecase.CreateOrderUseCase;
+import kr.hhplus.be.server.domain.order.OrderRepository;
+import kr.hhplus.be.server.domain.order.usecase.CreateOrderUseCase;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.dto.OrderItemRequest;
+import kr.hhplus.be.server.domain.order.OrderItemRequest;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
