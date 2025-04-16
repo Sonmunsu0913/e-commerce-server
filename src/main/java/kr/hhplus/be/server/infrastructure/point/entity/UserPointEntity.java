@@ -6,7 +6,12 @@ import kr.hhplus.be.server.domain.point.UserPoint;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "user_point")
+@Table(
+        name = "user_point",
+        indexes = {
+                @Index(name = "idx_user_id", columnList = "userId")
+        }
+)
 public class UserPointEntity {
 
     @Id

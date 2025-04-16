@@ -7,7 +7,12 @@ import kr.hhplus.be.server.domain.point.PointTransactionType;
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "point_history")
+@Table(
+        name = "point_history",
+        indexes = {
+                @Index(name = "idx_user_id", columnList = "userId")
+        }
+)
 public class PointHistoryEntity {
 
     @Id

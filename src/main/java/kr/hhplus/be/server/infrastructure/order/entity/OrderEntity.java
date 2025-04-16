@@ -9,7 +9,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Entity
-@Table(name = "`order`")
+@Table(
+        name = "`order`",
+        indexes = {
+                @Index(name = "idx_user_id", columnList = "userId")
+        }
+)
 public class OrderEntity {
 
     @Id
