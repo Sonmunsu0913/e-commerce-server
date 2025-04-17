@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Table(
         name = "user_point",
         indexes = {
-                @Index(name = "idx_user_id", columnList = "userId")
+                @Index(name = "idx_id", columnList = "id")
         }
 )
 public class UserPointEntity {
