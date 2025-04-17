@@ -62,4 +62,12 @@ class ProductSaleStatisticsTest {
         assertEquals(List.of(30L, 10L), ids); // 500, 300 순
     }
 
+    @Test
+    void 집계_데이터가_없는_경우_처리() {
+        ProductSaleStatistics statistics = ProductSaleStatistics.of(List.of());
+
+        Map<Long, Long> result = statistics.getTotalSalesPerProduct();
+        assertTrue(result.isEmpty());
+    }
+
 }

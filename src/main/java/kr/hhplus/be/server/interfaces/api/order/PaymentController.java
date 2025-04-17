@@ -2,9 +2,7 @@ package kr.hhplus.be.server.interfaces.api.order;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import kr.hhplus.be.server.application.order.service.OrderFacade;
-import kr.hhplus.be.server.application.order.service.PaymentService;
-import kr.hhplus.be.server.interfaces.api.order.dto.PaymentResultResponse;
+import kr.hhplus.be.server.application.order.OrderFacade;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,11 +20,11 @@ public class PaymentController {
         this.orderFacade = orderFacade;
     }
 
-    @PostMapping("/{orderId}")
+    @PostMapping("/{id}")
     @Operation(summary = "주문 결제", description = "주문 ID를 기반으로 결제를 수행합니다.")
-    public ResponseEntity<PaymentResultResponse> pay(@PathVariable Long orderId) {
+    public ResponseEntity<PaymentResultResponse> pay(@PathVariable Long id) {
         // 향후 별도 결제 처리 로직이 필요할 경우 확장 가능
-        PaymentResultResponse result = orderFacade.pay(orderId);
+        PaymentResultResponse result = orderFacade.pay(id);
         return ResponseEntity.ok(result);
     }
 }
