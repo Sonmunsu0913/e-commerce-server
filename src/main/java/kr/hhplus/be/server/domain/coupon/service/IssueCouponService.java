@@ -29,29 +29,22 @@ public class IssueCouponService {
      * - 중복 발급 여부 확인
      * - 수량 확인 및 발급 처리
      */
-    public CouponResponse execute(Long userId, Long couponId) {
-        // 1. 중복 발급 확인
-        if (userCouponRepository.existsByUserIdAndCouponId(userId, couponId)) {
-            throw new IllegalStateException("이미 발급받은 쿠폰입니다.");
-        }
+    public CouponResponse execute(Long userId) {
+        // 1. 발급 가능한 쿠폰 찾기 (아직 발급받지 않았고 수량이 남은 쿠폰)
+        Coupon coupon = couponRepository.findAllCoupons().stream()
+                .filter(c -> c.canIssue() && !userCouponRepository.existsByUserIdAndCouponId(userId, c.getId()))
+                .findFirst()
+                .orElseThrow(() -> new IllegalStateException("발급 가능한 쿠폰이 없습니다."));
 
-        // 2. 쿠폰 유효성 및 발급 가능 여부 확인
-        Coupon coupon = couponRepository.findById(couponId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 쿠폰입니다."));
-
-        if (!coupon.canIssue()) {
-            throw new IllegalStateException("발급 가능한 쿠폰이 없습니다.");
-        }
-
-        // 3. 쿠폰 발급 처리
+        // 2. 쿠폰 발급 처리
         coupon.issue();
         couponRepository.save(coupon);
 
-        // 4. 유저-쿠폰 관계 저장
-        UserCoupon userCoupon = UserCoupon.create(userId, couponId);
+        // 3. 유저-쿠폰 관계 저장
+        UserCoupon userCoupon = UserCoupon.create(userId, coupon.getId());
         userCouponRepository.save(userCoupon);
 
-        // 5. 응답 반환
+        // 4. 응답 반환
         return CouponResponse.from(userCoupon, coupon);
     }
 }
