@@ -3,7 +3,7 @@ import { check } from 'k6';
 
 export const options = {
     vus: 100,
-    duration: '1s',
+    duration: '10s',
     thresholds: {
         http_req_duration: ['p(50)<150', 'p(99)<300'],
     },
@@ -11,7 +11,7 @@ export const options = {
 
 export default function () {
     const userId = __VU;
-    const url = `http://localhost:8080/api/coupon/issue/${userId}`;
+    const url = `http://localhost:8080/api/coupon/${userId}`;
 
     const res = http.post(url, null, {
         headers: {

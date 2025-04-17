@@ -3,7 +3,7 @@ import { check } from 'k6';
 
 export const options = {
     vus: 100, // 가상 유저 100명
-    duration: '20s',
+    duration: '15s',
     thresholds: {
         http_req_duration: ['p(50)<150', 'p(99)<300'],
     },
