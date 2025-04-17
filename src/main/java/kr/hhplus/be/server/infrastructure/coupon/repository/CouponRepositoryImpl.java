@@ -5,7 +5,9 @@ import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.infrastructure.coupon.entity.CouponEntity;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Repository
 public class CouponRepositoryImpl implements CouponRepository {
@@ -14,6 +16,14 @@ public class CouponRepositoryImpl implements CouponRepository {
 
     public CouponRepositoryImpl(JpaCouponRepository jpaRepository) {
         this.jpaRepository = jpaRepository;
+    }
+
+    @Override
+    public List<Coupon> findAllCoupons() {
+        return jpaRepository.findAllEntities()
+                .stream()
+                .map(CouponEntity::toDomain)
+                .collect(Collectors.toList());
     }
 
     @Override
