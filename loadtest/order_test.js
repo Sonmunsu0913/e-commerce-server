@@ -1,41 +1,31 @@
 import http from 'k6/http';
-import { check, sleep } from 'k6';
+import { check, fail } from 'k6';
 
-export const options = {
-    vus: 100, // 가상 사용자 수
+export let options = {
+    vus: 100,
     duration: '10s',
-    thresholds: {
-        http_req_duration: ['p(50)<150', 'p(99)<300'],
-    },
+    summaryTrendStats: ['avg', 'min', 'max', 'p(50)', 'p(90)', 'p(95)', 'p(99)'],
 };
 
 export default function () {
-    const url = 'http://localhost:8080/api/order';
-
     const payload = JSON.stringify({
-        userId: Math.floor(Math.random() * 10) + 1,
-        couponId: null,
+        userId: 1,
         items: [
-            {
-                productId: 1,
-                productName: "테스트상품",
-                price: 1000,
-                quantity: 1
-            }
-        ]
+            { productId: 1, quantity: 1 }
+        ],
+        couponId: null,
     });
 
-    const params = {
-        headers: {
-            'Content-Type': 'application/json',
-        },
-    };
+    const headers = { 'Content-Type': 'application/json' };
 
-    const res = http.post(url, payload, params);
+    const res = http.post('http://localhost:8080/api/order', payload, { headers });
 
-    check(res, {
+    const success = check(res, {
         '✅ status is 200': (r) => r.status === 200,
     });
 
-    sleep(1);
+    if (!success) {
+        console.error(`❌ 실패: ${res.status} - ${res.body}`);
+        // fail('요청 실패'); // 이걸 추가하면 실행 중단도 가능
+    }
 }

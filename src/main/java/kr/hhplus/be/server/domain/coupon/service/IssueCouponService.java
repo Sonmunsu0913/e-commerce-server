@@ -30,21 +30,31 @@ public class IssueCouponService {
      * - 수량 확인 및 발급 처리
      */
     public CouponResponse execute(Long userId) {
-        // 1. 발급 가능한 쿠폰 찾기 (아직 발급받지 않았고 수량이 남은 쿠폰)
+
+        // 1. 사용자가 이미 발급받은 미사용 쿠폰이 있는지 확인
+        boolean hasUnusedCoupon = userCouponRepository
+                .findAllByUserId(userId).stream()
+                .anyMatch(userCoupon -> !userCoupon.isUsed());
+
+        if (hasUnusedCoupon) {
+            throw new IllegalStateException("이미 발급받은 미사용 쿠폰이 있습니다.");
+        }
+
+        // 2. 발급 가능한 쿠폰 찾기 (아직 발급받지 않았고 수량이 남은 쿠폰)
         Coupon coupon = couponRepository.findAllCoupons().stream()
                 .filter(c -> c.canIssue() && !userCouponRepository.existsByUserIdAndCouponId(userId, c.getId()))
                 .findFirst()
                 .orElseThrow(() -> new IllegalStateException("발급 가능한 쿠폰이 없습니다."));
 
-        // 2. 쿠폰 발급 처리
+        // 3. 쿠폰 발급 처리
         coupon.issue();
         couponRepository.save(coupon);
 
-        // 3. 유저-쿠폰 관계 저장
+        // 4. 유저-쿠폰 관계 저장
         UserCoupon userCoupon = UserCoupon.create(userId, coupon.getId());
         userCouponRepository.save(userCoupon);
 
-        // 4. 응답 반환
+        // 5. 응답 반환
         return CouponResponse.from(userCoupon, coupon);
     }
 }
