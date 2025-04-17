@@ -34,7 +34,7 @@ export default function () {
     const url = 'http://localhost:8080/api/point/use';
     const payload = JSON.stringify({
         userId: userId,
-        amount: 500
+        amount: 100
     });
 
     const params = {

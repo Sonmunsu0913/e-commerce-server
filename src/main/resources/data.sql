@@ -135,13 +135,43 @@ INSERT INTO coupon (id, name, discount_amount, issued_count, total_quantity) VAL
 
 
 INSERT INTO product (id, name, price, stock) VALUES
-(1, '테스트상품1', 1000, 100),
-(2, '테스트상품2', 2000, 100),
-(3, '테스트상품3', 3000, 100),
-(4, '테스트상품4', 4000, 100),
-(5, '테스트상품5', 5000, 100),
-(6, '테스트상품6', 6000, 100),
-(7, '테스트상품7', 7000, 100),
-(8, '테스트상품8', 8000, 100),
-(9, '테스트상품9', 9000, 100),
-(10, '테스트상품10', 10000, 100);
+(1, '테스트상품1', 1000, 1000),
+(2, '테스트상품2', 2000, 1000),
+(3, '테스트상품3', 3000, 1000),
+(4, '테스트상품4', 4000, 1000),
+(5, '테스트상품5', 5000, 1000),
+(6, '테스트상품6', 6000, 1000),
+(7, '테스트상품7', 7000, 1000),
+(8, '테스트상품8', 8000, 1000),
+(9, '테스트상품9', 9000, 1000),
+(10, '테스트상품10', 10000, 1000);
+
+-- 오늘
+INSERT INTO product_sale (product_id, quantity, sale_date) VALUES
+(1, 3, CURDATE()), (2, 2, CURDATE()), (3, 5, CURDATE()), (4, 1, CURDATE()), (5, 4, CURDATE()),
+(6, 3, CURDATE()), (7, 2, CURDATE()), (8, 5, CURDATE()), (9, 1, CURDATE()), (10, 4, CURDATE()),
+(1, 2, CURDATE()), (3, 1, CURDATE()), (5, 3, CURDATE()), (7, 2, CURDATE()), (9, 4, CURDATE());
+
+-- D-1
+INSERT INTO product_sale (product_id, quantity, sale_date) VALUES
+(1, 4, CURDATE() - INTERVAL 1 DAY), (2, 3, CURDATE() - INTERVAL 1 DAY), (3, 2, CURDATE() - INTERVAL 1 DAY),
+(4, 5, CURDATE() - INTERVAL 1 DAY), (5, 1, CURDATE() - INTERVAL 1 DAY),
+(6, 2, CURDATE() - INTERVAL 1 DAY), (7, 4, CURDATE() - INTERVAL 1 DAY), (8, 3, CURDATE() - INTERVAL 1 DAY),
+(9, 2, CURDATE() - INTERVAL 1 DAY), (10, 5, CURDATE() - INTERVAL 1 DAY),
+(2, 3, CURDATE() - INTERVAL 1 DAY), (4, 1, CURDATE() - INTERVAL 1 DAY), (6, 2, CURDATE() - INTERVAL 1 DAY);
+
+-- D-2
+INSERT INTO product_sale (product_id, quantity, sale_date) VALUES
+(1, 5, CURDATE() - INTERVAL 2 DAY), (3, 3, CURDATE() - INTERVAL 2 DAY), (5, 2, CURDATE() - INTERVAL 2 DAY),
+(7, 1, CURDATE() - INTERVAL 2 DAY), (9, 4, CURDATE() - INTERVAL 2 DAY),
+(2, 4, CURDATE() - INTERVAL 2 DAY), (4, 2, CURDATE() - INTERVAL 2 DAY), (6, 3, CURDATE() - INTERVAL 2 DAY),
+(8, 5, CURDATE() - INTERVAL 2 DAY), (10, 1, CURDATE() - INTERVAL 2 DAY),
+(3, 2, CURDATE() - INTERVAL 2 DAY), (6, 3, CURDATE() - INTERVAL 2 DAY), (9, 1, CURDATE() - INTERVAL 2 DAY);
+
+-- D-3
+INSERT INTO product_sale (product_id, quantity, sale_date) VALUES
+(1, 2, CURDATE() - INTERVAL 3 DAY), (2, 5, CURDATE() - INTERVAL 3 DAY), (3, 4, CURDATE() - INTERVAL 3 DAY),
+(4, 3, CURDATE() - INTERVAL 3 DAY), (5, 1, CURDATE() - INTERVAL 3 DAY),
+(6, 5, CURDATE() - INTERVAL 3 DAY), (7, 2, CURDATE() - INTERVAL 3 DAY), (8, 4, CURDATE() - INTERVAL 3 DAY),
+(9, 3, CURDATE() - INTERVAL 3 DAY), (10, 2, CURDATE() - INTERVAL 3 DAY),
+(1, 1, CURDATE() - INTERVAL 3 DAY), (4, 4, CURDATE() - INTERVAL 3 DAY), (7, 5, CURDATE() - INTERVAL 3 DAY);
