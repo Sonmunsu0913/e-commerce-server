@@ -43,7 +43,7 @@ public class OrderFacade {
         this.reporter = reporter;
     }
 
-    public OrderResult placeOrder(CreateOrderCommand command) {
+    public OrderResult order(CreateOrderCommand command) {
         // 1. 주문 생성
         Order order = createOrderService.execute(
             command.userId(),

@@ -29,7 +29,7 @@ public class OrderController {
             request.getCouponId()
         );
 
-        OrderResult result = orderFacade.placeOrder(command);
+        OrderResult result = orderFacade.order(command);
 
         return ResponseEntity.ok(new OrderResponse(
             result.orderId(),
