@@ -64,4 +64,11 @@ public class PointController {
                 .toList()
         );
     }
+
+    @DeleteMapping("/init/{userId}")
+    @Operation(summary = "포인트 초기화", description = "사용자의 포인트를 0원으로 초기화합니다. (테스트용)")
+    public ResponseEntity<Void> initPoint(@PathVariable Long userId) {
+        usePointService.init(userId);  // 포인트 초기화 로직 호출
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -68,7 +68,7 @@ class CouponControllerIntegrationTest {
         // 중복 발급 - 예외 → GlobalExceptionHandler에서 400으로 매핑해야 통과됨
         mockMvc.perform(post("/api/coupon/1"))
                 .andExpect(status().isBadRequest())
-                .andExpect(content().string("이미 발급받은 쿠폰입니다."));
+                .andExpect(content().string("이미 발급받은 미사용 쿠폰이 있습니다."));
     }
 
     @Test

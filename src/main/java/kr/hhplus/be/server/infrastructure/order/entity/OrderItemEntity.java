@@ -4,7 +4,12 @@ import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.order.OrderItemCommand;
 
 @Entity
-@Table(name = "order_item")
+@Table(
+        name = "order_item",
+        indexes = {
+                @Index(name = "idx_product_id", columnList = "productId")
+        }
+)
 public class OrderItemEntity {
 
     @Id

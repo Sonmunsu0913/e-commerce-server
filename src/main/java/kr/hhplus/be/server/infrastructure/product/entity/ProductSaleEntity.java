@@ -6,7 +6,12 @@ import kr.hhplus.be.server.domain.product.ProductSale;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "product_sale")
+@Table(
+        name = "product_sale",
+        indexes = {
+                @Index(name = "idx_product_id", columnList = "productId")
+        }
+)
 public class ProductSaleEntity {
 
     @Id

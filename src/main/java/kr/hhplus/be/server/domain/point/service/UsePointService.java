@@ -38,4 +38,8 @@ public class UsePointService {
 
         return updated;
     }
+
+    public void init(Long userId) {
+        pointRepository.save(new UserPoint(userId, 0L, LocalDateTime.now(), LocalDateTime.now()));
+    }
 }

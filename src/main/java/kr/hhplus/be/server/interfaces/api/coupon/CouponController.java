@@ -38,8 +38,7 @@ public class CouponController {
             @Parameter(description = "사용자 ID", example = "1")
             @PathVariable Long userId
     ) {
-        final Long fixedCouponId = 1L;
-        return ResponseEntity.ok(issueCouponService.execute(userId, fixedCouponId));
+        return ResponseEntity.ok(issueCouponService.execute(userId));
     }
 }
 
