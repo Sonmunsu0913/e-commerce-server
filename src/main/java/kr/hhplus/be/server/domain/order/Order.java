@@ -1,6 +1,5 @@
 package kr.hhplus.be.server.domain.order;
 
-import jakarta.persistence.Table;
 import java.time.LocalDateTime;
 import java.util.*;
 import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
@@ -12,7 +11,6 @@ import lombok.Getter;
  * - 주문에 대한 응답 객체로 변환할 수 있는 기능도 제공한다.
  */
 @Getter
-@Table(name = "`order`")
 public class Order {
 
     private final Long id;                          // 주문 고유 ID
