@@ -7,6 +7,7 @@ public record PointHistory(
         long userId,
         long amount,
         PointTransactionType type,
-        LocalDateTime createdAt
+        LocalDateTime createdAt,
+        LocalDateTime updatedAt
 ) {
 }

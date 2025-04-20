@@ -41,6 +41,9 @@ dependencies {
 	// DB
 	runtimeOnly("com.mysql:mysql-connector-j")
 
+	// Jackson - JavaTime (LocalDateTime용)
+	implementation("com.fasterxml.jackson.datatype:jackson-datatype-jsr310")
+
 	// Lombok
 	compileOnly("org.projectlombok:lombok:1.18.30")
 	annotationProcessor("org.projectlombok:lombok:1.18.30")
