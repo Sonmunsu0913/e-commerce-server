@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.domain.point.service;
 
 import kr.hhplus.be.server.domain.point.PointHistoryRepository;
-import kr.hhplus.be.server.domain.point.PointRepository;
+import kr.hhplus.be.server.domain.point.UserPointRepository;
 import kr.hhplus.be.server.domain.point.*;
 
 import java.time.LocalDateTime;
@@ -12,18 +12,18 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UsePointService {
 
-    private final PointRepository pointRepository;
+    private final UserPointRepository userPointRepository;
     private final PointHistoryRepository pointHistoryRepository;
 
-    public UsePointService(PointRepository pointRepository, PointHistoryRepository pointHistoryRepository) {
-        this.pointRepository = pointRepository;
+    public UsePointService(UserPointRepository userPointRepository, PointHistoryRepository pointHistoryRepository) {
+        this.userPointRepository = userPointRepository;
         this.pointHistoryRepository = pointHistoryRepository;
     }
 
     public UserPoint execute(long userId, long amount) {
-        UserPoint current = pointRepository.findById(userId);
+        UserPoint current = userPointRepository.findById(userId);
         UserPoint updated = current.use(amount);
-        pointRepository.save(updated);
+        userPointRepository.save(updated);
 
         LocalDateTime now = LocalDateTime.now();
         PointHistory history = new PointHistory(
@@ -40,6 +40,6 @@ public class UsePointService {
     }
 
     public void init(Long userId) {
-        pointRepository.save(new UserPoint(userId, 0L, LocalDateTime.now(), LocalDateTime.now()));
+        userPointRepository.save(new UserPoint(userId, 0L, LocalDateTime.now(), LocalDateTime.now()));
     }
 }

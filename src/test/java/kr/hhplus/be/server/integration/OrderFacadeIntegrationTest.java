@@ -8,8 +8,7 @@ import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.order.OrderItemCommand;
 import kr.hhplus.be.server.interfaces.api.order.OrderRequest;
-import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
-import kr.hhplus.be.server.domain.point.PointRepository;
+import kr.hhplus.be.server.domain.point.UserPointRepository;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.product.Product;
 
@@ -35,7 +34,7 @@ class OrderFacadeIntegrationTest {
     private ProductRepository productRepository;
 
     @Autowired
-    private PointRepository pointRepository;
+    private UserPointRepository userPointRepository;
 
     @Autowired
     private CouponRepository couponRepository;
@@ -44,7 +43,7 @@ class OrderFacadeIntegrationTest {
 
     @BeforeEach
     void setup() {
-        pointRepository.save(new UserPoint(userId, 20000, LocalDateTime.now(), LocalDateTime.now()));
+        userPointRepository.save(new UserPoint(userId, 20000, LocalDateTime.now(), LocalDateTime.now()));
         productRepository.save(new Product(1L, "화과자", 5000, 5));
         couponRepository.save(new Coupon(101L, "1000원 할인 쿠폰", 1000, 10));
     }

@@ -3,7 +3,7 @@ package kr.hhplus.be.server.concurrency;
 import java.time.LocalDateTime;
 import java.util.concurrent.*;
 
-import kr.hhplus.be.server.domain.point.PointRepository;
+import kr.hhplus.be.server.domain.point.UserPointRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,11 +24,11 @@ class ChargePointConcurrencyTest {
     MockMvc mockMvc;
 
     @Autowired
-    PointRepository pointRepository;
+    UserPointRepository userPointRepository;
 
     @BeforeEach
     void setUp() {
-        pointRepository.save(new UserPoint(1L, 2000L, LocalDateTime.now(), LocalDateTime.now()));
+        userPointRepository.save(new UserPoint(1L, 2000L, LocalDateTime.now(), LocalDateTime.now()));
     }
 
     @Test

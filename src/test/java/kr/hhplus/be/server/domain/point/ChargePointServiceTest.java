@@ -17,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class ChargePointServiceTest {
 
     @Mock
-    PointRepository pointRepository;
+    UserPointRepository userPointRepository;
 
     @Mock
     PointHistoryRepository pointHistoryRepository;
@@ -32,8 +32,8 @@ class ChargePointServiceTest {
         long amount = 5000L;
         UserPoint current = UserPoint.empty(userId);
 
-        when(pointRepository.findById(userId)).thenReturn(current);
-        doNothing().when(pointRepository).save(any());
+        when(userPointRepository.findById(userId)).thenReturn(current);
+        doNothing().when(userPointRepository).save(any());
         doNothing().when(pointHistoryRepository).save(any());
 
         // when: 충전 유즈케이스 실행
@@ -41,7 +41,7 @@ class ChargePointServiceTest {
 
         // then: 충전 결과와 포인트 이력 저장이 정상적으로 수행됐는지 검증
         assertEquals(5000L, result.point());
-        verify(pointRepository).save(any());
+        verify(userPointRepository).save(any());
         verify(pointHistoryRepository).save(any());
     }
 

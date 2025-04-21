@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.concurrency;
 
-import kr.hhplus.be.server.domain.point.PointRepository;
+import kr.hhplus.be.server.domain.point.UserPointRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.point.service.UsePointService;
 import org.junit.jupiter.api.BeforeEach;
@@ -19,7 +19,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 class UsePointConcurrencyTest {
 
     @Autowired
-    PointRepository pointRepository;
+    UserPointRepository userPointRepository;
 
     @Autowired
     UsePointService usePointService;
@@ -27,7 +27,7 @@ class UsePointConcurrencyTest {
     @BeforeEach
     void setUp() {
         // 초기 포인트 10_000으로 설정
-        pointRepository.save(new UserPoint(1L, 10_000L, LocalDateTime.now(), LocalDateTime.now()));
+        userPointRepository.save(new UserPoint(1L, 10_000L, LocalDateTime.now(), LocalDateTime.now()));
     }
 
     @Test
@@ -55,7 +55,7 @@ class UsePointConcurrencyTest {
 
         latch.await();
 
-        UserPoint result = pointRepository.findById(1L);
+        UserPoint result = userPointRepository.findById(1L);
         System.out.println("최종 잔액 = " + result.point());
         System.out.println("[TEST] 포인트 동시 사용 테스트 종료 ===================");
 

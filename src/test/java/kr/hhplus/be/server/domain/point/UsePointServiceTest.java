@@ -19,7 +19,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class UsePointServiceTest {
 
     @Mock
-    PointRepository pointRepository;
+    UserPointRepository userPointRepository;
 
     @Mock
     PointHistoryRepository pointHistoryRepository;
@@ -34,8 +34,8 @@ class UsePointServiceTest {
         long amount = 3000L;
         UserPoint current = new UserPoint(userId, 5000L, LocalDateTime.now(), LocalDateTime.now());
 
-        when(pointRepository.findById(userId)).thenReturn(current);
-        doNothing().when(pointRepository).save(any());
+        when(userPointRepository.findById(userId)).thenReturn(current);
+        doNothing().when(userPointRepository).save(any());
         doNothing().when(pointHistoryRepository).save(any());
 
         // when
@@ -43,7 +43,7 @@ class UsePointServiceTest {
 
         // then
         assertEquals(2000L, result.point());
-        verify(pointRepository).save(any());
+        verify(userPointRepository).save(any());
         verify(pointHistoryRepository).save(any());
     }
 
@@ -54,7 +54,7 @@ class UsePointServiceTest {
         long amount = 10_000L;
         UserPoint current = new UserPoint(userId, 3000L, LocalDateTime.now(), LocalDateTime.now());
 
-        when(pointRepository.findById(userId)).thenReturn(current);
+        when(userPointRepository.findById(userId)).thenReturn(current);
 
         // when & then
         assertThrows(IllegalStateException.class, () -> useCase.execute(userId, amount));

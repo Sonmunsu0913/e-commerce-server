@@ -15,7 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 class GetUserPointServiceTest {
 
     @Mock
-    PointRepository pointRepository;
+    UserPointRepository userPointRepository;
 
     @InjectMocks
     GetUserPointService useCase;
@@ -26,7 +26,7 @@ class GetUserPointServiceTest {
         long userId = 1L;
         UserPoint userPoint = new UserPoint(userId, 1000L, LocalDateTime.now(), LocalDateTime.now());
 
-        when(pointRepository.findById(userId)).thenReturn(userPoint);
+        when(userPointRepository.findById(userId)).thenReturn(userPoint);
 
         // when
         UserPoint result = useCase.execute(userId);
