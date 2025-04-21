@@ -32,15 +32,21 @@ class UsePointConcurrencyTest {
 
     @Test
     void 동시에_포인트를_사용하면_정합성_문제가_발생한다() throws InterruptedException {
+        System.out.println("\n[TEST] 포인트 동시 사용 테스트 시작 ===================");
+
         int threadCount = 10;
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         CountDownLatch latch = new CountDownLatch(threadCount);
 
         for (int i = 0; i < threadCount; i++) {
+            final int idx = i;
             executor.submit(() -> {
                 try {
-                    usePointService.execute(1L, 1_000L); // 각 스레드가 1000원씩 차감
-                } catch (Exception ignored) {
+                    System.out.println("[" + idx + "] 차감 시도");
+                    usePointService.execute(1L, 1_000L);
+                    System.out.println("[" + idx + "] 차감 성공");
+                } catch (Exception e) {
+                    System.out.println("[" + idx + "] 차감 실패: " + e.getMessage());
                 } finally {
                     latch.countDown();
                 }
@@ -51,8 +57,8 @@ class UsePointConcurrencyTest {
 
         UserPoint result = pointRepository.findById(1L);
         System.out.println("최종 잔액 = " + result.point());
+        System.out.println("[TEST] 포인트 동시 사용 테스트 종료 ===================");
 
-        // 실패하는 테스트: 실제로는 0이 아닐 수 있음 (정합성 깨짐)
         assertThat(result.point()).isEqualTo(0L);
     }
 }
