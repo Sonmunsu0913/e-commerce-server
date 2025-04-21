@@ -63,18 +63,22 @@ class IssueCouponConcurrencyTest {
 
         latch.await();
 
-        long successCount = futures.stream()
-                .map(f -> {
-                    try {
-                        return f.get();
-                    } catch (Exception e) {
-                        return null;
-                    }
-                })
-                .filter(resp -> resp != null && resp.getStatusCode().is2xxSuccessful())
-                .count();
+        long successCount = 0;
 
-        System.out.println("성공 응답 수: " + successCount);
+        for (int i = 0; i < futures.size(); i++) {
+            try {
+                ResponseEntity<String> resp = futures.get(i).get();
+                if (resp != null && resp.getStatusCode().is2xxSuccessful()) {
+                    System.out.println("[UserId = " + (i + 1) + "] 쿠폰 발급 성공");
+                    successCount++;
+                } else {
+                    System.out.println("[UserId = " + (i + 1) + "] 쿠폰 발급 실패 - 응답 코드: " + (resp != null ? resp.getStatusCode() : "null"));
+                }
+            } catch (Exception e) {
+                System.out.println("[UserId = " + (i + 1) + "] 쿠폰 발급 실패 - 예외 발생: " + e.getMessage());
+            }
+        }
+        System.out.println("총 성공 응답 수: " + successCount);
         System.out.println("[TEST] 쿠폰 동시 발급 테스트 종료 ===================");
 
         assertThat(successCount).isLessThan(2);

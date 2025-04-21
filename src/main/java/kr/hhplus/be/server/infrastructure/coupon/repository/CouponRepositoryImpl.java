@@ -35,4 +35,10 @@ public class CouponRepositoryImpl implements CouponRepository {
     public void save(Coupon coupon) {
         jpaRepository.save(CouponEntity.from(coupon));
     }
+
+    @Override
+    public Coupon findWithPessimisticLockById(Long couponId) {
+        return jpaRepository.findWithPessimisticLockById(couponId)
+                .toDomain(); // 혹은 .toModel() 등, 엔티티 → 도메인 변환
+    }
 }

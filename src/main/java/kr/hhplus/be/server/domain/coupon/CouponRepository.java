@@ -9,4 +9,6 @@ public interface CouponRepository {
     Optional<Coupon> findById(Long couponId);
 
     void save(Coupon coupon);
+
+    Coupon findWithPessimisticLockById(Long couponId);  // 비관적 락 메서드
 }
