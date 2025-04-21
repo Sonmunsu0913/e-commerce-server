@@ -3,12 +3,11 @@ package kr.hhplus.be.server.domain.coupon;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.lenient;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
-import java.util.Optional;
 import kr.hhplus.be.server.domain.coupon.service.IssueCouponService;
 import kr.hhplus.be.server.interfaces.api.coupon.CouponResponse;
 import org.junit.jupiter.api.Test;
@@ -16,8 +15,11 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.mockito.junit.jupiter.MockitoSettings;
+import org.mockito.quality.Strictness;
 
 @ExtendWith(MockitoExtension.class)
+@MockitoSettings(strictness = Strictness.LENIENT)
 class IssueCouponServiceTest {
 
     @Mock
@@ -34,10 +36,7 @@ class IssueCouponServiceTest {
         // given
         Long userId = 1L;
         Coupon coupon = new Coupon(1L, "할인", 2000, 10);   // 재고 10
-        when(couponRepository.findAllCoupons())
-                .thenReturn(List.of(coupon));              // ← “임시 쿠폰” 주입
-        when(userCouponRepository.existsByUserIdAndCouponId(userId, 1L))
-                .thenReturn(false);
+        when(couponRepository.findWithPessimisticLockById(1L)).thenReturn(coupon);
 
         // when
         CouponResponse res = useCase.execute(userId);
@@ -55,12 +54,10 @@ class IssueCouponServiceTest {
         Long userId   = 1L;
         Coupon coupon = new Coupon(1L, "중복쿠폰", 1000, 10);
 
-        when(couponRepository.findAllCoupons())
-                .thenReturn(List.of(coupon));               // 쿠폰 한 장만 존재
-        when(userCouponRepository.existsByUserIdAndCouponId(userId, coupon.getId()))
-                .thenReturn(true);                           // 이미 발급된 상태
+        when(couponRepository.findWithPessimisticLockById(1L)).thenReturn(coupon);
+        when(userCouponRepository.existsByUserIdAndCouponId(userId, 1L)).thenReturn(true); // ✅ 이미 보유 상태로 설정
 
-        // then ‑ 이미 보유 → 예외
+        // when & then
         assertThrows(IllegalStateException.class, () -> useCase.execute(userId));
     }
 
@@ -69,12 +66,12 @@ class IssueCouponServiceTest {
         // given
         Long userId = 1L;
         Coupon exhausted = new Coupon(1L, "마감쿠폰", 1000, 1);
-        exhausted.issue();                       // canIssue() == false
+        exhausted.issue();
 
-        when(couponRepository.findAllCoupons())
-                .thenReturn(List.of(exhausted)); // 재고 0 쿠폰만 존재
+        when(couponRepository.findAllCoupons()).thenReturn(List.of(exhausted));
+        lenient().when(couponRepository.findWithPessimisticLockById(1L)).thenReturn(exhausted); // ← lenient 적용
 
-        // then
+        // when & then
         assertThrows(IllegalStateException.class, () -> useCase.execute(userId));
     }
 }

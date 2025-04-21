@@ -27,8 +27,11 @@ public class RecordProductSaleService {
         // 1. 판매 이력 저장
         productSaleRepository.save(sale);
 
-        // 2. 상품 조회 (비관적 락)
+        // 2. 상품 조회 (비관적 락) + 예외 처리
         Product product = productRepository.findWithPessimisticLockById(sale.productId());
+        if (product == null) {
+            throw new IllegalArgumentException("존재하지 않는 상품입니다: " + sale.productId());
+        }
 
         // 3. 재고 감소
         Product updatedProduct = product.reduceStock(sale.quantity());
@@ -36,4 +39,5 @@ public class RecordProductSaleService {
         // 4. 상품 저장
         productRepository.save(updatedProduct);
     }
+
 }

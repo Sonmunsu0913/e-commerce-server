@@ -1,17 +1,16 @@
 package kr.hhplus.be.server.domain.point;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
-
 import kr.hhplus.be.server.domain.point.service.ChargePointService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+
+import java.time.LocalDateTime;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class ChargePointServiceTest {
@@ -27,23 +26,21 @@ class ChargePointServiceTest {
 
     @Test
     void 포인트_충전_정상() {
-        // given: 사용자 ID와 초기 포인트 상태, 충전할 금액을 설정하고 Mock 리턴값을 정의
+        // given
         long userId = 1L;
         long amount = 5000L;
-        UserPoint current = UserPoint.empty(userId);
+        UserPoint current = new UserPoint(userId, 0L, LocalDateTime.now(), LocalDateTime.now());
 
-        when(userPointRepository.findById(userId)).thenReturn(current);
+        when(userPointRepository.findWithPessimisticLockById(userId)).thenReturn(current);
         doNothing().when(userPointRepository).save(any());
         doNothing().when(pointHistoryRepository).save(any());
 
-        // when: 충전 유즈케이스 실행
+        // when
         UserPoint result = useCase.execute(userId, amount);
 
-        // then: 충전 결과와 포인트 이력 저장이 정상적으로 수행됐는지 검증
+        // then
         assertEquals(5000L, result.point());
         verify(userPointRepository).save(any());
         verify(pointHistoryRepository).save(any());
     }
-
 }
-

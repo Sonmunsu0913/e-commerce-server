@@ -33,7 +33,8 @@ class RecordProductSaleServiceTest {
         Product product = new Product(productId, "떡볶이", 5000, 10);
         ProductSale sale = new ProductSale(productId, LocalDate.now(), 3);
 
-        when(productRepository.findById(productId)).thenReturn(Optional.of(product));
+        // 비관적 락 메서드에 대해 스텁 설정
+        when(productRepository.findWithPessimisticLockById(productId)).thenReturn(product);
 
         // when
         useCase.execute(sale);
@@ -49,15 +50,20 @@ class RecordProductSaleServiceTest {
         assertThat(savedProduct.stock()).isEqualTo(7);  // 10 - 3
     }
 
+
     @Test
     void 상품이_없으면_예외() {
         // given
         Long productId = 999L;
         ProductSale sale = new ProductSale(productId, LocalDate.now(), 1);
-        when(productRepository.findById(productId)).thenReturn(Optional.empty());
+
+        // 비관적 락 조회에서 예외가 발생하도록 설정
+        when(productRepository.findWithPessimisticLockById(productId))
+            .thenThrow(new IllegalArgumentException("존재하지 않는 상품입니다: " + productId));
 
         // when & then
         assertThrows(IllegalArgumentException.class, () -> useCase.execute(sale));
     }
+
 }
 
