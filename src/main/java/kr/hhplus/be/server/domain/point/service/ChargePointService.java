@@ -21,10 +21,17 @@ public class ChargePointService {
     }
 
     public UserPoint execute(long userId, long amount) {
-        UserPoint current = userPointRepository.findById(userId);
+
+        // 1. 락을 걸고 사용자 포인트 조회
+        UserPoint current = userPointRepository.findWithPessimisticLockById(userId);
+
+        // 2. 포인트 충전
         UserPoint updated = current.charge(amount);
+
+        // 3. 충전된 포인트 저장
         userPointRepository.save(updated);
 
+        // 4. 포인트 충전 내역 저장
         LocalDateTime now = LocalDateTime.now();
         PointHistory history = new PointHistory(
             null,

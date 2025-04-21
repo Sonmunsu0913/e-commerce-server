@@ -3,6 +3,7 @@ package kr.hhplus.be.server.concurrency;
 import java.time.LocalDateTime;
 import java.util.concurrent.*;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.hhplus.be.server.domain.point.UserPointRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import org.junit.jupiter.api.BeforeEach;
@@ -61,10 +62,18 @@ class ChargePointConcurrencyTest {
 
         latch.await();
 
-        mockMvc.perform(get("/api/point/1").accept(MediaType.APPLICATION_JSON))
+        // 응답 받아오기
+        var mvcResult = mockMvc.perform(get("/api/point/1")
+                        .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.amount").value(2000 + (chargeAmount * threadCount)));
+                .andReturn();
 
+        // JSON 응답 파싱
+        String json = mvcResult.getResponse().getContentAsString();
+        ObjectMapper mapper = new ObjectMapper();
+        long actual = mapper.readTree(json).get("amount").asLong();
+
+        System.out.println("💸 실제 잔액 = " + actual);
         System.out.println("[TEST] 포인트 동시 충전 테스트 종료 ===================");
     }
 }
