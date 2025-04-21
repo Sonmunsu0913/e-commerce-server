@@ -75,6 +75,8 @@ public class OrderFacade {
             order.getOrderedAt()
         );
 
+        reporter.send(order.toResponse((int) updated.point()));
+
         return result;
     }
 

@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.integration;
 
+import kr.hhplus.be.server.application.order.CreateOrderCommand;
+import kr.hhplus.be.server.application.order.OrderResult;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.application.order.OrderFacade;
 import kr.hhplus.be.server.domain.coupon.Coupon;
@@ -54,11 +56,22 @@ class OrderFacadeIntegrationTest {
         );
         OrderRequest request = new OrderRequest(userId, items, 101L);
 
-        OrderResponse result = orderFacade.placeOrder(request);
+        // ✅ OrderRequest → CreateOrderCommand 변환
+        CreateOrderCommand command = new CreateOrderCommand(
+                request.getUserId(),
+                request.getItems(),
+                request.getCouponId()
+        );
 
+        // ✅ OrderFacade 호출
+        OrderResult result = orderFacade.order(command);
+
+        // ✅ 검증
         assertThat(result).isNotNull();
-        assertThat(result.getId()).isNotNull();
-        assertThat(result.getFinalPrice()).isEqualTo(9000);
-        assertThat(result.getPointAfterPayment()).isEqualTo(11000);
+        assertThat(result.orderId()).isNotNull();
+        assertThat(result.finalPrice()).isEqualTo(9000); // 5000*2 - 1000
+        assertThat(result.totalPrice()).isEqualTo(10000);
+        assertThat(result.discount()).isEqualTo(1000);
     }
+
 }

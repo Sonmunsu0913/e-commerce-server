@@ -6,7 +6,7 @@ import lombok.Getter;
 import java.time.LocalDateTime;
 
 @Getter
-public class PaymentResultResponse {
+public class PaymentResponse {
 
     @Schema(description = "주문 ID", example = "1001")
     private Long id;
@@ -26,14 +26,14 @@ public class PaymentResultResponse {
     @Schema(description = "결제 시각", example = "2025-04-08T13:00:00")
     private LocalDateTime paidAt;
 
-    public PaymentResultResponse(Long id, Integer paidAmount, Integer discountAmount,
-        Integer finalPaidAmount, Integer pointAfterPayment, LocalDateTime paidAt) {
+    public PaymentResponse(Long id, Integer paidAmount, Integer discountAmount,
+                           Integer finalPaidAmount, Integer pointAfterPayment, String paidAt) {
         this.id = id;
         this.paidAmount = paidAmount;
         this.discountAmount = discountAmount;
         this.finalPaidAmount = finalPaidAmount;
         this.pointAfterPayment = pointAfterPayment;
-        this.paidAt = paidAt;
+        this.paidAt = LocalDateTime.parse(paidAt);;
     }
 
 }

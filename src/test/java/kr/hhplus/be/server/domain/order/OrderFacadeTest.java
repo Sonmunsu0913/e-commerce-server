@@ -1,6 +1,8 @@
 package kr.hhplus.be.server.domain.order;
 
+import kr.hhplus.be.server.application.order.CreateOrderCommand;
 import kr.hhplus.be.server.application.order.OrderFacade;
+import kr.hhplus.be.server.application.order.OrderResult;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
 import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
 import kr.hhplus.be.server.domain.point.service.GetUserPointService;
@@ -13,6 +15,7 @@ import kr.hhplus.be.server.domain.point.UserPoint;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
@@ -39,44 +42,65 @@ class OrderFacadeTest {
     @Mock private MockOrderReporter reporter;
 
     @Test
-    void 주문을_정상적으로_완료하면_리포팅까지_진행된다() {
+    void 주문을_정상적으로_완료() {
         // given
         Long userId = 1L;
+        Long couponId = null;  // 쿠폰 없음!
         List<OrderItemCommand> items = List.of(
                 new OrderItemCommand(1L, "화과자", 5000, 3)
         );
-        OrderRequest request = new OrderRequest(userId, items, null);
 
-        Order order = new Order(1L, userId, items, 0);
+        int discount = 0;
+        int totalPrice = 15000;
+        int finalPrice = totalPrice - discount;
 
-        UserPoint currentPointInfo = new UserPoint(userId, 10000, LocalDateTime.now(), LocalDateTime.now());
-        UserPoint updatedPoint = new UserPoint(userId, 5000, LocalDateTime.now(), LocalDateTime.now());
+        Order order = new Order(1L, userId, items, discount);
+        UserPoint currentPointInfo = new UserPoint(userId, 20000, LocalDateTime.now(), LocalDateTime.now());
+        UserPoint updatedPoint = new UserPoint(userId, 20000 - finalPrice, LocalDateTime.now(), LocalDateTime.now());
 
-        // mocking
         given(getUserPointService.execute(userId)).willReturn(currentPointInfo);
-        given(createOrderService.execute(userId, items, null)).willReturn(order);
+        given(createOrderService.execute(userId, items, couponId)).willReturn(order);
         willDoNothing().given(validatePaymentService).execute(order, (int) currentPointInfo.point());
-        given(usePointService.execute(userId, order.getFinalPrice())).willReturn(updatedPoint);
+        given(usePointService.execute(userId, finalPrice)).willReturn(updatedPoint);
         willDoNothing().given(recordProductSaleService).execute(any());
-        willDoNothing().given(reporter).send(any());
 
         // when
-        OrderResponse result = orderFacade.placeOrder(request);
+        CreateOrderCommand command = new CreateOrderCommand(userId, items, couponId);
+        OrderResult result = orderFacade.order(command);
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(order.getId());
-        assertThat(result.getPointAfterPayment()).isEqualTo((int) updatedPoint.point());
-        then(reporter).should().send(result);
+        assertThat(result.orderId()).isEqualTo(order.getId());
+        assertThat(result.discount()).isEqualTo(discount);
+        assertThat(result.finalPrice()).isEqualTo(finalPrice);
+        assertThat(result.totalPrice()).isEqualTo(totalPrice);
+        assertThat((int) updatedPoint.point()).isEqualTo(20000 - finalPrice);
+
+        // reporter 호출 검증 (객체 내용 기준 비교)
+        ArgumentCaptor<OrderResponse> captor = ArgumentCaptor.forClass(OrderResponse.class);
+        then(reporter).should().send(captor.capture());
+
+        OrderResponse actual = captor.getValue();
+        OrderResponse expectedResponse = new OrderResponse(
+                result.orderId(),
+                result.totalPrice(),
+                result.discount(),
+                result.finalPrice(),
+                20000 - finalPrice,
+                result.orderedAt()
+        );
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expectedResponse);
     }
 
+
     @Test
-    void 쿠폰이_있으면_할인이_적용되고_리포팅까지_진행된다() {
+    void 쿠폰이_있으면_할인이_적용() {
         // given
         Long userId = 1L;
         Long couponId = 101L;
         List<OrderItemCommand> items = List.of(
-                new OrderItemCommand(1L, "화과자", 5000, 3) // 총 15,000원
+                new OrderItemCommand(1L, "화과자", 5000, 3)
         );
         OrderRequest request = new OrderRequest(userId, items, couponId);
 
@@ -88,24 +112,39 @@ class OrderFacadeTest {
         UserPoint currentPointInfo = new UserPoint(userId, 20000, LocalDateTime.now(), LocalDateTime.now());
         UserPoint updatedPoint = new UserPoint(userId, 20000 - finalPrice, LocalDateTime.now(), LocalDateTime.now());
 
-        // mocking
         given(getUserPointService.execute(userId)).willReturn(currentPointInfo);
         given(createOrderService.execute(userId, items, couponId)).willReturn(order);
         willDoNothing().given(validatePaymentService).execute(order, (int) currentPointInfo.point());
-        given(usePointService.execute(userId, order.getFinalPrice())).willReturn(updatedPoint);
+        given(usePointService.execute(userId, finalPrice)).willReturn(updatedPoint);
         willDoNothing().given(recordProductSaleService).execute(any());
         willDoNothing().given(reporter).send(any());
 
         // when
-        OrderResponse result = orderFacade.placeOrder(request);
+        CreateOrderCommand command = new CreateOrderCommand(userId, items, couponId);
+        OrderResult result = orderFacade.order(command);
 
         // then
         assertThat(result).isNotNull();
-        assertThat(result.getId()).isEqualTo(order.getId());
-        assertThat(result.getDiscount()).isEqualTo(discount);
-        assertThat(result.getFinalPrice()).isEqualTo(finalPrice);
-        assertThat(result.getPointAfterPayment()).isEqualTo((int) updatedPoint.point());
-        then(reporter).should().send(result);
+        assertThat(result.orderId()).isEqualTo(order.getId());
+        assertThat(result.discount()).isEqualTo(discount);
+        assertThat(result.finalPrice()).isEqualTo(finalPrice);
+        assertThat((int) updatedPoint.point()).isEqualTo(20000 - finalPrice);
+
+        // reporter.send() 호출 검증 + 내용까지 검증
+        ArgumentCaptor<OrderResponse> captor = ArgumentCaptor.forClass(OrderResponse.class);
+        then(reporter).should().send(captor.capture());
+
+        OrderResponse actual = captor.getValue();
+        OrderResponse expected = new OrderResponse(
+                result.orderId(),
+                result.totalPrice(),
+                result.discount(),
+                result.finalPrice(),
+                20000 - finalPrice,
+                result.orderedAt()
+        );
+
+        assertThat(actual).usingRecursiveComparison().isEqualTo(expected);
     }
 
 }
