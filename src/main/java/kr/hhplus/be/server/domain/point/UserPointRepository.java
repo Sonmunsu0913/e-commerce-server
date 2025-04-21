@@ -6,4 +6,5 @@ public interface UserPointRepository {
 
     void save(UserPoint point);
 
+    UserPoint findWithPessimisticLockById(long userId); // 비관적 락 메서드
 }

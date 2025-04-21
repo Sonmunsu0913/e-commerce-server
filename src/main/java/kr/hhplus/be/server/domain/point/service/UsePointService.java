@@ -20,11 +20,28 @@ public class UsePointService {
         this.pointHistoryRepository = pointHistoryRepository;
     }
 
+    /**
+     * 사용자의 포인트를 차감합니다.
+     * - 동시성 문제를 방지하기 위해 Pessimistic Lock을 사용하여 UserPoint를 조회합니다.
+     * - 트랜잭션으로 묶어 정합성을 보장합니다.
+     *
+     * @param userId 사용자 ID
+     * @param amount 차감할 포인트
+     * @return 차감 후의 UserPoint 객체
+     */
+    @Transactional
     public UserPoint execute(long userId, long amount) {
-        UserPoint current = userPointRepository.findById(userId);
+
+        // 1. 락을 걸고 사용자 포인트 조회
+        UserPoint current = userPointRepository.findWithPessimisticLockById(userId);
+
+        // 2. 포인트 차감
         UserPoint updated = current.use(amount);
+
+        // 3. 차감된 포인트 저장
         userPointRepository.save(updated);
 
+        // 4. 포인트 사용 내역 저장
         LocalDateTime now = LocalDateTime.now();
         PointHistory history = new PointHistory(
             null,

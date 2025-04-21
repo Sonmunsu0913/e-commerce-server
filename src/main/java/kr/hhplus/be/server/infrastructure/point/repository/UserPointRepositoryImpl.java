@@ -25,5 +25,12 @@ public class UserPointRepositoryImpl implements UserPointRepository {
     public void save(UserPoint point) {
         jpaRepo.save(UserPointEntity.from(point));
     }
+
+    @Override
+    public UserPoint findWithPessimisticLockById(long userId) {
+        return jpaRepo.findWithPessimisticLockById(userId)
+                .map(UserPointEntity::toDomain)
+                .orElse(UserPoint.empty(userId)); // 혹은 예외 던지기
+    }
 }
 
