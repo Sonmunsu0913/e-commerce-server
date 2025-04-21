@@ -5,10 +5,10 @@ import kr.hhplus.be.server.domain.order.OrderItemCommand;
 
 @Entity
 @Table(
-        name = "order_item",
-        indexes = {
-                @Index(name = "idx_product_id", columnList = "productId")
-        }
+    name = "order_item",
+    indexes = {
+        @Index(name = "idx_product_id", columnList = "productId")
+    }
 )
 public class OrderItemEntity {
 
@@ -30,8 +30,10 @@ public class OrderItemEntity {
 
     protected OrderItemEntity() {}
 
-    public OrderItemEntity(Long productId, int quantity) {
+    public OrderItemEntity(Long productId, String productName, int price, int quantity) {
         this.productId = productId;
+        this.productName = productName;
+        this.price = price;
         this.quantity = quantity;
     }
 
@@ -40,7 +42,12 @@ public class OrderItemEntity {
     }
 
     public static OrderItemEntity from(OrderItemCommand request) {
-        return new OrderItemEntity(request.productId(), request.quantity());
+        return new OrderItemEntity(
+            request.productId(),
+            request.productName(),
+            request.price(),
+            request.quantity()
+        );
     }
 
     public OrderItemCommand toRequest() {
@@ -54,5 +61,11 @@ public class OrderItemEntity {
     public OrderEntity getOrder() {
         return order;
     }
-}
 
+    // ✅ 추가된 getter
+    public Long getId() { return id; }
+    public Long getProductId() { return productId; }
+    public String getProductName() { return productName; }
+    public int getPrice() { return price; }
+    public int getQuantity() { return quantity; }
+}

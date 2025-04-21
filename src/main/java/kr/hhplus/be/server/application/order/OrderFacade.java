@@ -11,13 +11,9 @@ import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.product.ProductSale;
 import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
-import kr.hhplus.be.server.interfaces.api.order.OrderRequest;
-import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
-import kr.hhplus.be.server.interfaces.api.order.PaymentResultResponse;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
 @Service
 //@Transactional
@@ -47,12 +43,12 @@ public class OrderFacade {
         this.reporter = reporter;
     }
 
-    public OrderResponse placeOrder(OrderRequest request) {
+    public OrderResult order(CreateOrderCommand command) {
         // 1. 주문 생성
         Order order = createOrderService.execute(
-                request.getUserId(),
-                request.getItems(),
-                request.getCouponId()
+            command.userId(),
+            command.items(),
+            command.couponId()
         );
 
         // 2. 사용자 현재 포인트 조회
@@ -66,18 +62,25 @@ public class OrderFacade {
 
         // 5. 판매 기록 저장
         LocalDate today = LocalDate.now();
-        for (OrderItemCommand item : request.getItems()) {
+        for (OrderItemCommand item : command.items()) {
             recordProductSaleService.execute(new ProductSale(item.productId(), today, item.quantity()));
         }
 
-        // 6. 응답 생성 및 외부 시스템 전송 (mock)
-        OrderResponse response = order.toResponse((int) updated.point());
-        reporter.send(response);
+        // 6. 응답 생성
+        OrderResult result = new OrderResult(
+            order.getId(),
+            order.getTotalPrice(),
+            order.getDiscount(),
+            order.getFinalPrice(),
+            order.getOrderedAt()
+        );
 
-        return response;
+        reporter.send(order.toResponse((int) updated.point()));
+
+        return result;
     }
 
-    public PaymentResultResponse pay(Long id) {
+    public PaymentResult pay(Long id) {
         // 1. 주문 ID로 주문 조회 (존재하지 않으면 예외 발생)
         Order order = getOrderService.execute(id);
 
@@ -98,14 +101,14 @@ public class OrderFacade {
         }
 
         // 6. 결제 결과 응답 생성 후 반환
-        return new PaymentResultResponse(
-                order.getId(),
-                order.getTotalPrice(),
-                order.getDiscount(),
-                order.getFinalPrice(),
-                (int) updated.point(),
-                LocalDateTime.now()
+        OrderResult orderResult = new OrderResult(
+            order.getId(),
+            order.getTotalPrice(),
+            order.getDiscount(),
+            order.getFinalPrice(),
+            order.getOrderedAt()
         );
+        return new PaymentResult(orderResult, (int) updated.point());
     }
 }
 
