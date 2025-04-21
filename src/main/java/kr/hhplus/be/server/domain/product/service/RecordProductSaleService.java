@@ -5,11 +5,14 @@ import kr.hhplus.be.server.domain.product.ProductSaleRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSale;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 
 /**
  * 상품 판매 기록 + 재고 감소 유스케이스
  */
 @Service
+@Transactional
 public class RecordProductSaleService {
 
     private final ProductSaleRepository productSaleRepository;
@@ -24,9 +27,8 @@ public class RecordProductSaleService {
         // 1. 판매 이력 저장
         productSaleRepository.save(sale);
 
-        // 2. 상품 조회
-        Product product = productRepository.findById(sale.productId())
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 상품입니다: " + sale.productId()));
+        // 2. 상품 조회 (비관적 락)
+        Product product = productRepository.findWithPessimisticLockById(sale.productId());
 
         // 3. 재고 감소
         Product updatedProduct = product.reduceStock(sale.quantity());

@@ -12,4 +12,5 @@ public interface ProductRepository {
 
     void save(Product product);
 
+    Product findWithPessimisticLockById(Long id);   // 비관적 락 메서드
 }

@@ -12,11 +12,12 @@ import kr.hhplus.be.server.domain.product.ProductSale;
 import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 @Service
-//@Transactional
+@Transactional
 public class OrderFacade {
 
     private final CreateOrderService createOrderService;

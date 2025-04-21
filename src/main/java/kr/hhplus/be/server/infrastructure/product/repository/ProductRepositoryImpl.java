@@ -36,4 +36,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     public void save(Product product) {
         jpaRepository.save(ProductEntity.from(product));
     }
+
+    @Override
+    public Product findWithPessimisticLockById(Long id) {
+        return jpaRepository.findWithPessimisticLockById(id).toDomain();
+    }
 }
