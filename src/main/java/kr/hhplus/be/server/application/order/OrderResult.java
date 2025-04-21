@@ -5,5 +5,6 @@ public record OrderResult(
     int totalPrice,
     int discount,
     int finalPrice,
-    String orderedAt
+    String orderedAt,
+    int pointAfterPayment
 ) {}

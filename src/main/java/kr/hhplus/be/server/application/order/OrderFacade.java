@@ -69,11 +69,12 @@ public class OrderFacade {
 
         // 6. 응답 생성
         OrderResult result = new OrderResult(
-            order.getId(),
-            order.getTotalPrice(),
-            order.getDiscount(),
-            order.getFinalPrice(),
-            order.getOrderedAt()
+                order.getId(),
+                order.getTotalPrice(),
+                order.getDiscount(),
+                order.getFinalPrice(),
+                order.getOrderedAt(),
+                (int) updated.point()
         );
 
         reporter.send(order.toResponse((int) updated.point()));
@@ -107,7 +108,8 @@ public class OrderFacade {
             order.getTotalPrice(),
             order.getDiscount(),
             order.getFinalPrice(),
-            order.getOrderedAt()
+            order.getOrderedAt(),
+            (int) updated.point()
         );
         return new PaymentResult(orderResult, (int) updated.point());
     }
