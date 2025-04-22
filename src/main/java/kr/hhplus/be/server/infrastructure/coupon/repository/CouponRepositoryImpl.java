@@ -41,4 +41,10 @@ public class CouponRepositoryImpl implements CouponRepository {
         return jpaRepository.findWithPessimisticLockById(couponId)
                 .toDomain(); // 혹은 .toModel() 등, 엔티티 → 도메인 변환
     }
+
+    @Override
+    public Coupon findWithOptimisticLockById(Long couponId) {
+        return jpaRepository.findWithOptimisticLockById(couponId)
+                .toDomain();
+    }
 }
