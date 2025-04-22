@@ -29,7 +29,6 @@ public class UsePointService {
      * @param amount 차감할 포인트
      * @return 차감 후의 UserPoint 객체
      */
-    @Transactional
     public UserPoint execute(long userId, long amount) {
 
         // 1. 락을 걸고 사용자 포인트 조회
