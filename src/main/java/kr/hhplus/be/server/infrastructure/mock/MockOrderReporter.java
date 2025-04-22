@@ -11,12 +11,12 @@ public class MockOrderReporter {
     private final ObjectMapper objectMapper = new ObjectMapper();
 
     public void send(OrderResponse orderResponse) {
-        System.out.println("[✅ 외부 데이터 플랫폼 전송됨]");
+        System.out.println("[외부 데이터 플랫폼 전송됨]");
         try {
             String json = objectMapper.writeValueAsString(orderResponse);
             System.out.println(json);
         } catch (JsonProcessingException e) {
-            System.out.println("[⚠️ 전송 실패] JSON 직렬화 에러");
+            System.out.println("[전송 실패] JSON 직렬화 에러");
             e.printStackTrace();
         }
     }

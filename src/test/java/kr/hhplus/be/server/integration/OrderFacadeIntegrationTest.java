@@ -55,17 +55,17 @@ class OrderFacadeIntegrationTest {
         );
         OrderRequest request = new OrderRequest(userId, items, 101L);
 
-        // ✅ OrderRequest → CreateOrderCommand 변환
+        // OrderRequest → CreateOrderCommand 변환
         CreateOrderCommand command = new CreateOrderCommand(
                 request.getUserId(),
                 request.getItems(),
                 request.getCouponId()
         );
 
-        // ✅ OrderFacade 호출
+        // OrderFacade 호출
         OrderResult result = orderFacade.order(command);
 
-        // ✅ 검증
+        // 검증
         assertThat(result).isNotNull();
         assertThat(result.orderId()).isNotNull();
         assertThat(result.finalPrice()).isEqualTo(9000); // 5000*2 - 1000

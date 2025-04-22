@@ -55,7 +55,7 @@ class IssueCouponServiceTest {
         Coupon coupon = new Coupon(1L, "중복쿠폰", 1000, 10);
 
         when(couponRepository.findWithPessimisticLockById(1L)).thenReturn(coupon);
-        when(userCouponRepository.existsByUserIdAndCouponId(userId, 1L)).thenReturn(true); // ✅ 이미 보유 상태로 설정
+        when(userCouponRepository.existsByUserIdAndCouponId(userId, 1L)).thenReturn(true); // 이미 보유 상태로 설정
 
         // when & then
         assertThrows(IllegalStateException.class, () -> useCase.execute(userId));
