@@ -5,6 +5,7 @@ import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.interfaces.api.coupon.CouponResponse;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -40,7 +41,11 @@ public class IssueCouponService {
         }
 
         // 2. 단일 쿠폰을 ID로 지정하여 비관적 락 걸고 조회
-        Coupon coupon = couponRepository.findWithPessimisticLockById(1L);  // 💡 선착순 쿠폰 ID 명시
+        Coupon coupon = couponRepository.findWithPessimisticLockById(1L);  // 선착순 쿠폰 ID 명시
+
+        // 2. 쿠폰 조회 (낙관적 락 적용)
+//        Coupon coupon = couponRepository.findById(1L)
+//                .orElseThrow(() -> new RuntimeException("쿠폰이 존재하지 않습니다."));
 
         // 3. 조건 검사 (수량 확인, 중복 확인)
         if (!coupon.canIssue()) {
@@ -54,6 +59,13 @@ public class IssueCouponService {
         // 4. 쿠폰 발급 처리
         coupon.issue();
         couponRepository.save(coupon);
+
+//        try {
+//            couponRepository.save(coupon);  // 이 시점에 version 충돌 시 OptimisticLockException 발생
+//            System.out.println("[쿠폰 저장 완료] version: " + coupon.getVersion());
+//        } catch (ObjectOptimisticLockingFailureException e) {
+//            throw new IllegalStateException("쿠폰 발급이 중복되었습니다. 다시 시도해주세요.");
+//        }
 
         // 5. 유저-쿠폰 관계 저장
         UserCoupon userCoupon = UserCoupon.create(userId, coupon.getId());

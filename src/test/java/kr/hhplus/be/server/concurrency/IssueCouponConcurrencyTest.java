@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StopWatch;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -35,6 +36,10 @@ class IssueCouponConcurrencyTest {
 
     @Test
     void 동시에_쿠폰을_발급하면_중복_발급될_수_있다() throws Exception {
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("쿠폰 동시 발급 테스트");
+
         System.out.println("\n[TEST] 쿠폰 동시 발급 테스트 시작 ===================");
 
         int threadCount = 2;
@@ -82,5 +87,8 @@ class IssueCouponConcurrencyTest {
         System.out.println("[TEST] 쿠폰 동시 발급 테스트 종료 ===================");
 
         assertThat(successCount).isLessThan(2);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
     }
 }

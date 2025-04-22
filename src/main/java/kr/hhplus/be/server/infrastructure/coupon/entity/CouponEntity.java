@@ -18,6 +18,9 @@ public class CouponEntity {
 
     private int issuedCount;
 
+    @Version
+    private int version;  // 낙관적 락용 필드
+
     protected CouponEntity() {}
 
     public CouponEntity(Long id, String name, int discountAmount, int totalQuantity, int issuedCount) {
@@ -41,10 +44,12 @@ public class CouponEntity {
     public Coupon toDomain() {
         Coupon coupon = new Coupon(id, name, discountAmount, totalQuantity);
         coupon.setIssuedCount(issuedCount);
+        coupon.setVersion(issuedCount);
         return coupon;
     }
 
     public void increaseIssuedCount() {
+        System.out.println("[쿠폰 발급] issuedCount 증가 시도 - 현재 version: " + version);
         this.issuedCount++;
     }
 
