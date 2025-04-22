@@ -29,7 +29,7 @@ class ChargePointServiceTest {
         // given
         long userId = 1L;
         long amount = 5000L;
-        UserPoint current = new UserPoint(userId, 0L, LocalDateTime.now(), LocalDateTime.now());
+        UserPoint current = new UserPoint(userId, 0L, LocalDateTime.now(), LocalDateTime.now(), 0);
 
         when(userPointRepository.findWithPessimisticLockById(userId)).thenReturn(current);
         doNothing().when(userPointRepository).save(any());

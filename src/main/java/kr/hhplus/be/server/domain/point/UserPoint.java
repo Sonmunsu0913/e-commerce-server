@@ -10,7 +10,8 @@ public record UserPoint(
     Long id,                        // 사용자 ID
     long point,                     // 현재 포인트 잔액
     LocalDateTime createdAt,        // 생성 시간
-    LocalDateTime updatedAt         // 업데이트 시간
+    LocalDateTime updatedAt,         // 업데이트 시간
+    int version                     // 낙관적 락용 필드
 ) {
 
     /**
@@ -18,7 +19,7 @@ public record UserPoint(
      */
     public static UserPoint empty(long id) {
         LocalDateTime now = LocalDateTime.now();
-        return new UserPoint(id, 0, now, now);
+        return new UserPoint(id, 0, now, now, 0);
     }
     /**
      * 포인트를 충전함
@@ -30,7 +31,7 @@ public record UserPoint(
         if (this.point + amount > 1_000_000L) {
             throw new IllegalStateException("최대 잔고를 넘을 수 없습니다. (최대: 1,000,000)");
         }
-        return new UserPoint(this.id, this.point + amount, this.createdAt, LocalDateTime.now());
+        return new UserPoint(this.id, this.point + amount, this.createdAt, LocalDateTime.now(), version);
     }
 
     /**
@@ -43,7 +44,7 @@ public record UserPoint(
         if (this.point < amount) {
             throw new IllegalStateException("포인트 부족");
         }
-        return new UserPoint(this.id, this.point - amount, this.createdAt, LocalDateTime.now());
+        return new UserPoint(this.id, this.point - amount, this.createdAt, LocalDateTime.now(), version);
     }
 
 }

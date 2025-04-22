@@ -26,7 +26,7 @@ class PointIntegrationTest {
     @Test
     void 포인트_충전_정상_동작() throws Exception {
         // 테스트용 데이터 삽입 (초기 포인트 0)
-        userPointRepository.save(new UserPoint(1L, 0L, LocalDateTime.now(), LocalDateTime.now()));
+        userPointRepository.save(new UserPoint(1L, 0L, LocalDateTime.now(), LocalDateTime.now(), 0));
 
         mockMvc.perform(post("/api/point/charge")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -47,7 +47,7 @@ class PointIntegrationTest {
     @Test
     void 포인트_사용_정상_동작() throws Exception {
         // 테스트용 데이터 삽입 (초기 포인트 2000)
-        userPointRepository.save(new UserPoint(1L, 2000L, LocalDateTime.now(), LocalDateTime.now()));
+        userPointRepository.save(new UserPoint(1L, 2000L, LocalDateTime.now(), LocalDateTime.now(), 0));
 
         mockMvc.perform(post("/api/point/use")
                 .contentType(MediaType.APPLICATION_JSON)

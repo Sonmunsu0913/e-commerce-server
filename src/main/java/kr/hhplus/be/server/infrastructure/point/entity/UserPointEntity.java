@@ -23,6 +23,8 @@ public class UserPointEntity {
 
     private LocalDateTime updatedAt;
 
+    @Version
+    private int version;  // 낙관적 락용 필드
 
     protected UserPointEntity() {}
 
@@ -34,11 +36,19 @@ public class UserPointEntity {
     }
 
     public static UserPointEntity from(UserPoint domain) {
-        return new UserPointEntity(domain.id(), domain.point(), domain.createdAt(), domain.updatedAt());
+        UserPointEntity entity = new UserPointEntity(
+            domain.id(),
+            domain.point(),
+            domain.createdAt(),
+            domain.updatedAt()
+        );
+        entity.version = domain.version(); // 🔥 version 값을 명시적으로 세팅!
+        return entity;
     }
 
+
     public UserPoint toDomain() {
-        return new UserPoint(id, point, createdAt, updatedAt);
+        return new UserPoint(id, point, createdAt, updatedAt, version);
     }
 
     public Long getId() {

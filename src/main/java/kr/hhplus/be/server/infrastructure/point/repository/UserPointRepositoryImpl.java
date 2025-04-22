@@ -32,5 +32,11 @@ public class UserPointRepositoryImpl implements UserPointRepository {
                 .map(UserPointEntity::toDomain)
                 .orElse(UserPoint.empty(userId)); // 혹은 예외 던지기
     }
+
+    @Override
+    public UserPoint findWithOptimisticLockById(long userId) {
+        return jpaRepo.findWithOptimisticLockById(userId)
+            .toDomain();
+    }
 }
 

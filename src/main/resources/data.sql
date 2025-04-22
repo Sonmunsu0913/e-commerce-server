@@ -5,8 +5,8 @@ DELETE FROM user_point;
 DELETE FROM product;
 
 -- 유저 포인트 초기화
-INSERT INTO user_point (id, point, created_at, updated_at)
-SELECT seq.id, 100000, NOW(), NOW()
+INSERT INTO user_point (id, point, created_at, updated_at, version)
+SELECT seq.id, 100000, NOW(), NOW(), 0
 FROM (
  SELECT 1 AS id UNION SELECT 2 UNION SELECT 3 UNION SELECT 4 UNION SELECT 5
  UNION SELECT 6 UNION SELECT 7 UNION SELECT 8 UNION SELECT 9 UNION SELECT 10

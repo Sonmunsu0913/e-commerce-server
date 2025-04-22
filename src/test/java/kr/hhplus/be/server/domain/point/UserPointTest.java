@@ -19,14 +19,14 @@ void 포인트_정상_충전() {
 
 @Test
 void 포인트_과도한_충전_예외() {
-    UserPoint userPoint = new UserPoint(1L, 999_000L, now(), now());
+    UserPoint userPoint = new UserPoint(1L, 999_000L, now(), now(), 0);
 
     assertThrows(IllegalStateException.class, () -> userPoint.charge(2000L));
 }
 
 @Test
 void 포인트_정상_사용() {
-    UserPoint userPoint = new UserPoint(1L, 5000L, now(), now());
+    UserPoint userPoint = new UserPoint(1L, 5000L, now(), now(), 0);
 
     UserPoint used = userPoint.use(3000L);
 
@@ -35,7 +35,7 @@ void 포인트_정상_사용() {
 
 @Test
 void 포인트_부족_사용_예외() {
-    UserPoint userPoint = new UserPoint(1L, 1000L, now(), now());
+    UserPoint userPoint = new UserPoint(1L, 1000L, now(), now(), 0);
 
     assertThrows(IllegalStateException.class, () -> userPoint.use(2000L));
 }

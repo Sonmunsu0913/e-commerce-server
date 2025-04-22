@@ -24,7 +24,7 @@ class GetUserPointServiceTest {
     void 포인트_조회_정상() {
         // given
         long userId = 1L;
-        UserPoint userPoint = new UserPoint(userId, 1000L, LocalDateTime.now(), LocalDateTime.now());
+        UserPoint userPoint = new UserPoint(userId, 1000L, LocalDateTime.now(), LocalDateTime.now(), 0);
 
         when(userPointRepository.findById(userId)).thenReturn(userPoint);
 

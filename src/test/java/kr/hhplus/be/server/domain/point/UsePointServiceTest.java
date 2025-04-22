@@ -32,7 +32,7 @@ class UsePointServiceTest {
         // given
         long userId = 1L;
         long amount = 3000L;
-        UserPoint current = new UserPoint(userId, 5000L, LocalDateTime.now(), LocalDateTime.now());
+        UserPoint current = new UserPoint(userId, 5000L, LocalDateTime.now(), LocalDateTime.now(), 0);
 
         when(userPointRepository.findWithPessimisticLockById(userId)).thenReturn(current);
         doNothing().when(userPointRepository).save(any());
@@ -52,7 +52,7 @@ class UsePointServiceTest {
         // given
         long userId = 1L;
         long amount = 10_000L;
-        UserPoint current = new UserPoint(userId, 3000L, LocalDateTime.now(), LocalDateTime.now());
+        UserPoint current = new UserPoint(userId, 3000L, LocalDateTime.now(), LocalDateTime.now(), 0);
 
         when(userPointRepository.findWithPessimisticLockById(userId)).thenReturn(current);
 

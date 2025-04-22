@@ -13,6 +13,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.util.StopWatch;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
@@ -29,11 +30,15 @@ class ChargePointConcurrencyTest {
 
     @BeforeEach
     void setUp() {
-        userPointRepository.save(new UserPoint(1L, 2000L, LocalDateTime.now(), LocalDateTime.now()));
+        userPointRepository.save(new UserPoint(1L, 2000L, LocalDateTime.now(), LocalDateTime.now(), 0));
     }
 
     @Test
     void 동시에_충전하면_합산_정확하지_않을_수_있다() throws Exception {
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("포인트 동시 충전 발급 테스트");
+
         System.out.println("\n[TEST] 포인트 동시 충전 테스트 시작 ===================");
 
         int threadCount = 10;
@@ -75,5 +80,8 @@ class ChargePointConcurrencyTest {
 
         System.out.println("💸 실제 잔액 = " + actual);
         System.out.println("[TEST] 포인트 동시 충전 테스트 종료 ===================");
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
     }
 }

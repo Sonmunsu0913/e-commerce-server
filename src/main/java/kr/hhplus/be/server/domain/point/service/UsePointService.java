@@ -5,6 +5,7 @@ import kr.hhplus.be.server.domain.point.UserPointRepository;
 import kr.hhplus.be.server.domain.point.*;
 
 import java.time.LocalDateTime;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -34,11 +35,19 @@ public class UsePointService {
         // 1. 락을 걸고 사용자 포인트 조회
         UserPoint current = userPointRepository.findWithPessimisticLockById(userId);
 
+//        UserPoint current = userPointRepository.findWithOptimisticLockById(userId);
+
         // 2. 포인트 차감
         UserPoint updated = current.use(amount);
 
         // 3. 차감된 포인트 저장
         userPointRepository.save(updated);
+
+//        try {
+//            userPointRepository.save(updated);
+//        } catch (ObjectOptimisticLockingFailureException e) {
+//            throw new IllegalStateException("포인트 사용 중 충돌이 발생했습니다. 다시 시도해주세요.");
+//        }
 
         // 4. 포인트 사용 내역 저장
         LocalDateTime now = LocalDateTime.now();
@@ -56,6 +65,6 @@ public class UsePointService {
     }
 
     public void init(Long userId) {
-        userPointRepository.save(new UserPoint(userId, 0L, LocalDateTime.now(), LocalDateTime.now()));
+        userPointRepository.save(new UserPoint(userId, 0L, LocalDateTime.now(), LocalDateTime.now(), 0));
     }
 }
