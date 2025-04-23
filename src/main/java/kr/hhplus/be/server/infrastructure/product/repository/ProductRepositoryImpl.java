@@ -41,4 +41,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     public Product findWithPessimisticLockById(Long id) {
         return jpaRepository.findWithPessimisticLockById(id).toDomain();
     }
+
+    @Override
+    public Product findWithOptimisticLockById(Long productId) {
+        return jpaRepository.findWithOptimisticLockById(productId).toDomain();
+    }
 }

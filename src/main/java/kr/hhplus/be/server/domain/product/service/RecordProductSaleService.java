@@ -4,6 +4,7 @@ import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.product.ProductSaleRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSale;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,8 +28,10 @@ public class RecordProductSaleService {
         // 1. 판매 이력 저장
         productSaleRepository.save(sale);
 
-        // 2. 상품 조회 (비관적 락) + 예외 처리
+        // 2. 상품 조회 (락) + 예외 처리
         Product product = productRepository.findWithPessimisticLockById(sale.productId());
+//        Product product = productRepository.findWithOptimisticLockById(sale.productId());
+
         if (product == null) {
             throw new IllegalArgumentException("존재하지 않는 상품입니다: " + sale.productId());
         }

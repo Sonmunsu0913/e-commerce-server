@@ -80,6 +80,7 @@ class UsePointConcurrencyTest {
         System.out.println("성공: " + successCount.get());
         System.out.println("실패: " + failCount.get());
         System.out.println("최종 잔액: " + finalPoint);
+        System.out.println("[TEST] 포인트 동시 사용 테스트 종료 ===================");
 
         assertThat(finalPoint).isEqualTo(expectedPoint);
 

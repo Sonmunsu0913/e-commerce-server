@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StopWatch;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -45,6 +46,10 @@ class OrderConcurrencyTest {
 
     @Test
     void 동시에_주문하면_재고가_초과될_수_있다() throws Exception {
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("동시 주문 테스트");
+
         System.out.println("\n[TEST] 동시 주문 시 재고 초과 테스트 시작 ===================");
 
         int threadCount = 2;
@@ -91,5 +96,8 @@ class OrderConcurrencyTest {
         System.out.println("[TEST] 동시 주문 테스트 종료 ===================");
 
         assertThat(successCount).isLessThan(2);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
     }
 }
