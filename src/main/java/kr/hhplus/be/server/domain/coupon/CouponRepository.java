@@ -14,4 +14,6 @@ public interface CouponRepository {
 
     Coupon findWithOptimisticLockById(Long couponId);  // 낙관적 락 메서드
 
+    boolean existsById(Long couponId);
+
 }

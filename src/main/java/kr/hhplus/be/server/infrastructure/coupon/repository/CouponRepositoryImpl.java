@@ -47,4 +47,9 @@ public class CouponRepositoryImpl implements CouponRepository {
         return jpaRepository.findWithOptimisticLockById(couponId)
                 .toDomain();
     }
+
+    @Override
+    public boolean existsById(Long couponId) {
+        return jpaRepository.existsById(couponId);
+    }
 }
