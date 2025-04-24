@@ -2,13 +2,17 @@ package kr.hhplus.be.server.infrastructure.product.entity;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.product.Product;
+import lombok.Getter;
 
 @Entity
+@Getter
 @Table(name = "product")
 public class ProductEntity {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
 
     private String name;
 

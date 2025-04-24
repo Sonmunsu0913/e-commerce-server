@@ -1,7 +1,7 @@
 package kr.hhplus.be.server.common.config;
 
 import kr.hhplus.be.server.common.interceptor.AuthInterceptor;
-import org.springframework.beans.factory.annotation.Autowired;
+import kr.hhplus.be.server.common.interceptor.ProductAuthInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.*;
 
@@ -9,15 +9,21 @@ import org.springframework.web.servlet.config.annotation.*;
 public class WebConfig implements WebMvcConfigurer {
 
     private final AuthInterceptor authInterceptor;
+    private final ProductAuthInterceptor productAuthInterceptor;
 
-    @Autowired
-    public WebConfig(AuthInterceptor authInterceptor) {
+    public WebConfig(AuthInterceptor authInterceptor,
+        ProductAuthInterceptor productAuthInterceptor) {
         this.authInterceptor = authInterceptor;
+        this.productAuthInterceptor = productAuthInterceptor;
     }
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-            .addPathPatterns("/api/admin/**");  // 관리자 API에만 적용
+            .addPathPatterns("/api/admin/**");
+
+        registry.addInterceptor(productAuthInterceptor)
+            .addPathPatterns("/api/product/register");
     }
 }
+
