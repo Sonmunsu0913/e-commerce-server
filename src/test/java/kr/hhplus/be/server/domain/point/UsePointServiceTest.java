@@ -48,7 +48,7 @@ class UsePointServiceTest {
     }
 
     @Test
-    void 포인트_부족_사용_예외() {
+    void 포인트가_부족한_경우_포인트_차감시_IllegalStateException을_발생시킨다() {
         // given
         long userId = 1L;
         long amount = 10_000L;
