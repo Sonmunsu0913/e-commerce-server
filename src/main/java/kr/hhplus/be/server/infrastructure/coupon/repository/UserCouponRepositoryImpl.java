@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.infrastructure.coupon.repository;
 
+import java.util.Optional;
 import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.infrastructure.coupon.entity.UserCouponEntity;
@@ -32,5 +33,11 @@ public class UserCouponRepositoryImpl implements UserCouponRepository {
         return jpaRepository.findAllByUserId(userId).stream()
                 .map(UserCouponEntity::toDomain)
                 .collect(Collectors.toList());
+    }
+
+    @Override
+    public Optional<UserCoupon> findByUserIdAndCouponId(Long userId, Long couponId) {
+        return jpaRepository.findByUserIdAndCouponId(userId, couponId)
+            .map(UserCouponEntity::toDomain);
     }
 }

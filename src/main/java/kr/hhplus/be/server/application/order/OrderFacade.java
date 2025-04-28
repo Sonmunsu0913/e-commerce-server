@@ -1,5 +1,9 @@
 package kr.hhplus.be.server.application.order;
 
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.service.GetCouponService;
+import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
 import kr.hhplus.be.server.domain.order.service.GetOrderService;
 import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
@@ -27,6 +31,8 @@ public class OrderFacade {
     private final GetUserPointService getUserPointService;
     private final RecordProductSaleService recordProductSaleService;
     private final MockOrderReporter reporter;
+    private final GetUserCouponService getUserCouponService;
+    private final GetCouponService getCouponService;
 
     public OrderFacade(CreateOrderService createOrderService,
                        GetOrderService getOrderService,
@@ -34,7 +40,8 @@ public class OrderFacade {
                        UsePointService usePointService,
                        GetUserPointService getUserPointService,
                        RecordProductSaleService recordProductSaleService,
-                       MockOrderReporter reporter) {
+                       MockOrderReporter reporter, GetUserCouponService getUserCouponService,
+                       GetCouponService getCouponService) {
         this.createOrderService = createOrderService;
         this.getOrderService = getOrderService;
         this.validatePaymentService = validatePaymentService;
@@ -42,9 +49,31 @@ public class OrderFacade {
         this.getUserPointService = getUserPointService;
         this.recordProductSaleService = recordProductSaleService;
         this.reporter = reporter;
+        this.getUserCouponService = getUserCouponService;
+        this.getCouponService = getCouponService;
     }
 
     public OrderResult order(CreateOrderCommand command) {
+
+        // 0. 쿠폰 처리 준비
+        int discountAmount = 0;
+        UserCoupon userCoupon = null;
+        if (command.couponId() != null) {
+            // 0-1. 사용자 보유 쿠폰 조회
+            userCoupon = getUserCouponService.execute(command.userId(), command.couponId());
+
+            // 0-2. 쿠폰 사용 여부 체크
+            if (userCoupon.isUsed()) {
+                throw new IllegalStateException("이미 사용한 쿠폰입니다.");
+            }
+
+            // 0-3. 쿠폰 상세 조회
+            Coupon coupon = getCouponService.execute(command.couponId());
+
+            // 0-4. 할인 금액 추출
+            discountAmount = coupon.getDiscountAmount();
+        }
+
         // 1. 주문 생성
         Order order = createOrderService.execute(
             command.userId(),

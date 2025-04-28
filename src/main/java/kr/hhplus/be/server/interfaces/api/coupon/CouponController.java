@@ -5,7 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
-import kr.hhplus.be.server.domain.coupon.service.GetUserCouponsService;
+import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
 import kr.hhplus.be.server.domain.coupon.service.IssueCouponService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,11 +15,11 @@ import org.springframework.web.bind.annotation.*;
 @Tag(name = "Coupon", description = "쿠폰 API")
 public class CouponController {
 
-    private final GetUserCouponsService getUserCouponsService;
+    private final GetUserCouponService getUserCouponService;
     private final IssueCouponService issueCouponService;
 
-    public CouponController(GetUserCouponsService getUserCouponsService, IssueCouponService issueCouponService) {
-        this.getUserCouponsService = getUserCouponsService;
+    public CouponController(GetUserCouponService getUserCouponService, IssueCouponService issueCouponService) {
+        this.getUserCouponService = getUserCouponService;
         this.issueCouponService = issueCouponService;
     }
 
@@ -29,7 +29,7 @@ public class CouponController {
             @Parameter(description = "사용자 ID", example = "1")
             @PathVariable Long userId
     ) {
-        return ResponseEntity.ok(getUserCouponsService.execute(userId));
+        return ResponseEntity.ok(getUserCouponService.execute(userId));
     }
 
     @PostMapping("/{userId}")
