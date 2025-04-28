@@ -22,6 +22,15 @@ public class OrderRequest {
 
     @Schema(description = "사용할 쿠폰 ID (선택)", example = "101")
     private Long couponId;
+
+    /**
+     * 쿠폰 없이 주문 생성하는 경우 사용하는 생성자
+     */
+    public OrderRequest(Long userId, List<OrderItemCommand> items) {
+        this.userId = userId;
+        this.items = items;
+        this.couponId = null;  // 쿠폰 미사용
+    }
 }
 
 

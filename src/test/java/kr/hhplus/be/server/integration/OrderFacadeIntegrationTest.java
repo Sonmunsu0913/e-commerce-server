@@ -5,6 +5,8 @@ import kr.hhplus.be.server.application.order.OrderResult;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.application.order.OrderFacade;
 import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.order.OrderItemCommand;
 import kr.hhplus.be.server.interfaces.api.order.OrderRequest;
@@ -39,6 +41,9 @@ class OrderFacadeIntegrationTest {
     @Autowired
     private CouponRepository couponRepository;
 
+    @Autowired
+    private UserCouponRepository userCouponRepository;
+
     private Long userId = 1L;
 
     @BeforeEach
@@ -46,6 +51,7 @@ class OrderFacadeIntegrationTest {
         userPointRepository.save(new UserPoint(userId, 20000, LocalDateTime.now(), LocalDateTime.now(), 0));
         productRepository.save(new Product(1L, "화과자", 5000, 5));
         couponRepository.save(new Coupon(101L, "1000원 할인 쿠폰", 1000, 10));
+        userCouponRepository.save(UserCoupon.create(userId, 101L));
     }
 
     @Test

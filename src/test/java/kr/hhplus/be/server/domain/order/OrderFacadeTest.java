@@ -3,6 +3,10 @@ package kr.hhplus.be.server.domain.order;
 import kr.hhplus.be.server.application.order.CreateOrderCommand;
 import kr.hhplus.be.server.application.order.OrderFacade;
 import kr.hhplus.be.server.application.order.OrderResult;
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.service.GetCouponService;
+import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
 import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
 import kr.hhplus.be.server.domain.point.service.GetUserPointService;
@@ -39,6 +43,8 @@ class OrderFacadeTest {
     @Mock private UsePointService usePointService;
     @Mock private GetUserPointService getUserPointService;
     @Mock private RecordProductSaleService recordProductSaleService;
+    @Mock private GetUserCouponService getUserCouponService;
+    @Mock private GetCouponService getCouponService;
     @Mock private MockOrderReporter reporter;
 
     @Test
@@ -112,6 +118,15 @@ class OrderFacadeTest {
         UserPoint currentPointInfo = new UserPoint(userId, 20000, LocalDateTime.now(), LocalDateTime.now(), 0);
         UserPoint updatedPoint = new UserPoint(userId, 20000 - finalPrice, LocalDateTime.now(), LocalDateTime.now(), 0);
 
+        // ✨ 추가: 쿠폰, 유저쿠폰 생성
+        UserCoupon userCoupon = new UserCoupon(couponId, userId, false, LocalDateTime.now());
+        Coupon coupon = new Coupon(couponId, "테스트 쿠폰", discount, 100);
+
+        // ✨ 추가: 쿠폰 관련 mock 세팅
+        given(getUserCouponService.execute(userId, couponId)).willReturn(userCoupon);
+        given(getCouponService.execute(couponId)).willReturn(coupon);
+
+        // 기본 Mock 세팅
         given(getUserPointService.execute(userId)).willReturn(currentPointInfo);
         given(createOrderService.execute(userId, items, couponId)).willReturn(order);
         willDoNothing().given(validatePaymentService).execute(order, (int) currentPointInfo.point());
