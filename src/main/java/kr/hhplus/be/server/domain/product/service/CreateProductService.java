@@ -19,9 +19,9 @@ public class CreateProductService {
     public void create(CreateProductCommand command) {
         ProductEntity product = new ProductEntity(
             null,
-            command.name(),
-            command.price(),
-            command.stock()
+            command.getName(),
+            command.getPrice(),
+            command.getStock()
         );
         productRepository.save(product);
     }

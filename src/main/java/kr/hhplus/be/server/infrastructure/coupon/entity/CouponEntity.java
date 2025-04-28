@@ -2,9 +2,17 @@ package kr.hhplus.be.server.infrastructure.coupon.entity;
 
 import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.coupon.Coupon;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
+
+@Getter
 @Entity
 @Table(name = "coupon")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class CouponEntity {
 
     @Id
@@ -21,23 +29,14 @@ public class CouponEntity {
     @Version
     private int version;  // 낙관적 락용 필드
 
-    protected CouponEntity() {}
-
-    public CouponEntity(Long id, String name, int discountAmount, int totalQuantity, int issuedCount) {
-        this.id = id;
-        this.name = name;
-        this.discountAmount = discountAmount;
-        this.totalQuantity = totalQuantity;
-        this.issuedCount = issuedCount;
-    }
-
     public static CouponEntity from(Coupon coupon) {
         return new CouponEntity(
-                coupon.getId(),
-                coupon.getName(),
-                coupon.getDiscountAmount(),
-                coupon.getTotalQuantity(),
-                coupon.getIssuedCount()
+            coupon.getId(),
+            coupon.getName(),
+            coupon.getDiscountAmount(),
+            coupon.getTotalQuantity(),
+            coupon.getIssuedCount(),
+            0
         );
     }
 
@@ -52,5 +51,4 @@ public class CouponEntity {
         System.out.println("[쿠폰 발급] issuedCount 증가 시도 - 현재 version: " + version);
         this.issuedCount++;
     }
-
 }

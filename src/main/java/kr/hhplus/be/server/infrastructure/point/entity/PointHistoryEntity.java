@@ -1,18 +1,22 @@
 package kr.hhplus.be.server.infrastructure.point.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import kr.hhplus.be.server.domain.point.PointHistory;
 import kr.hhplus.be.server.domain.point.PointTransactionType;
-
 import java.time.LocalDateTime;
 
+@Getter
 @Entity
 @Table(
-        name = "point_history",
-        indexes = {
-                @Index(name = "idx_user_id", columnList = "userId")
-        }
+    name = "point_history",
+    indexes = {
+        @Index(name = "idx_user_id", columnList = "userId")
+    }
 )
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class PointHistoryEntity {
 
     @Id
@@ -20,17 +24,13 @@ public class PointHistoryEntity {
     private Long id;
 
     private long userId;
-
     private long amount;
 
     @Enumerated(EnumType.STRING)
     private PointTransactionType type;
 
     private LocalDateTime createdAt;
-
     private LocalDateTime updatedAt;
-
-    protected PointHistoryEntity() {}
 
     public PointHistoryEntity(long userId, long amount, PointTransactionType type, LocalDateTime createdAt, LocalDateTime updatedAt) {
         this.userId = userId;
@@ -40,17 +40,13 @@ public class PointHistoryEntity {
         this.updatedAt = updatedAt;
     }
 
-    public Long getId() {
-        return id;
-    }
-
     public static PointHistoryEntity from(PointHistory domain) {
         return new PointHistoryEntity(
-                domain.userId(),
-                domain.amount(),
-                domain.type(),
-                domain.createdAt(),
-                domain.updatedAt()
+            domain.userId(),
+            domain.amount(),
+            domain.type(),
+            domain.createdAt(),
+            domain.updatedAt()
         );
     }
 
@@ -58,4 +54,3 @@ public class PointHistoryEntity {
         return new PointHistory(id, userId, amount, type, createdAt, updatedAt);
     }
 }
-

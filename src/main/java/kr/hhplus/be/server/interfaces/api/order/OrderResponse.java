@@ -1,12 +1,11 @@
 package kr.hhplus.be.server.interfaces.api.order;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import lombok.Getter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import io.swagger.v3.oas.annotations.media.Schema;
 
 @Getter
 @AllArgsConstructor
@@ -29,6 +28,6 @@ public class OrderResponse {
     private Integer pointAfterPayment;
 
     @Schema(description = "주문 시간", example = "2025-04-02T14:30:00")
-    private String orderedAt;
+    private LocalDateTime orderedAt;
 }
 
