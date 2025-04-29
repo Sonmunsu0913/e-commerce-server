@@ -32,12 +32,12 @@ public class OrderController {
         OrderResult result = orderFacade.order(command);
 
         return ResponseEntity.ok(new OrderResponse(
-            result.orderId(),
-            result.totalPrice(),
-            result.discount(),
-            result.finalPrice(),
-            0,  // 결제 후 포인트 등 추가로 처리 가능
-            result.orderedAt()
+                result.orderId(),
+                result.totalPrice(),
+                result.discount(),
+                result.finalPrice(),
+                result.pointAfterPayment(),
+                result.orderedAt()
         ));
     }
 }

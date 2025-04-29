@@ -21,7 +21,7 @@ export default function () {
     const res = http.post('http://localhost:8080/api/order', payload, { headers });
 
     const success = check(res, {
-        '✅ status is 200': (r) => r.status === 200,
+        'status is 200': (r) => r.status === 200,
     });
 
     if (!success) {

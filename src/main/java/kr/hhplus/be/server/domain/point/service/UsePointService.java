@@ -1,10 +1,11 @@
 package kr.hhplus.be.server.domain.point.service;
 
 import kr.hhplus.be.server.domain.point.PointHistoryRepository;
-import kr.hhplus.be.server.domain.point.PointRepository;
+import kr.hhplus.be.server.domain.point.UserPointRepository;
 import kr.hhplus.be.server.domain.point.*;
 
 import java.time.LocalDateTime;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -12,19 +13,43 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional
 public class UsePointService {
 
-    private final PointRepository pointRepository;
+    private final UserPointRepository userPointRepository;
     private final PointHistoryRepository pointHistoryRepository;
 
-    public UsePointService(PointRepository pointRepository, PointHistoryRepository pointHistoryRepository) {
-        this.pointRepository = pointRepository;
+    public UsePointService(UserPointRepository userPointRepository, PointHistoryRepository pointHistoryRepository) {
+        this.userPointRepository = userPointRepository;
         this.pointHistoryRepository = pointHistoryRepository;
     }
 
+    /**
+     * 사용자의 포인트를 차감합니다.
+     * - 동시성 문제를 방지하기 위해 Pessimistic Lock을 사용하여 UserPoint를 조회합니다.
+     * - 트랜잭션으로 묶어 정합성을 보장합니다.
+     *
+     * @param userId 사용자 ID
+     * @param amount 차감할 포인트
+     * @return 차감 후의 UserPoint 객체
+     */
     public UserPoint execute(long userId, long amount) {
-        UserPoint current = pointRepository.findById(userId);
-        UserPoint updated = current.use(amount);
-        pointRepository.save(updated);
 
+        // 1. 락을 걸고 사용자 포인트 조회
+        UserPoint current = userPointRepository.findWithPessimisticLockById(userId);
+
+//        UserPoint current = userPointRepository.findWithOptimisticLockById(userId);
+
+        // 2. 포인트 차감
+        UserPoint updated = current.use(amount);
+
+        // 3. 차감된 포인트 저장
+        userPointRepository.save(updated);
+
+//        try {
+//            userPointRepository.save(updated);
+//        } catch (ObjectOptimisticLockingFailureException e) {
+//            throw new IllegalStateException("포인트 사용 중 충돌이 발생했습니다. 다시 시도해주세요.");
+//        }
+
+        // 4. 포인트 사용 내역 저장
         LocalDateTime now = LocalDateTime.now();
         PointHistory history = new PointHistory(
             null,
@@ -40,6 +65,6 @@ public class UsePointService {
     }
 
     public void init(Long userId) {
-        pointRepository.save(new UserPoint(userId, 0L, LocalDateTime.now(), LocalDateTime.now()));
+        userPointRepository.save(new UserPoint(userId, 0L, LocalDateTime.now(), LocalDateTime.now(), 0));
     }
 }

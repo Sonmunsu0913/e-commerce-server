@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StopWatch;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -35,6 +36,12 @@ class IssueCouponConcurrencyTest {
 
     @Test
     void 동시에_쿠폰을_발급하면_중복_발급될_수_있다() throws Exception {
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("쿠폰 동시 발급 테스트");
+
+        System.out.println("\n[TEST] 쿠폰 동시 발급 테스트 시작 ===================");
+
         int threadCount = 2;
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -42,10 +49,17 @@ class IssueCouponConcurrencyTest {
         List<Future<ResponseEntity<String>>> futures = new ArrayList<>();
 
         for (int i = 0; i < threadCount; i++) {
-            long userId = i + 1;
+            final long userId = i + 1;
+            final int idx = i;
             futures.add(executor.submit(() -> {
                 try {
-                    return restTemplate.postForEntity("/api/coupon/" + userId, null, String.class);
+                    System.out.println("[" + idx + "] 쿠폰 발급 시도 (userId = " + userId + ")");
+                    ResponseEntity<String> resp = restTemplate.postForEntity("/api/coupon/" + userId, null, String.class);
+                    System.out.println("[" + idx + "] 응답 코드: " + resp.getStatusCode());
+                    return resp;
+                } catch (Exception e) {
+                    System.out.println("[" + idx + "] 쿠폰 발급 실패: " + e.getMessage());
+                    return null;
                 } finally {
                     latch.countDown();
                 }
@@ -54,29 +68,27 @@ class IssueCouponConcurrencyTest {
 
         latch.await();
 
-        // 응답 출력
-//        futures.forEach(f -> {
-//            try {
-//                var resp = f.get();
-//                System.out.println("응답 코드: " + resp.getStatusCode());
-//                System.out.println("응답 본문: " + resp.getBody());
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
+        long successCount = 0;
 
-        long successCount = futures.stream()
-                .map(f -> {
-                    try {
-                        return f.get();
-                    } catch (Exception e) {
-                        return null;
-                    }
-                })
-                .filter(resp -> resp != null && resp.getStatusCode().is2xxSuccessful())
-                .count();
+        for (int i = 0; i < futures.size(); i++) {
+            try {
+                ResponseEntity<String> resp = futures.get(i).get();
+                if (resp != null && resp.getStatusCode().is2xxSuccessful()) {
+                    System.out.println("[UserId = " + (i + 1) + "] 쿠폰 발급 성공");
+                    successCount++;
+                } else {
+                    System.out.println("[UserId = " + (i + 1) + "] 쿠폰 발급 실패 - 응답 코드: " + (resp != null ? resp.getStatusCode() : "null"));
+                }
+            } catch (Exception e) {
+                System.out.println("[UserId = " + (i + 1) + "] 쿠폰 발급 실패 - 예외 발생: " + e.getMessage());
+            }
+        }
+        System.out.println("총 성공 응답 수: " + successCount);
+        System.out.println("[TEST] 쿠폰 동시 발급 테스트 종료 ===================");
 
-        System.out.println("성공 응답 수: " + successCount);
-        assertThat(successCount).isLessThan(2);  // 둘 다 성공하면 동시성 문제 발생
+        assertThat(successCount).isLessThan(2);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
     }
 }

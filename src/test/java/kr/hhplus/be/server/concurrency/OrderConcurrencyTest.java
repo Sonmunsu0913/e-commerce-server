@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.web.client.TestRestTemplate;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.StopWatch;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
@@ -45,6 +46,12 @@ class OrderConcurrencyTest {
 
     @Test
     void 동시에_주문하면_재고가_초과될_수_있다() throws Exception {
+
+        StopWatch stopWatch = new StopWatch();
+        stopWatch.start("동시 주문 테스트");
+
+        System.out.println("\n[TEST] 동시 주문 시 재고 초과 테스트 시작 ===================");
+
         int threadCount = 2;
         ExecutorService executor = Executors.newFixedThreadPool(threadCount);
         CountDownLatch latch = new CountDownLatch(threadCount);
@@ -52,31 +59,27 @@ class OrderConcurrencyTest {
         List<Future<ResponseEntity<String>>> futures = new ArrayList<>();
 
         for (int i = 0; i < threadCount; i++) {
+            final int idx = i;
             futures.add(executor.submit(() -> {
                 try {
+                    System.out.println("[" + idx + "] 주문 요청 시도");
                     OrderRequest request = new OrderRequest(
                             1L,
-                            List.of(new OrderItemCommand(1L, "재고 테스트 상품", 1000, 3))  // ✔️ 모든 필드 포함
+                            List.of(new OrderItemCommand(1L, "재고 테스트 상품", 1000, 3))
                     );
-                    return restTemplate.postForEntity("/api/order", request, String.class);
+                    ResponseEntity<String> resp = restTemplate.postForEntity("/api/order", request, String.class);
+                    System.out.println("[" + idx + "] 응답 코드: " + resp.getStatusCode());
+                    return resp;
+                } catch (Exception e) {
+                    System.out.println("[" + idx + "] 요청 실패: " + e.getMessage());
+                    return null;
                 } finally {
                     latch.countDown();
                 }
             }));
         }
 
-        latch.await();  // 모든 스레드 종료 대기
-
-        // 응답 상태 코드 출력 (디버깅용)
-//        futures.stream().forEach(f -> {
-//            try {
-//                var resp = f.get();
-//                System.out.println("응답 코드: " + (resp != null ? resp.getStatusCode() : "null"));
-//                System.out.println("응답 본문: " + (resp != null ? resp.getBody() : "null"));
-//            } catch (Exception e) {
-//                e.printStackTrace();
-//            }
-//        });
+        latch.await();
 
         long successCount = futures.stream()
                 .map(f -> {
@@ -90,7 +93,11 @@ class OrderConcurrencyTest {
                 .count();
 
         System.out.println("성공 응답 수: " + successCount);
+        System.out.println("[TEST] 동시 주문 테스트 종료 ===================");
 
-        assertThat(successCount).isLessThan(2);  // 둘 다 성공하면 재고 초과 → 실패해야 정상
+        assertThat(successCount).isLessThan(2);
+
+        stopWatch.stop();
+        System.out.println(stopWatch.prettyPrint());
     }
 }

@@ -55,8 +55,8 @@ class OrderFacadeTest {
         int finalPrice = totalPrice - discount;
 
         Order order = new Order(1L, userId, items, discount);
-        UserPoint currentPointInfo = new UserPoint(userId, 20000, LocalDateTime.now(), LocalDateTime.now());
-        UserPoint updatedPoint = new UserPoint(userId, 20000 - finalPrice, LocalDateTime.now(), LocalDateTime.now());
+        UserPoint currentPointInfo = new UserPoint(userId, 20000, LocalDateTime.now(), LocalDateTime.now(), 0);
+        UserPoint updatedPoint = new UserPoint(userId, 20000 - finalPrice, LocalDateTime.now(), LocalDateTime.now(), 0);
 
         given(getUserPointService.execute(userId)).willReturn(currentPointInfo);
         given(createOrderService.execute(userId, items, couponId)).willReturn(order);
@@ -109,8 +109,8 @@ class OrderFacadeTest {
         int finalPrice = totalPrice - discount;
 
         Order order = new Order(1L, userId, items, discount);
-        UserPoint currentPointInfo = new UserPoint(userId, 20000, LocalDateTime.now(), LocalDateTime.now());
-        UserPoint updatedPoint = new UserPoint(userId, 20000 - finalPrice, LocalDateTime.now(), LocalDateTime.now());
+        UserPoint currentPointInfo = new UserPoint(userId, 20000, LocalDateTime.now(), LocalDateTime.now(), 0);
+        UserPoint updatedPoint = new UserPoint(userId, 20000 - finalPrice, LocalDateTime.now(), LocalDateTime.now(), 0);
 
         given(getUserPointService.execute(userId)).willReturn(currentPointInfo);
         given(createOrderService.execute(userId, items, couponId)).willReturn(order);

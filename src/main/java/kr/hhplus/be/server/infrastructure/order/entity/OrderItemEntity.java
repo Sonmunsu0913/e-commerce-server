@@ -62,7 +62,7 @@ public class OrderItemEntity {
         return order;
     }
 
-    // ✅ 추가된 getter
+    // 추가된 getter
     public Long getId() { return id; }
     public Long getProductId() { return productId; }
     public String getProductName() { return productName; }

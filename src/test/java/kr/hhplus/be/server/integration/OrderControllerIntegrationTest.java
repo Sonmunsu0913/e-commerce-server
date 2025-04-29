@@ -1,6 +1,6 @@
 package kr.hhplus.be.server.integration;
 
-import kr.hhplus.be.server.domain.point.PointRepository;
+import kr.hhplus.be.server.domain.point.UserPointRepository;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.point.UserPoint;
@@ -31,7 +31,7 @@ class OrderControllerIntegrationTest {
     private ProductRepository productRepository;
 
     @Autowired
-    private PointRepository pointRepository;
+    private UserPointRepository userPointRepository;
 
     @Autowired
     private CouponRepository couponRepository;
@@ -42,7 +42,7 @@ class OrderControllerIntegrationTest {
         productRepository.save(new Product(1L, "화과자", 5000, 10));
 
         // 포인트 충전
-        pointRepository.save(new UserPoint(1L, 20000, LocalDateTime.now(), LocalDateTime.now()));
+        userPointRepository.save(new UserPoint(1L, 20000, LocalDateTime.now(), LocalDateTime.now(), 0));
 
         // 쿠폰 등록
         couponRepository.save(new Coupon(101L, "1000원 할인 쿠폰", 1000, 5));

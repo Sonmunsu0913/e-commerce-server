@@ -4,6 +4,9 @@ import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.product.ProductSaleRepository;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductSale;
+import kr.hhplus.be.server.infrastructure.product.repository.JpaProductRepository;
+import kr.hhplus.be.server.infrastructure.product.repository.JpaProductSaleRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -28,6 +31,18 @@ class ProductIntegrationTest {
 
     @Autowired
     ProductSaleRepository productSaleRepository;
+
+    @Autowired
+    JpaProductRepository jpaProductRepository;
+
+    @Autowired
+    JpaProductSaleRepository jpaProductSaleRepository;
+
+    @BeforeEach
+    void setUp() {
+        jpaProductSaleRepository.deleteAll();
+        jpaProductRepository.deleteAll();
+    }
 
     @Test
     void 상품_목록_조회() throws Exception {

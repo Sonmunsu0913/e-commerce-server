@@ -38,19 +38,20 @@ class CouponControllerIntegrationTest {
 
     @BeforeEach
     void setup() {
-        couponRepository.save(new Coupon(101L, "1000원 할인 쿠폰", 1000, 3));
+        // 중복 save 제거
+        if (!couponRepository.existsById(1L)) {
+            couponRepository.save(new Coupon(1L, "1000원 할인 쿠폰", 1000, 3));
+        }
     }
 
     @Test
     void 쿠폰을_정상적으로_발급받는다() throws Exception {
-        // given: 쿠폰 데이터 준비 (couponId: 1L)
-        couponRepository.save(new Coupon(1L, "1000원 할인 쿠폰", 1000, 3));
 
         // when + then
         mockMvc.perform(post("/api/coupon/1")) // userId = 1
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.couponId").value(1))
-                .andExpect(jsonPath("$.discountAmount").value(1000));
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.couponId").value(1))
+            .andExpect(jsonPath("$.discountAmount").value(1000));
 
         List<UserCoupon> issued = userCouponRepository.findAllByUserId(1L);
         assertThat(issued).hasSize(1);
@@ -59,7 +60,7 @@ class CouponControllerIntegrationTest {
 
     @Test
     void 쿠폰_중복_발급_불가() throws Exception {
-        couponRepository.save(new Coupon(1L, "1000원 할인 쿠폰", 1000, 3));
+        couponRepository.save(new Coupon(2L, "1000원 할인 쿠폰", 1000, 3));
 
         // 첫 발급 - OK
         mockMvc.perform(post("/api/coupon/1"))
@@ -74,7 +75,7 @@ class CouponControllerIntegrationTest {
     @Test
     void 보유한_쿠폰_목록을_조회한다() throws Exception {
         // given: 쿠폰 데이터 등록
-        couponRepository.save(new Coupon(1L, "1000원 할인 쿠폰", 1000, 3));
+        couponRepository.save(new Coupon(3L, "1000원 할인 쿠폰", 1000, 3));
 
         // 선행 발급
         mockMvc.perform(post("/api/coupon/1"))

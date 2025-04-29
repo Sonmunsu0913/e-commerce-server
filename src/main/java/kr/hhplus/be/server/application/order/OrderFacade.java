@@ -12,11 +12,12 @@ import kr.hhplus.be.server.domain.product.ProductSale;
 import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 
 @Service
-//@Transactional
+@Transactional
 public class OrderFacade {
 
     private final CreateOrderService createOrderService;
@@ -68,11 +69,12 @@ public class OrderFacade {
 
         // 6. 응답 생성
         OrderResult result = new OrderResult(
-            order.getId(),
-            order.getTotalPrice(),
-            order.getDiscount(),
-            order.getFinalPrice(),
-            order.getOrderedAt()
+                order.getId(),
+                order.getTotalPrice(),
+                order.getDiscount(),
+                order.getFinalPrice(),
+                order.getOrderedAt(),
+                (int) updated.point()
         );
 
         reporter.send(order.toResponse((int) updated.point()));
@@ -106,7 +108,8 @@ public class OrderFacade {
             order.getTotalPrice(),
             order.getDiscount(),
             order.getFinalPrice(),
-            order.getOrderedAt()
+            order.getOrderedAt(),
+            (int) updated.point()
         );
         return new PaymentResult(orderResult, (int) updated.point());
     }
