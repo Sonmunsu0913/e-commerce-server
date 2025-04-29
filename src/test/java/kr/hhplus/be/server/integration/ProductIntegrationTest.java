@@ -47,7 +47,7 @@ class ProductIntegrationTest {
     @Test
     void 상품_목록_조회() throws Exception {
         // 테스트 시작 전 상품 하나 등록
-        productRepository.save(new Product(1L, "김밥", 2000, 100));
+        productRepository.save(new Product(null, "김밥", 2000, 100));
 
         // 상품 목록 조회
         mockMvc.perform(get("/api/product")
@@ -62,7 +62,7 @@ class ProductIntegrationTest {
 
         // 상품 10개 삽입
         for (long i = 1; i <= 10; i++) {
-            productRepository.save(new Product(i, "상품" + i, 1000 + (int)i * 100, 50));
+            productRepository.save(new Product(null, "상품" + i, 1000 + (int)i * 100, 50));
         }
 
         // 판매 이력 삽입 (최근 3일 내 1~10번 상품 모두 매출 있음)

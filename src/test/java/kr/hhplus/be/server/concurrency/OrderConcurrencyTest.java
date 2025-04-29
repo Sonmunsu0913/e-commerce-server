@@ -38,7 +38,7 @@ class OrderConcurrencyTest {
     @BeforeEach
     void setUp() {
         productRepository.deleteAll();
-        productRepository.save(new ProductEntity(1L, "재고 테스트 상품", 1000, 5)); // 재고 5개
+        productRepository.save(new ProductEntity(null, "재고 테스트 상품", 1000, 5)); // 재고 5개
 
         userPointRepository.deleteAll();
         userPointRepository.save(new UserPointEntity(1L, 10000L, LocalDateTime.now(), LocalDateTime.now()));  // 포인트 넉넉하게 충전

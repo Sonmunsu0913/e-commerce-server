@@ -1,17 +1,21 @@
 package kr.hhplus.be.server.infrastructure.product.entity;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import kr.hhplus.be.server.domain.product.ProductSale;
-
 import java.time.LocalDate;
 
+@Getter
 @Entity
 @Table(
-        name = "product_sale",
-        indexes = {
-                @Index(name = "idx_product_id", columnList = "productId")
-        }
+    name = "product_sale",
+    indexes = {
+        @Index(name = "idx_product_id", columnList = "productId")
+    }
 )
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ProductSaleEntity {
 
     @Id
@@ -19,14 +23,10 @@ public class ProductSaleEntity {
     private Long id;
 
     private Long productId;
-
     private LocalDate saleDate;
-
     private int quantity;
 
-    protected ProductSaleEntity() {
-    }
-
+    // id 없이 생성하는 생성자
     public ProductSaleEntity(Long productId, LocalDate saleDate, int quantity) {
         this.productId = productId;
         this.saleDate = saleDate;
@@ -40,6 +40,4 @@ public class ProductSaleEntity {
     public ProductSale toDomain() {
         return new ProductSale(productId, saleDate, quantity);
     }
-
 }
-

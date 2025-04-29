@@ -1,9 +1,13 @@
 package kr.hhplus.be.server.interfaces.api.product;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@AllArgsConstructor
+@Builder
 public class ProductResponse {
 
     @Schema(description = "상품 ID", example = "1")
@@ -17,12 +21,5 @@ public class ProductResponse {
 
     @Schema(description = "잔여 수량", example = "10")
     private Integer stock;
-
-    public ProductResponse(Long productId, String name, Integer price, Integer stock) {
-        this.productId = productId;
-        this.name = name;
-        this.price = price;
-        this.stock = stock;
-    }
 }
 

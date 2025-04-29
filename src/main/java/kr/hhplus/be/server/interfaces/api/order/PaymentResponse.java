@@ -1,11 +1,15 @@
 package kr.hhplus.be.server.interfaces.api.order;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
+@Builder
 public class PaymentResponse {
 
     @Schema(description = "주문 ID", example = "1001")
@@ -25,16 +29,5 @@ public class PaymentResponse {
 
     @Schema(description = "결제 시각", example = "2025-04-08T13:00:00")
     private LocalDateTime paidAt;
-
-    public PaymentResponse(Long id, Integer paidAmount, Integer discountAmount,
-                           Integer finalPaidAmount, Integer pointAfterPayment, String paidAt) {
-        this.id = id;
-        this.paidAmount = paidAmount;
-        this.discountAmount = discountAmount;
-        this.finalPaidAmount = finalPaidAmount;
-        this.pointAfterPayment = pointAfterPayment;
-        this.paidAt = LocalDateTime.parse(paidAt);;
-    }
-
 }
 

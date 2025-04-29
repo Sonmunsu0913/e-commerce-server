@@ -1,9 +1,15 @@
 package kr.hhplus.be.server.interfaces.api.order;
 
 import io.swagger.v3.oas.annotations.media.Schema;
+import java.time.LocalDateTime;
 import lombok.Getter;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
 @Getter
+@AllArgsConstructor
+@Builder
 public class OrderResponse {
 
     @Schema(description = "주문 ID", example = "1234")
@@ -22,15 +28,6 @@ public class OrderResponse {
     private Integer pointAfterPayment;
 
     @Schema(description = "주문 시간", example = "2025-04-02T14:30:00")
-    private String orderedAt;
-
-    public OrderResponse(Long id, Integer totalPrice, Integer discount, Integer finalPrice, Integer pointAfterPayment, String orderedAt) {
-        this.id = id;
-        this.totalPrice = totalPrice;
-        this.discount = discount;
-        this.finalPrice = finalPrice;
-        this.pointAfterPayment = pointAfterPayment;
-        this.orderedAt = orderedAt;
-    }
-
+    private LocalDateTime orderedAt;
 }
+

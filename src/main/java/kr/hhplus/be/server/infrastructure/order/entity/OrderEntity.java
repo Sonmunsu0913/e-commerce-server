@@ -27,7 +27,7 @@ public class OrderEntity {
     private int totalPrice;
     private int discount;
     private int finalPrice;
-    private String orderedAt;
+    private LocalDateTime orderedAt;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<OrderItemEntity> items = new ArrayList<>();
@@ -41,7 +41,7 @@ public class OrderEntity {
         this.totalPrice = items.stream().mapToInt(OrderItemEntity::subtotal).sum();
         this.discount = discount;
         this.finalPrice = this.totalPrice - discount;
-        this.orderedAt = LocalDateTime.now().toString();
+        this.orderedAt = LocalDateTime.now();
 
         for (OrderItemEntity item : items) {
             item.setOrder(this); // 연관관계 주입

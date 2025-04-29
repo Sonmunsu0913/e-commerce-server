@@ -31,7 +31,7 @@ class IssueCouponConcurrencyTest {
     void setUp() {
         couponRepository.deleteAll();
         // 수량이 1개인 테스트 쿠폰 저장
-        couponRepository.save(new CouponEntity(1L, "테스트 쿠폰", 5000, 1, 0)); // total: 1, issued: 0
+        couponRepository.save(new CouponEntity(1L, "테스트 쿠폰", 5000, 1, 0, 0)); // total: 1, issued: 0
     }
 
     @Test

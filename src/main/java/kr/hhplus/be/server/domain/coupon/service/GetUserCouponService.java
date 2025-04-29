@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
  * - 사용자가 발급받은 쿠폰 정보를 조회하고 쿠폰 할인 금액을 함께 반환한다.
  */
 @Service
-public class GetUserCouponsService {
+public class GetUserCouponService {
 
     private final CouponRepository couponRepository;
     private final UserCouponRepository userCouponRepository;
 
-    public GetUserCouponsService(CouponRepository couponRepository, UserCouponRepository userCouponRepository) {
+    public GetUserCouponService(CouponRepository couponRepository, UserCouponRepository userCouponRepository) {
         this.couponRepository = couponRepository;
         this.userCouponRepository = userCouponRepository;
     }
@@ -38,6 +38,17 @@ public class GetUserCouponsService {
                     return CouponResponse.from(uc, coupon);
                 })
                 .toList();
+    }
+
+    /**
+     * 사용자의 특정 쿠폰 단건 조회
+     * - userId와 couponId를 기준으로 UserCoupon을 조회
+     * - 존재하지 않거나 소유하지 않은 경우 예외 발생
+     * - UserCoupon 도메인 객체 반환
+     */
+    public UserCoupon execute(Long userId, Long couponId) {
+        return userCouponRepository.findByUserIdAndCouponId(userId, couponId)
+            .orElseThrow(() -> new IllegalArgumentException("사용자가 이 쿠폰을 소유하고 있지 않습니다."));
     }
 
 }

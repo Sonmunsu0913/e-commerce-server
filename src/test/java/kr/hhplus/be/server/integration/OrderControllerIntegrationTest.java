@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.integration;
 
+import kr.hhplus.be.server.domain.coupon.UserCoupon;
+import kr.hhplus.be.server.domain.coupon.UserCouponRepository;
 import kr.hhplus.be.server.domain.point.UserPointRepository;
 import kr.hhplus.be.server.domain.product.ProductRepository;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
@@ -36,6 +38,9 @@ class OrderControllerIntegrationTest {
     @Autowired
     private CouponRepository couponRepository;
 
+    @Autowired
+    private UserCouponRepository userCouponRepository;
+
     @BeforeEach
     void setUp() {
         // 상품 등록
@@ -46,6 +51,9 @@ class OrderControllerIntegrationTest {
 
         // 쿠폰 등록
         couponRepository.save(new Coupon(101L, "1000원 할인 쿠폰", 1000, 5));
+
+        //  쿠폰 발급
+        userCouponRepository.save(UserCoupon.create(1L, 101L));
     }
 
     @Test

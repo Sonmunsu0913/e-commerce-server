@@ -19,7 +19,7 @@ public class Order {
     private final int totalPrice;                   // 전체 주문 금액 (할인 전)
     private final int discount;                     // 적용된 할인 금액
     private final int finalPrice;                   // 실제 결제 금액 (할인 적용 후)
-    private final String orderedAt;                 // 주문 시각 (ISO-8601 문자열)
+    private final LocalDateTime orderedAt;          // 주문 시각
 
     /**
      * 주문 생성자
@@ -38,7 +38,7 @@ public class Order {
         this.totalPrice = items.stream().mapToInt(OrderItemCommand::subtotal).sum();  // 주문 상품들의 총 금액 계산
         this.discount = discount;
         this.finalPrice = totalPrice - discount;  // 할인 적용 후 결제 금액
-        this.orderedAt = LocalDateTime.now().toString();  // 주문 시각 저장
+        this.orderedAt = LocalDateTime.now();     // 주문 시각 저장
     }
 
     /**
