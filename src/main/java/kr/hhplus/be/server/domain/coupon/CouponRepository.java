@@ -4,7 +4,7 @@ import java.util.*;
 
 public interface CouponRepository {
 
-    List<Coupon> findAllCoupons();
+    List<Coupon> findAllCoupon();
 
     Optional<Coupon> findById(Long couponId);
 

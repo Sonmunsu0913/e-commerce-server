@@ -11,8 +11,6 @@ public class Coupon {
     private final int totalQuantity;     // 전체 발급 가능 수량
     private int issuedCount;             // 현재까지 발급된 수량
 
-    private int version;                 // 낙관적 락용 필드
-
     public Coupon(Long id, String name, int discountAmount, int totalQuantity) {
         this.id = id;
         this.name = name;
@@ -44,8 +42,5 @@ public class Coupon {
         this.issuedCount = issuedCount;
     }
 
-    public void setVersion(int version) {
-        this.version = version;
-    }
 }
 

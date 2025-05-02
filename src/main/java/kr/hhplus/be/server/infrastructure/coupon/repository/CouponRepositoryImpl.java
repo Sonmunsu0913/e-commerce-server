@@ -19,7 +19,7 @@ public class CouponRepositoryImpl implements CouponRepository {
     }
 
     @Override
-    public List<Coupon> findAllCoupons() {
+    public List<Coupon> findAllCoupon() {
         return jpaRepository.findAllEntities()
                 .stream()
                 .map(CouponEntity::toDomain)

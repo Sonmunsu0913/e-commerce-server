@@ -39,7 +39,7 @@ class IssueCouponServiceTest {
         when(couponRepository.findWithPessimisticLockById(1L)).thenReturn(coupon);
 
         // when
-        CouponResponse res = useCase.execute(userId);
+        CouponResponse res = useCase.execute(userId, 1L);
 
         // then
         assertEquals(1L, res.couponId());
@@ -58,7 +58,7 @@ class IssueCouponServiceTest {
         when(userCouponRepository.existsByUserIdAndCouponId(userId, 1L)).thenReturn(true); // 이미 보유 상태로 설정
 
         // when & then
-        assertThrows(IllegalStateException.class, () -> useCase.execute(userId));
+        assertThrows(IllegalStateException.class, () -> useCase.execute(userId, 1L));
     }
 
     @Test
@@ -68,11 +68,11 @@ class IssueCouponServiceTest {
         Coupon exhausted = new Coupon(1L, "마감쿠폰", 1000, 1);
         exhausted.issue();
 
-        when(couponRepository.findAllCoupons()).thenReturn(List.of(exhausted));
+        when(couponRepository.findAllCoupon()).thenReturn(List.of(exhausted));
         lenient().when(couponRepository.findWithPessimisticLockById(1L)).thenReturn(exhausted); // ← lenient 적용
 
         // when & then
-        assertThrows(IllegalStateException.class, () -> useCase.execute(userId));
+        assertThrows(IllegalStateException.class, () -> useCase.execute(userId, 1L));
     }
 }
 
