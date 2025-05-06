@@ -51,6 +51,15 @@ dependencies {
 	testCompileOnly("org.projectlombok:lombok:1.18.30")
 	testAnnotationProcessor("org.projectlombok:lombok:1.18.30")
 
+	// Redis
+	implementation("org.springframework.boot:spring-boot-starter-data-redis")
+
+	// Redission
+	implementation("org.redisson:redisson-spring-boot-starter:3.25.2")
+
+	// AOP 기능을 위한 의존성 추가
+	implementation("org.springframework.boot:spring-boot-starter-aop")
+
 	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
