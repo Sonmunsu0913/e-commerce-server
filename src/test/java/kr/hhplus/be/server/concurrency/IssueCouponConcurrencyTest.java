@@ -31,7 +31,7 @@ class IssueCouponConcurrencyTest {
     void setUp() {
         couponRepository.deleteAll();
         // 수량이 1개인 테스트 쿠폰 저장
-        couponRepository.save(new CouponEntity(1L, "테스트 쿠폰", 5000, 1, 0)); // total: 1, issued: 0
+        couponRepository.save(new CouponEntity(1L, "테스트 쿠폰", 5000, 2, 0)); // total: 2, issued: 0
     }
 
     @Test
@@ -54,8 +54,11 @@ class IssueCouponConcurrencyTest {
             futures.add(executor.submit(() -> {
                 try {
                     System.out.println("[" + idx + "] 쿠폰 발급 시도 (userId = " + userId + ")");
-                    ResponseEntity<String> resp = restTemplate.postForEntity("/api/coupon/" + userId, null, String.class);
-                    System.out.println("[" + idx + "] 응답 코드: " + resp.getStatusCode());
+                    ResponseEntity<String> resp = restTemplate.postForEntity(
+                        "/api/coupon/" + userId + "/coupon/1", // 🔥 couponId를 추가!
+                        null,
+                        String.class
+                    );                    System.out.println("[" + idx + "] 응답 코드: " + resp.getStatusCode());
                     return resp;
                 } catch (Exception e) {
                     System.out.println("[" + idx + "] 쿠폰 발급 실패: " + e.getMessage());
@@ -86,7 +89,7 @@ class IssueCouponConcurrencyTest {
         System.out.println("총 성공 응답 수: " + successCount);
         System.out.println("[TEST] 쿠폰 동시 발급 테스트 종료 ===================");
 
-        assertThat(successCount).isLessThan(2);
+        assertThat(successCount).isEqualTo(2);
 
         stopWatch.stop();
         System.out.println(stopWatch.prettyPrint());
