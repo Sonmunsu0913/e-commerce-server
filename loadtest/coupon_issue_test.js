@@ -2,16 +2,19 @@ import http from 'k6/http';
 import { check } from 'k6';
 
 export const options = {
-    vus: 100,
+    vus: 500,
     duration: '10s',
     thresholds: {
-        http_req_duration: ['p(50)<150', 'p(99)<300'],
-    },
+        'http_req_duration': ['p(50)<150', 'p(99)<300']  // 전체 요청 기준
+    }
 };
 
+const COUPON_ID = 1; // 모든 요청이 이 쿠폰을 발급받으려 시도
+
 export default function () {
-    const userId = __VU;
-    const url = `http://localhost:8080/api/coupon/${userId}`;
+    const userId = __VU * 1000000 + __ITER; // 유저 ID 매번 다르게 생성
+
+    const url = `http://localhost:8080/api/coupon/${userId}/coupon/${COUPON_ID}`;
 
     const res = http.post(url, null, {
         headers: {
