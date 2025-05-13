@@ -56,7 +56,6 @@ public class OrderFacade {
     public OrderResult order(CreateOrderCommand command) {
 
         // 0. 쿠폰 처리 준비
-        int discountAmount = 0;
         UserCoupon userCoupon = null;
         if (command.couponId() != null) {
             // 0-1. 사용자 보유 쿠폰 조회
@@ -67,11 +66,8 @@ public class OrderFacade {
                 throw new IllegalStateException("이미 사용한 쿠폰입니다.");
             }
 
-            // 0-3. 쿠폰 상세 조회
-            Coupon coupon = getCouponService.execute(command.couponId());
-
-            // 0-4. 할인 금액 추출
-            discountAmount = coupon.getDiscountAmount();
+            // 0-3. 쿠폰 상세 조회 (유효성 검증)
+            getCouponService.execute(command.couponId());
         }
 
         // 1. 주문 생성

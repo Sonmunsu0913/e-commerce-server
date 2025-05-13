@@ -1,5 +1,7 @@
 package kr.hhplus.be.server.domain.order.service;
 
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.order.OrderRepository;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItemCommand;
@@ -21,9 +23,12 @@ public class CreateOrderService {
 
     private final ProductRepository productRepository;
 
-    public CreateOrderService(OrderRepository orderRepository, ProductRepository productRepository) {
+    private final CouponRepository couponRepository;
+
+    public CreateOrderService(OrderRepository orderRepository, ProductRepository productRepository, CouponRepository couponRepository) {
         this.orderRepository = orderRepository;
         this.productRepository = productRepository;
+        this.couponRepository = couponRepository;
     }
 
     public Order execute(Long userId, List<OrderItemCommand> items, Long couponId) {
@@ -69,6 +74,10 @@ public class CreateOrderService {
     }
 
     private int applyCouponPolicy(Long couponId) {
-        return (couponId != null && couponId.equals(101L)) ? 1000 : 0;
+        if (couponId == null) return 0;
+
+        Coupon coupon = couponRepository.findById(couponId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 쿠폰이 존재하지 않습니다."));
+        return coupon.getDiscountAmount();
     }
 }
