@@ -10,7 +10,7 @@ public interface ProductRepository {
 
     List<Product> findAllByIdIn(List<Long> ids);
 
-    void save(Product product);
+    Product save(Product product);
 
     Product findWithPessimisticLockById(Long id);   // 비관적 락 메서드
 

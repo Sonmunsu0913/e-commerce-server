@@ -28,7 +28,7 @@ public class ProductSaleStatisticsController {
             @Parameter(description = "조회 기간 범위 (예: 3d는 최근 3일)")
             @RequestParam(name = "range", defaultValue = "3d") String range
     ) {
-        List<PopularProductResponse> response = getTopSellingProductService.executeWithoutCache(range);
+        List<PopularProductResponse> response = getTopSellingProductService.execute(range);
         return ResponseEntity.ok(response);
     }
 

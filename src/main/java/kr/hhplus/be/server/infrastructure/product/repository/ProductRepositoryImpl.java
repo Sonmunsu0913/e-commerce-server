@@ -33,8 +33,9 @@ public class ProductRepositoryImpl implements ProductRepository {
     }
 
     @Override
-    public void save(Product product) {
-        jpaRepository.save(ProductEntity.from(product));
+    public Product save(Product product) {
+        ProductEntity savedEntity = jpaRepository.save(ProductEntity.from(product));
+        return savedEntity.toDomain();
     }
 
     @Override

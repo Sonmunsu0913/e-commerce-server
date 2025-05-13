@@ -17,11 +17,17 @@ public class PopularProductCacheScheduler {
         refreshManually();  // 분리된 메서드 호출
     }
 
+    public void refresh() {
+        getTopSellingProductService.refresh("1d");
+        getTopSellingProductService.refresh("3d");
+        getTopSellingProductService.refresh("7d");
+    }
+
     // 테스트 가능하도록 public 메서드로 분리
     public void refreshManually() {
-//        getTopSellingProductService.execute("1d");
+        getTopSellingProductService.execute("1d");
         getTopSellingProductService.execute("3d");
-//        getTopSellingProductService.execute("7d");
+        getTopSellingProductService.execute("7d");
     }
 }
 

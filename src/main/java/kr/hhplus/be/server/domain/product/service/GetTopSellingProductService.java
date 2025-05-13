@@ -42,67 +42,92 @@ public class GetTopSellingProductService {
         this.redissonClient = redissonClient;
     }
 
-//    // 조회 시 캐시 사용
-//    @Cacheable(value = "POPULAR_PRODUCTS", key = "#range")
-//    public List<PopularProductResponse> execute(String range) {
-//        return calculate(range);
-//    }
-//
-//    // 자정 스케줄러가 호출할 강제 갱신 메서드
-//    @CachePut(value = "POPULAR_PRODUCTS", key = "#range")
-//    public List<PopularProductResponse> refresh(String range) {
-//        return calculate(range);
-//    }
-
+    /**
+     * 단순 캐시 처리. 캐시가 없으면 계산해서 저장됨.
+     */
+    @Cacheable(value = "POPULAR_PRODUCTS", key = "#range")
     public List<PopularProductResponse> execute(String range) {
-        String key = range;
-        String lockKey = "lock:POPULAR_PRODUCTS:" + range;
-
-        Cache cache = cacheManager.getCache("POPULAR_PRODUCTS");
-        if (cache == null) throw new IllegalStateException("캐시가 존재하지 않습니다.");
-
-        List<PopularProductResponse> cached = cache.get(key, List.class);
-        if (cached != null) {
-            System.out.println("캐시 HIT");
-            return cached;
-        }
-
-        RLock lock = redissonClient.getLock(lockKey);
-        try {
-            // waitTime: 최대 대기 시간, leaseTime: 자동 해제 시간
-            boolean available = lock.tryLock(3, 10, TimeUnit.SECONDS);
-            if (available) {
-                try {
-                    // double-check
-                    cached = cache.get(key, List.class);
-                    if (cached != null) {
-                        System.out.println("캐시 HIT (after lock)");
-                        return cached;
-                    }
-
-                    System.out.println("캐시 MISS - DB 조회");
-                    List<PopularProductResponse> result = calculate(range);
-                    cache.put(key, result);
-                    return result;
-                } finally {
-                    lock.unlock();
-                }
-            } else {
-                throw new IllegalStateException("분산락 획득 실패");
-            }
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-            throw new IllegalStateException("락 대기 중 인터럽트 발생", e);
-        }
-    }
-
-    // 테스트용 - 캐시와 락 모두 제거한 로직
-    public List<PopularProductResponse> executeWithoutCache(String range) {
+        System.out.println("캐시 MISS - DB 조회");
         return calculate(range);
     }
 
-    // 내부 로직 분리
+    /**
+     * pre-warming, 강제 갱신용 캐시 Put
+     */
+    @CachePut(value = "POPULAR_PRODUCTS", key = "#range")
+    public List<PopularProductResponse> refresh(String range) {
+        System.out.println("캐시 강제 갱신");
+        return calculate(range);
+    }
+
     private List<PopularProductResponse> calculate(String range) {
+        int days = parseRangeToDays(range);
+        LocalDate from = LocalDate.now().minusDays(days);
+
+        List<ProductSale> sales = productSaleRepository.findSalesAfter(from);
+        ProductSaleStatistics statistics = ProductSaleStatistics.of(sales);
+        List<Map.Entry<Long, Long>> topEntries = statistics.topN(5);
+
+        Map<Long, String> productNames = productRepository.findAllByIdIn(statistics.extractProductIds(topEntries))
+                .stream().collect(Collectors.toMap(Product::id, Product::name));
+
+        return topEntries.stream()
+                .map(entry -> new PopularProductResponse(
+                        entry.getKey(),
+                        productNames.getOrDefault(entry.getKey(), "알 수 없음"),
+                        entry.getValue()
+                )).toList();
+    }
+
+//    public List<PopularProductResponse> execute(String range) {
+//        String key = range;
+//        String lockKey = "lock:POPULAR_PRODUCTS:" + range;
+//
+//        Cache cache = cacheManager.getCache("POPULAR_PRODUCTS");
+//        if (cache == null) throw new IllegalStateException("캐시가 존재하지 않습니다.");
+//
+//        List<PopularProductResponse> cached = cache.get(key, List.class);
+//        if (cached != null) {
+//            System.out.println("캐시 HIT");
+//            return cached;
+//        }
+//
+//        RLock lock = redissonClient.getLock(lockKey);
+//        try {
+//            // waitTime: 최대 대기 시간, leaseTime: 자동 해제 시간
+//            boolean available = lock.tryLock(3, 10, TimeUnit.SECONDS);
+//            if (available) {
+//                try {
+//                    // double-check
+//                    cached = cache.get(key, List.class);
+//                    if (cached != null) {
+//                        System.out.println("캐시 HIT (after lock)");
+//                        return cached;
+//                    }
+//
+//                    System.out.println("캐시 MISS - DB 조회");
+//                    List<PopularProductResponse> result = calculate(range);
+//                    cache.put(key, result);
+//                    return result;
+//                } finally {
+//                    lock.unlock();
+//                }
+//            } else {
+//                throw new IllegalStateException("분산락 획득 실패");
+//            }
+//        } catch (InterruptedException e) {
+//            Thread.currentThread().interrupt();
+//            throw new IllegalStateException("락 대기 중 인터럽트 발생", e);
+//        }
+//    }
+
+    // 테스트용 - 캐시와 락 모두 제거한 로직
+    public List<PopularProductResponse> executeWithoutCache(String range) {
+        return calculateWithoutCache(range);
+    }
+
+    // 테스트용 - 캐시와 락 모두 제거한 로직
+    private List<PopularProductResponse> calculateWithoutCache(String range) {
         int days = parseRangeToDays(range);
         LocalDate from = LocalDate.now().minusDays(days);
 
@@ -125,30 +150,6 @@ public class GetTopSellingProductService {
                         entry.getValue()
                 )).toList();
     }
-
-//    public List<PopularProductResponse> execute(String range) {
-//        int days = parseRangeToDays(range);
-//        LocalDate from = LocalDate.now().minusDays(days);
-//
-//        // 1. 최근 판매 내역 조회
-//        List<ProductSale> sales = productSaleRepository.findSalesAfter(from);
-//
-//        // 2. 판매 통계 집계
-//        ProductSaleStatistics statistics = ProductSaleStatistics.of(sales);
-//        List<Map.Entry<Long, Long>> topEntries = statistics.topN(5);
-//
-//        // 3. 상품 이름 조회
-//        Map<Long, String> productNames = productRepository.findAllByIdIn(statistics.extractProductIds(topEntries))
-//                .stream().collect(Collectors.toMap(Product::id, Product::name));
-//
-//        // 4. 응답 객체로 변환
-//        return topEntries.stream()
-//                .map(entry -> new PopularProductResponse(
-//                        entry.getKey(),
-//                        productNames.getOrDefault(entry.getKey(), "알 수 없음"),
-//                        entry.getValue()
-//                )).toList();
-//    }
 
     // "d" → int 로 변환
     private int parseRangeToDays(String range) {
