@@ -18,6 +18,8 @@ import kr.hhplus.be.server.domain.product.service.UpdateProductRankingService;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDate;
 
@@ -96,8 +98,13 @@ public class OrderFacade {
             recordProductSaleService.execute(new ProductSale(item.productId(), today, item.quantity()));
         }
 
-        // 5-1. Redis 랭킹 반영
-        updateProductRankingService.increaseOrderCountForItems(command.items());
+        // 5-1. Redis 랭킹 반영 (AFTER COMMIT)
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+                updateProductRankingService.increaseOrderCountForItems(command.items());
+            }
+        });
 
         // 6. 응답 생성
         OrderResult result = new OrderResult(
