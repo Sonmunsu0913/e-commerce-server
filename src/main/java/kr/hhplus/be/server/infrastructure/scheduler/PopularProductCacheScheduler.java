@@ -25,9 +25,9 @@ public class PopularProductCacheScheduler {
 
     // 테스트 가능하도록 public 메서드로 분리
     public void refreshManually() {
-        getTopSellingProductService.execute("1d");
-        getTopSellingProductService.execute("3d");
-        getTopSellingProductService.execute("7d");
+        getTopSellingProductService.getFromDb("1d");
+        getTopSellingProductService.getFromDb("3d");
+        getTopSellingProductService.getFromDb("7d");
     }
 }
 
