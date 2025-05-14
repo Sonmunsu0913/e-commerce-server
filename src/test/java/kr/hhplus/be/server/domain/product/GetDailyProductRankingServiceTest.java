@@ -74,22 +74,25 @@ class GetDailyProductRankingServiceTest {
         LocalDate yesterday = LocalDate.now().minusDays(1);
         String yesterdayKey = "product:order:ranking:" + yesterday.format(DateTimeFormatter.BASIC_ISO_DATE);
 
-        // Redis에 어제 랭킹 넣기 (순위 다르게)
-        redisTemplate.opsForZSet().add(yesterdayKey, "1", 50); // 상품1만 랭킹에 있음
+        // Redis 키 초기화 (다른 테스트 영향 방지)
+        redisTemplate.delete(yesterdayKey);
+
+        // 상품 정보 저장
+        Product product = productRepository.save(new Product(null, "상품1", 1000, 50));
+
+        // 어제 날짜 랭킹 데이터 추가
+        redisTemplate.opsForZSet().add(yesterdayKey, String.valueOf(product.id()), 50);
 
         // when
-        List<ProductRankingResponse> todayRanking = getDailyProductRankingService.getRanking(today, 3);
         List<ProductRankingResponse> yesterdayRanking = getDailyProductRankingService.getRanking(yesterday, 3);
 
         // then
-        System.out.println("오늘 랭킹:");
-        todayRanking.forEach(r -> System.out.println(r.productId() + " / " + r.score()));
-
-        System.out.println("어제 랭킹:");
-        yesterdayRanking.forEach(r -> System.out.println(r.productId() + " / " + r.score()));
+        System.out.println("✅ 어제 랭킹 확인:");
+        yesterdayRanking.forEach(r -> System.out.println(r.productId() + " / " + r.name() + " / " + r.score()));
 
         assertThat(yesterdayRanking).hasSize(1);
-        assertThat(yesterdayRanking.get(0).productId()).isEqualTo(1L);
+        assertThat(yesterdayRanking.get(0).productId()).isEqualTo(product.id());
+        assertThat(yesterdayRanking.get(0).name()).isEqualTo("상품1");
         assertThat(yesterdayRanking.get(0).score()).isEqualTo(50.0);
     }
 
