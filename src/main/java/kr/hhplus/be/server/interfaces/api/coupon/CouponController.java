@@ -7,6 +7,7 @@ import java.util.List;
 
 import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
 import kr.hhplus.be.server.domain.coupon.service.IssueCouponService;
+import kr.hhplus.be.server.domain.coupon.service.RedisCouponQueueService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,10 +18,13 @@ public class CouponController {
 
     private final GetUserCouponService getUserCouponService;
     private final IssueCouponService issueCouponService;
+    private final RedisCouponQueueService redisCouponQueueService;
 
-    public CouponController(GetUserCouponService getUserCouponService, IssueCouponService issueCouponService) {
+    public CouponController(GetUserCouponService getUserCouponService, IssueCouponService issueCouponService
+                            , RedisCouponQueueService redisCouponQueueService) {
         this.getUserCouponService = getUserCouponService;
         this.issueCouponService = issueCouponService;
+        this.redisCouponQueueService = redisCouponQueueService;
     }
 
     @GetMapping("/available/{userId}")
@@ -48,6 +52,21 @@ public class CouponController {
             @PathVariable Long couponId
     ) {
         return ResponseEntity.ok(issueCouponService.execute(userId, couponId));
+    }
+
+    @PostMapping("/v2/{userId}/coupon/{couponId}")
+    @Operation(summary = "쿠폰 발급 (v2)", description = "선착순으로 발급, 초과 시 대기열 등록")
+    public ResponseEntity<String> issueCouponV2(
+        @PathVariable Long userId,
+        @PathVariable Long couponId) {
+
+        boolean success = redisCouponQueueService.tryIssueCoupon(couponId, userId);
+
+        if (success) {
+            return ResponseEntity.ok("쿠폰 발급 성공");
+        } else {
+            return ResponseEntity.ok("대기열에 등록됨");
+        }
     }
 }
 
