@@ -8,17 +8,23 @@ import kr.hhplus.be.server.domain.product.ProductSaleStatistics;
 import kr.hhplus.be.server.interfaces.api.product.PopularProductResponse;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
+import kr.hhplus.be.server.interfaces.api.product.ProductRankingResponse;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 import org.springframework.stereotype.Service;
 
 /**
@@ -29,24 +35,21 @@ public class GetTopSellingProductService {
 
     private final ProductSaleRepository productSaleRepository;
     private final ProductRepository productRepository;
-    private final CacheManager cacheManager;
-    private final RedissonClient redissonClient;
+    private final StringRedisTemplate redisTemplate;
 
     public GetTopSellingProductService(ProductSaleRepository productSaleRepository,
                                        ProductRepository productRepository,
-                                       CacheManager cacheManager,
-                                       RedissonClient redissonClient) {
+                                       StringRedisTemplate redisTemplate) {
         this.productSaleRepository = productSaleRepository;
         this.productRepository = productRepository;
-        this.cacheManager = cacheManager;
-        this.redissonClient = redissonClient;
+        this.redisTemplate = redisTemplate;
     }
 
     /**
      * 단순 캐시 처리. 캐시가 없으면 계산해서 저장됨.
      */
     @Cacheable(value = "POPULAR_PRODUCTS", key = "#range")
-    public List<PopularProductResponse> execute(String range) {
+    public List<PopularProductResponse> getFromDb(String range) {
         System.out.println("캐시 MISS - DB 조회");
         return calculate(range);
     }
@@ -60,6 +63,9 @@ public class GetTopSellingProductService {
         return calculate(range);
     }
 
+    /**
+     * 최근 판매 이력을 기반으로 DB에서 인기 상품 조회
+     */
     private List<PopularProductResponse> calculate(String range) {
         int days = parseRangeToDays(range);
         LocalDate from = LocalDate.now().minusDays(days);
@@ -69,14 +75,42 @@ public class GetTopSellingProductService {
         List<Map.Entry<Long, Long>> topEntries = statistics.topN(5);
 
         Map<Long, String> productNames = productRepository.findAllByIdIn(statistics.extractProductIds(topEntries))
-                .stream().collect(Collectors.toMap(Product::id, Product::name));
+            .stream().collect(Collectors.toMap(Product::id, Product::name));
 
         return topEntries.stream()
-                .map(entry -> new PopularProductResponse(
-                        entry.getKey(),
-                        productNames.getOrDefault(entry.getKey(), "알 수 없음"),
-                        entry.getValue()
-                )).toList();
+            .map(entry -> new PopularProductResponse(
+                entry.getKey(),
+                productNames.getOrDefault(entry.getKey(), "알 수 없음"),
+                entry.getValue()
+            )).toList();
+    }
+
+    /**
+     * Redis ZUNIONSTORE를 이용한 최근 N일간 인기 상품 랭킹 조회
+     */
+    public List<ProductRankingResponse> getFromRedis(String range) {
+        int days = parseRangeToDays(range);
+        List<String> keys = generateKeysForLastNDays(days);
+
+        String unionKey = "product:order:ranking:union:" + range;
+        redisTemplate.opsForZSet().unionAndStore(keys.get(0), keys.subList(1, keys.size()), unionKey);
+
+        Set<ZSetOperations.TypedTuple<String>> tuples = redisTemplate.opsForZSet()
+            .reverseRangeWithScores(unionKey, 0, 4); // Top 5 고정
+
+        if (tuples == null || tuples.isEmpty()) return List.of();
+
+        List<Long> productIds = tuples.stream().map(t -> Long.valueOf(t.getValue())).toList();
+        Map<Long, String> names = productRepository.findAllByIdIn(productIds).stream()
+            .collect(Collectors.toMap(Product::id, Product::name));
+
+        return tuples.stream()
+            .map(t -> new ProductRankingResponse(
+                Long.valueOf(t.getValue()),
+                names.getOrDefault(Long.valueOf(t.getValue()), "알 수 없음"),
+                t.getScore() != null ? t.getScore() : 0.0
+            ))
+            .toList();
     }
 
 //    public List<PopularProductResponse> execute(String range) {
@@ -161,5 +195,16 @@ public class GetTopSellingProductService {
             }
         }
         throw new IllegalArgumentException("지원하지 않는 range 단위입니다. 예: 3d");
+    }
+
+    /**
+     * 최근 N일간의 Redis 랭킹 키 생성
+     */
+    private List<String> generateKeysForLastNDays(int days) {
+        LocalDate now = LocalDate.now();
+        return IntStream.rangeClosed(0, days - 1)
+            .mapToObj(i -> now.minusDays(i).format(DateTimeFormatter.BASIC_ISO_DATE))
+            .map(date -> "product:order:ranking:" + date)
+            .toList();
     }
 }

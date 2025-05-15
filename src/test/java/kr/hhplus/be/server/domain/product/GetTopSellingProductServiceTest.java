@@ -1,19 +1,27 @@
 package kr.hhplus.be.server.domain.product;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 import java.time.LocalDate;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import kr.hhplus.be.server.domain.product.service.GetTopSellingProductService;
 import kr.hhplus.be.server.interfaces.api.product.PopularProductResponse;
+import kr.hhplus.be.server.interfaces.api.product.ProductRankingResponse;
+
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.redis.core.DefaultTypedTuple;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ZSetOperations;
 
 @ExtendWith(MockitoExtension.class)
 class GetTopSellingProductServiceTest {
@@ -23,6 +31,9 @@ class GetTopSellingProductServiceTest {
 
     @Mock
     ProductRepository productRepository;
+
+    @Mock
+    StringRedisTemplate redisTemplate;
 
     @InjectMocks
     GetTopSellingProductService useCase;
@@ -45,7 +56,7 @@ class GetTopSellingProductServiceTest {
         ));
 
         // when
-        List<PopularProductResponse> result = useCase.execute(range);
+        List<PopularProductResponse> result = useCase.getFromDb(range);
 
         // then
         assertEquals(3, result.size());
@@ -58,6 +69,41 @@ class GetTopSellingProductServiceTest {
         String range = "3w";
 
         // when & then
-        assertThrows(IllegalArgumentException.class, () -> useCase.execute(range));
+        assertThrows(IllegalArgumentException.class, () -> useCase.getFromDb(range));
     }
+
+    @Test
+    void Redis_기반_인기상품_정상조회() {
+        // given
+        String range = "3d";
+        ZSetOperations<String, String> zSetOps = mock(ZSetOperations.class);
+        when(redisTemplate.opsForZSet()).thenReturn(zSetOps);
+
+        Set<ZSetOperations.TypedTuple<String>> redisResult = new LinkedHashSet<>();
+        redisResult.add(new DefaultTypedTuple<>("1", 15.0));
+        redisResult.add(new DefaultTypedTuple<>("2", 12.0));
+
+        when(zSetOps.reverseRangeWithScores(anyString(), eq(0L), eq(4L))).thenReturn(redisResult);
+
+        when(productRepository.findAllByIdIn(List.of(1L, 2L))).thenReturn(List.of(
+            new Product(1L, "라면", 1000, 0),
+            new Product(2L, "우동", 1500, 0)
+        ));
+
+        // when
+        List<ProductRankingResponse> result = useCase.getFromRedis(range);
+
+        // then
+        System.out.println("🔍 Redis 조회 결과:");
+        for (ProductRankingResponse product : result) {
+            System.out.println("상품 ID = " + product.productId() +
+                ", 이름 = " + product.name() +
+                ", 점수 = " + product.score());
+        }
+
+        assertEquals(2, result.size());
+        assertEquals("라면", result.get(0).name()); // 점수 15.0
+        assertEquals("우동", result.get(1).name()); // 점수 12.0
+    }
+
 }
