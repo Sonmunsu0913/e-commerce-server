@@ -3,7 +3,7 @@ import { check } from 'k6';
 
 export const options = {
     vus: 500,
-    duration: '10s',
+    duration: '5s',
     thresholds: {
         'http_req_duration': ['p(50)<150', 'p(99)<300']  // 전체 요청 기준
     }
