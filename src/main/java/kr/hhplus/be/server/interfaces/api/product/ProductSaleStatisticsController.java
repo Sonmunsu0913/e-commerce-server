@@ -19,7 +19,7 @@ public class ProductSaleStatisticsController {
         this.getTopSellingProductService = getTopSellingProductService;
     }
 
-    @GetMapping("/popular")
+    @GetMapping("/ranking/db")
     @Operation(
             summary = "인기 상품 조회",
             description = "range 쿼리 파라미터를 기준으로 최근 인기 상품을 조회합니다. 예: ?range=3d"
@@ -28,8 +28,21 @@ public class ProductSaleStatisticsController {
             @Parameter(description = "조회 기간 범위 (예: 3d는 최근 3일)")
             @RequestParam(name = "range", defaultValue = "3d") String range
     ) {
-        List<PopularProductResponse> response = getTopSellingProductService.execute(range);
+        List<PopularProductResponse> response = getTopSellingProductService.getFromDb(range);
         return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/ranking/redis")
+    @Operation(
+        summary = "최근 N일 인기 상품 조회 (Redis 기반)",
+        description = "range 파라미터 기준으로 Redis ZUNIONSTORE 기반 인기 상품 랭킹을 조회합니다. 예: ?range=3d"
+    )
+    public ResponseEntity<List<ProductRankingResponse>> getPopularProductsFromRedis(
+        @Parameter(description = "조회 범위 (예: 3d는 최근 3일)")
+        @RequestParam(name = "range", defaultValue = "3d") String range
+    ) {
+        List<ProductRankingResponse> ranking = getTopSellingProductService.getFromRedis(range);
+        return ResponseEntity.ok(ranking);
     }
 
 }

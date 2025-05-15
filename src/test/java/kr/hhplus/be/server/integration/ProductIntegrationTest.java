@@ -99,7 +99,7 @@ class ProductIntegrationTest {
 
         System.out.println("📡 인기 상품 조회 API 호출");
 
-        String response = mockMvc.perform(get("/api/product/sale/statistics/popular?range=3d")
+        String response = mockMvc.perform(get("/api/product/sale/statistics/ranking/db?range=3d")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andReturn()
@@ -108,7 +108,7 @@ class ProductIntegrationTest {
 
         System.out.println("응답 JSON: " + response);
 
-        mockMvc.perform(get("/api/product/sale/statistics/popular?range=3d")
+        mockMvc.perform(get("/api/product/sale/statistics/ranking/db?range=3d")
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].productId").value(productNameToId.get("상품2")))  // 1위

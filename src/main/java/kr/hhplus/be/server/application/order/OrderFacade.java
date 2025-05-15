@@ -14,9 +14,12 @@ import kr.hhplus.be.server.domain.order.OrderItemCommand;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.product.ProductSale;
 import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
+import kr.hhplus.be.server.domain.product.service.UpdateProductRankingService;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronizationAdapter;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.LocalDate;
 
@@ -33,6 +36,7 @@ public class OrderFacade {
     private final MockOrderReporter reporter;
     private final GetUserCouponService getUserCouponService;
     private final GetCouponService getCouponService;
+    private final UpdateProductRankingService updateProductRankingService;
 
     public OrderFacade(CreateOrderService createOrderService,
                        GetOrderService getOrderService,
@@ -41,7 +45,8 @@ public class OrderFacade {
                        GetUserPointService getUserPointService,
                        RecordProductSaleService recordProductSaleService,
                        MockOrderReporter reporter, GetUserCouponService getUserCouponService,
-                       GetCouponService getCouponService) {
+                       GetCouponService getCouponService,
+                       UpdateProductRankingService updateProductRankingService) {
         this.createOrderService = createOrderService;
         this.getOrderService = getOrderService;
         this.validatePaymentService = validatePaymentService;
@@ -51,6 +56,7 @@ public class OrderFacade {
         this.reporter = reporter;
         this.getUserCouponService = getUserCouponService;
         this.getCouponService = getCouponService;
+        this.updateProductRankingService = updateProductRankingService;
     }
 
     public OrderResult order(CreateOrderCommand command) {
@@ -91,6 +97,14 @@ public class OrderFacade {
         for (OrderItemCommand item : command.items()) {
             recordProductSaleService.execute(new ProductSale(item.productId(), today, item.quantity()));
         }
+
+        // 5-1. Redis 랭킹 반영 (AFTER COMMIT)
+        TransactionSynchronizationManager.registerSynchronization(new TransactionSynchronizationAdapter() {
+            @Override
+            public void afterCommit() {
+                updateProductRankingService.increaseOrderCountForItems(command.items());
+            }
+        });
 
         // 6. 응답 생성
         OrderResult result = new OrderResult(
