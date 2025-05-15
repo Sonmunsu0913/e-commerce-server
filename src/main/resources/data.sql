@@ -32,7 +32,7 @@ FROM (
 
 -- 쿠폰
 INSERT INTO coupon (id, name, discount_amount, issued_count, total_quantity) VALUES
- (1, '테스트쿠폰1', 1000, 0, 50);
+ (1, '테스트쿠폰1', 1000, 0, 100);
 --  (2, '테스트쿠폰2', 1000, 0, 200),
 --  (3, '테스트쿠폰3', 1000, 0, 200),
 --  (4, '테스트쿠폰4', 1000, 0, 200),
