@@ -5,6 +5,7 @@ import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import java.util.List;
 
+import kr.hhplus.be.server.application.order.CouponFacade;
 import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
 import kr.hhplus.be.server.domain.coupon.service.IssueCouponService;
 import kr.hhplus.be.server.domain.coupon.service.RedisCouponQueueService;
@@ -18,13 +19,13 @@ public class CouponController {
 
     private final GetUserCouponService getUserCouponService;
     private final IssueCouponService issueCouponService;
-    private final RedisCouponQueueService redisCouponQueueService;
+    private final CouponFacade couponFacade;
 
     public CouponController(GetUserCouponService getUserCouponService, IssueCouponService issueCouponService
-                            , RedisCouponQueueService redisCouponQueueService) {
+                            , CouponFacade couponFacade) {
         this.getUserCouponService = getUserCouponService;
         this.issueCouponService = issueCouponService;
-        this.redisCouponQueueService = redisCouponQueueService;
+        this.couponFacade = couponFacade;
     }
 
     @GetMapping("/available/{userId}")
@@ -60,7 +61,7 @@ public class CouponController {
         @PathVariable Long userId,
         @PathVariable Long couponId) {
 
-        boolean success = redisCouponQueueService.tryIssueCoupon(couponId, userId);
+        boolean success = couponFacade.issueCouponV2(userId, couponId);
 
         if (success) {
             return ResponseEntity.ok("쿠폰 발급 성공");
