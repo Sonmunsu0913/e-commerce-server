@@ -6,6 +6,9 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
+import java.util.Optional;
+import kr.hhplus.be.server.domain.coupon.Coupon;
+import kr.hhplus.be.server.domain.coupon.CouponRepository;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
 import kr.hhplus.be.server.domain.product.Product;
 import kr.hhplus.be.server.domain.product.ProductRepository;
@@ -24,6 +27,9 @@ class CreateOrderServiceTest {
     @Mock
     OrderRepository orderRepository;
 
+    @Mock
+    CouponRepository couponRepository;
+
     @InjectMocks
     CreateOrderService useCase;
 
@@ -36,9 +42,11 @@ class CreateOrderServiceTest {
             new OrderItemCommand(1L, "라면", 3000, 2)
         );
 
-        // 💡 productRepository.findWithPessimisticLockById(...) 에 대한 리턴 설정
         Product product = new Product(1L, "라면", 3000, 10);
         when(productRepository.findWithPessimisticLockById(1L)).thenReturn(product);
+
+        Coupon coupon = new Coupon(101L, "테스트 쿠폰", 1000, 100);
+        when(couponRepository.findById(couponId)).thenReturn(Optional.of(coupon));
 
         Order expectedOrder = new Order(1L, userId, items, 1000);
         when(orderRepository.save(any())).thenReturn(expectedOrder);
@@ -47,11 +55,12 @@ class CreateOrderServiceTest {
         Order result = useCase.execute(userId, items, couponId);
 
         // then
-        assertEquals(1L, result.getUserId());
+        assertEquals(userId, result.getUserId());
         assertEquals(6000, result.getTotalPrice());
         assertEquals(1000, result.getDiscount());
         assertEquals(5000, result.getFinalPrice());
     }
+
 
     @Test
     void 쿠폰이_null일_경우_할인없음() {
