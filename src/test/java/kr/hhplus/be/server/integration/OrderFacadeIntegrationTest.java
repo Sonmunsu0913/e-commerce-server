@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.integration;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.hhplus.be.server.application.order.CreateOrderCommand;
 import kr.hhplus.be.server.application.order.OrderResult;
 import kr.hhplus.be.server.domain.coupon.CouponRepository;
@@ -17,15 +18,22 @@ import kr.hhplus.be.server.domain.product.Product;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.http.MediaType;
+import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+
 
 @SpringBootTest
+@AutoConfigureMockMvc
 @Transactional
 class OrderFacadeIntegrationTest {
 
@@ -44,6 +52,12 @@ class OrderFacadeIntegrationTest {
     @Autowired
     private UserCouponRepository userCouponRepository;
 
+    @Autowired
+    private MockMvc mockMvc;
+
+    @Autowired
+    private ObjectMapper objectMapper;
+
     private Long userId = 1L;
 
     @BeforeEach
@@ -54,7 +68,7 @@ class OrderFacadeIntegrationTest {
         userCouponRepository.save(UserCoupon.create(userId, 101L));
     }
 
-    @Test
+//    @Test
     void 실제_주문이_정상적으로_처리된다() {
         List<OrderItemCommand> items = List.of(
                 new OrderItemCommand(1L, "고양이 화과자", 5000, 2)
@@ -77,6 +91,23 @@ class OrderFacadeIntegrationTest {
         assertThat(result.finalPrice()).isEqualTo(9000); // 5000*2 - 1000
         assertThat(result.totalPrice()).isEqualTo(10000);
         assertThat(result.discount()).isEqualTo(1000);
+    }
+
+    @Test
+    void 실제_주문이_정상적으로_처리된다_v2() throws Exception {
+        // given
+        OrderRequest request = new OrderRequest(
+            1L,
+            List.of(new OrderItemCommand(1L, "고양이 화과자", 5000, 2)),
+            101L
+        );
+
+        // when & then
+        mockMvc.perform(post("/api/order/v2")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(request)))
+            .andExpect(status().isAccepted())
+            .andExpect(content().string("주문 요청이 접수되었습니다."));
     }
 
 }

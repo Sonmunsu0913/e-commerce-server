@@ -40,5 +40,21 @@ public class OrderController {
                 result.orderedAt()
         ));
     }
+
+    @PostMapping("/v2")
+    @Operation(summary = "주문 요청 (이벤트 기반)", description = "이벤트 기반으로 주문 요청을 처리합니다.")
+    public ResponseEntity<String> order2(@RequestBody OrderRequest request) {
+        CreateOrderCommand command = new CreateOrderCommand(
+            request.getUserId(),
+            request.getItems(),
+            request.getCouponId()
+        );
+
+        // 이벤트 발행 (비동기 처리 시작)
+        orderFacade.orderV2(command);
+
+        // 클라이언트에게 비동기 처리 메시지 반환
+        return ResponseEntity.accepted().body("주문 요청이 접수되었습니다.");
+    }
 }
 
