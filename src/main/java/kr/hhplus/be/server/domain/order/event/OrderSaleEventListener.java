@@ -1,15 +1,13 @@
 package kr.hhplus.be.server.domain.order.event;
 
-import kr.hhplus.be.server.domain.order.event.OrderEventPublisher;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.event.OrderSaleEvent;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.product.ProductSale;
 import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import kr.hhplus.be.server.domain.product.service.UpdateProductRankingService;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
@@ -35,8 +33,7 @@ public class OrderSaleEventListener {
         this.orderEventPublisher = orderEventPublisher;
     }
 
-    @Transactional
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(OrderSaleEvent event) {
         Order order = event.getOrder();
         UserPoint point = event.getPoint();

@@ -1,16 +1,14 @@
 package kr.hhplus.be.server.domain.order.event;
 
 import kr.hhplus.be.server.application.order.CreateOrderCommand;
-import kr.hhplus.be.server.domain.order.event.OrderEventPublisher;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.service.GetCouponService;
 import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.event.OrderRequestEvent;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 /**
  * OrderRequestEvent 수신 후,
@@ -36,8 +34,7 @@ public class OrderRequestEventListener {
         this.orderEventPublisher = orderEventPublisher;
     }
 
-    @Transactional
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(OrderRequestEvent event) {
         CreateOrderCommand command = event.getCommand();
 

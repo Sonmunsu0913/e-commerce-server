@@ -7,9 +7,9 @@ import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.point.service.GetUserPointService;
 import kr.hhplus.be.server.domain.point.service.UsePointService;
 import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
-import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.event.TransactionPhase;
+import org.springframework.transaction.event.TransactionalEventListener;
 
 /**
  * 주문 생성 이후 포인트 검증 및 차감 처리를 담당하는 리스너.
@@ -36,8 +36,7 @@ public class PointEventListener {
         this.orderEventPublisher = orderEventPublisher;
     }
 
-    @Transactional
-    @EventListener
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(OrderCreatedEvent event) {
         Order order = event.getOrder();
 
