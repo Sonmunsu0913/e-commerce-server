@@ -1,9 +1,9 @@
 package kr.hhplus.be.server.application.order;
 
-import kr.hhplus.be.server.domain.coupon.Coupon;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.service.GetCouponService;
 import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
+import kr.hhplus.be.server.domain.order.event.OrderReportEventPublisher;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
 import kr.hhplus.be.server.domain.order.service.GetOrderService;
 import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
@@ -37,6 +37,7 @@ public class OrderFacade {
     private final GetUserCouponService getUserCouponService;
     private final GetCouponService getCouponService;
     private final UpdateProductRankingService updateProductRankingService;
+    private final OrderReportEventPublisher orderReportEventPublisher;
 
     public OrderFacade(CreateOrderService createOrderService,
                        GetOrderService getOrderService,
@@ -46,7 +47,8 @@ public class OrderFacade {
                        RecordProductSaleService recordProductSaleService,
                        MockOrderReporter reporter, GetUserCouponService getUserCouponService,
                        GetCouponService getCouponService,
-                       UpdateProductRankingService updateProductRankingService) {
+                       UpdateProductRankingService updateProductRankingService,
+                       OrderReportEventPublisher orderReportEventPublisher) {
         this.createOrderService = createOrderService;
         this.getOrderService = getOrderService;
         this.validatePaymentService = validatePaymentService;
@@ -57,6 +59,7 @@ public class OrderFacade {
         this.getUserCouponService = getUserCouponService;
         this.getCouponService = getCouponService;
         this.updateProductRankingService = updateProductRankingService;
+        this.orderReportEventPublisher = orderReportEventPublisher;
     }
 
     public OrderResult order(CreateOrderCommand command) {
@@ -116,7 +119,8 @@ public class OrderFacade {
                 (int) updated.point()
         );
 
-        reporter.send(order.toResponse((int) updated.point()));
+//        reporter.send(order.toResponse((int) updated.point()));
+        orderReportEventPublisher.publish(order.toResponse((int) updated.point()));
 
         return result;
     }
