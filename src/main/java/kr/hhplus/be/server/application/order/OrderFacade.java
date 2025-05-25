@@ -3,7 +3,7 @@ package kr.hhplus.be.server.application.order;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.service.GetCouponService;
 import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
-import kr.hhplus.be.server.domain.order.event.OrderReportEventPublisher;
+import kr.hhplus.be.server.domain.order.event.OrderEventPublisher;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
 import kr.hhplus.be.server.domain.order.service.GetOrderService;
 import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
@@ -24,7 +24,6 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 import java.time.LocalDate;
 
 @Service
-@Transactional
 public class OrderFacade {
 
     private final CreateOrderService createOrderService;
@@ -37,18 +36,18 @@ public class OrderFacade {
     private final GetUserCouponService getUserCouponService;
     private final GetCouponService getCouponService;
     private final UpdateProductRankingService updateProductRankingService;
-    private final OrderReportEventPublisher orderReportEventPublisher;
+    private final OrderEventPublisher orderEventPublisher;
 
     public OrderFacade(CreateOrderService createOrderService,
-                       GetOrderService getOrderService,
-                       ValidatePaymentService validatePaymentService,
-                       UsePointService usePointService,
-                       GetUserPointService getUserPointService,
-                       RecordProductSaleService recordProductSaleService,
-                       MockOrderReporter reporter, GetUserCouponService getUserCouponService,
-                       GetCouponService getCouponService,
-                       UpdateProductRankingService updateProductRankingService,
-                       OrderReportEventPublisher orderReportEventPublisher) {
+                        GetOrderService getOrderService,
+                        ValidatePaymentService validatePaymentService,
+                        UsePointService usePointService,
+                        GetUserPointService getUserPointService,
+                        RecordProductSaleService recordProductSaleService,
+                        MockOrderReporter reporter, GetUserCouponService getUserCouponService,
+                        GetCouponService getCouponService,
+                        UpdateProductRankingService updateProductRankingService,
+                        OrderEventPublisher orderEventPublisher) {
         this.createOrderService = createOrderService;
         this.getOrderService = getOrderService;
         this.validatePaymentService = validatePaymentService;
@@ -59,7 +58,12 @@ public class OrderFacade {
         this.getUserCouponService = getUserCouponService;
         this.getCouponService = getCouponService;
         this.updateProductRankingService = updateProductRankingService;
-        this.orderReportEventPublisher = orderReportEventPublisher;
+        this.orderEventPublisher = orderEventPublisher;
+    }
+
+    public void orderV2(CreateOrderCommand command) {
+        // 이벤트 흐름의 시작: 주문 요청 이벤트 발행
+        orderEventPublisher.publishRequest(command);
     }
 
     public OrderResult order(CreateOrderCommand command) {
@@ -120,7 +124,7 @@ public class OrderFacade {
         );
 
 //        reporter.send(order.toResponse((int) updated.point()));
-        orderReportEventPublisher.publish(order.toResponse((int) updated.point()));
+        orderEventPublisher.publishReport(order.toResponse((int) updated.point()));
 
         return result;
     }
