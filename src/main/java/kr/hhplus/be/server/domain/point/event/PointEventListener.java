@@ -2,7 +2,6 @@ package kr.hhplus.be.server.domain.point.event;
 
 import kr.hhplus.be.server.domain.order.event.OrderEventPublisher;
 import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.order.event.OrderCreatedEvent;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.point.service.GetUserPointService;
 import kr.hhplus.be.server.domain.point.service.UsePointService;
@@ -27,9 +26,9 @@ public class PointEventListener {
     private final OrderEventPublisher orderEventPublisher;
 
     public PointEventListener(GetUserPointService getUserPointService,
-                              ValidatePaymentService validatePaymentService,
-                              UsePointService usePointService,
-                              OrderEventPublisher orderEventPublisher) {
+        ValidatePaymentService validatePaymentService,
+        UsePointService usePointService,
+        OrderEventPublisher orderEventPublisher) {
         this.getUserPointService = getUserPointService;
         this.validatePaymentService = validatePaymentService;
         this.usePointService = usePointService;
@@ -37,7 +36,7 @@ public class PointEventListener {
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void handle(OrderCreatedEvent event) {
+    public void handle(PointEvent event) {
         Order order = event.getOrder();
 
         // 1. 사용자 현재 포인트 조회
@@ -47,13 +46,7 @@ public class PointEventListener {
         validatePaymentService.execute(order, (int) current.point());
 
         // 3. 포인트 차감
-        UserPoint updated = usePointService.execute(order.getUserId(), order.getFinalPrice());
-
-        // 4. 포인트 이벤트 발행
-        orderEventPublisher.publishPoint(order, updated);
-
-        // 5. 판매 기록 + 랭킹 반영 이벤트 발행
-        orderEventPublisher.publishSale(order, updated);
+        usePointService.execute(order.getUserId(), order.getFinalPrice());
 
     }
 }

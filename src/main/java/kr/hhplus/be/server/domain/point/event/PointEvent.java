@@ -9,18 +9,12 @@ import kr.hhplus.be.server.domain.point.UserPoint;
 public class PointEvent {
 
     private final Order order;
-    private final UserPoint point;
 
-    public PointEvent(Order order, UserPoint point) {
+    public PointEvent(Order order) {
         this.order = order;
-        this.point = point;
     }
 
     public Order getOrder() {
         return order;
-    }
-
-    public UserPoint getPoint() {
-        return point;
     }
 }
