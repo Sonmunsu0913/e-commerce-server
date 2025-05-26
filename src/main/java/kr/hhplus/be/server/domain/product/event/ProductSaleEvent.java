@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.order.event;
+package kr.hhplus.be.server.domain.product.event;
 
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.point.UserPoint;
@@ -7,21 +7,16 @@ import kr.hhplus.be.server.domain.point.UserPoint;
  * 주문 판매 처리 이벤트.
  * 판매 기록 저장 및 랭킹 반영에 사용된다.
  */
-public class OrderSaleEvent {
+public class ProductSaleEvent {
     private final Order order;
-    private final UserPoint point;
 
-    public OrderSaleEvent(Order order, UserPoint point) {
+    public ProductSaleEvent(Order order) {
         this.order = order;
-        this.point = point;
     }
 
     public Order getOrder() {
         return order;
     }
 
-    public UserPoint getPoint() {
-        return point;
-    }
 }
 

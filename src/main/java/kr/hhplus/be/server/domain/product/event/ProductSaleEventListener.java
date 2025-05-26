@@ -1,10 +1,12 @@
-package kr.hhplus.be.server.domain.order.event;
+package kr.hhplus.be.server.domain.product.event;
 
 import kr.hhplus.be.server.domain.order.Order;
+import kr.hhplus.be.server.domain.order.event.OrderEventPublisher;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.product.ProductSale;
 import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import kr.hhplus.be.server.domain.product.service.UpdateProductRankingService;
+import kr.hhplus.be.server.domain.report.event.ReportEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -19,24 +21,20 @@ import java.time.LocalDate;
  * - Redis 랭킹 반영
  */
 @Component
-public class OrderSaleEventListener {
+public class ProductSaleEventListener {
 
     private final RecordProductSaleService recordProductSaleService;
     private final UpdateProductRankingService updateProductRankingService;
-    private final OrderEventPublisher orderEventPublisher;
 
-    public OrderSaleEventListener(RecordProductSaleService recordProductSaleService,
-                                  UpdateProductRankingService updateProductRankingService,
-                                  OrderEventPublisher orderEventPublisher) {
+    public ProductSaleEventListener(RecordProductSaleService recordProductSaleService,
+                                  UpdateProductRankingService updateProductRankingService) {
         this.recordProductSaleService = recordProductSaleService;
         this.updateProductRankingService = updateProductRankingService;
-        this.orderEventPublisher = orderEventPublisher;
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void handle(OrderSaleEvent event) {
+    public void handle(ProductSaleEvent event) {
         Order order = event.getOrder();
-        UserPoint point = event.getPoint();
         LocalDate today = LocalDate.now();
 
         // 1. 상품 판매 기록 저장
@@ -52,8 +50,5 @@ public class OrderSaleEventListener {
                 updateProductRankingService.increaseOrderCountForItems(order.getItems());
             }
         });
-
-        // 6. 외부 리포트 전송 이벤트 발행
-        orderEventPublisher.publishReport(order.toResponse((int) point.point()));
     }
 }
