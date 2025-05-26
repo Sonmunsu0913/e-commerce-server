@@ -1,4 +1,4 @@
-package kr.hhplus.be.server.domain.order.event;
+package kr.hhplus.be.server.domain.report.event;
 
 import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
 
