@@ -4,6 +4,7 @@ import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.service.GetCouponService;
 import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
 import kr.hhplus.be.server.domain.order.event.OrderEventPublisher;
+import kr.hhplus.be.server.domain.order.event.OrderRequestedEventPayload;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
 import kr.hhplus.be.server.domain.order.service.GetOrderService;
 import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
@@ -13,9 +14,12 @@ import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.OrderItemCommand;
 import kr.hhplus.be.server.domain.point.UserPoint;
 import kr.hhplus.be.server.domain.product.ProductSale;
+import kr.hhplus.be.server.domain.product.event.ProductSaleEventPublisher;
 import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import kr.hhplus.be.server.domain.product.service.UpdateProductRankingService;
+import kr.hhplus.be.server.domain.report.event.ReportEventPublisher;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
+import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionSynchronizationAdapter;
@@ -37,6 +41,8 @@ public class OrderFacade {
     private final GetCouponService getCouponService;
     private final UpdateProductRankingService updateProductRankingService;
     private final OrderEventPublisher orderEventPublisher;
+    private final ReportEventPublisher reportEventPublisher;
+    private final ProductSaleEventPublisher productSaleEventPublisher;
 
     public OrderFacade(CreateOrderService createOrderService,
                         GetOrderService getOrderService,
@@ -47,7 +53,9 @@ public class OrderFacade {
                         MockOrderReporter reporter, GetUserCouponService getUserCouponService,
                         GetCouponService getCouponService,
                         UpdateProductRankingService updateProductRankingService,
-                        OrderEventPublisher orderEventPublisher) {
+                        OrderEventPublisher orderEventPublisher,
+        ReportEventPublisher reportEventPublisher,
+        ProductSaleEventPublisher productSaleEventPublisher) {
         this.createOrderService = createOrderService;
         this.getOrderService = getOrderService;
         this.validatePaymentService = validatePaymentService;
@@ -59,13 +67,56 @@ public class OrderFacade {
         this.getCouponService = getCouponService;
         this.updateProductRankingService = updateProductRankingService;
         this.orderEventPublisher = orderEventPublisher;
+        this.reportEventPublisher = reportEventPublisher;
+        this.productSaleEventPublisher = productSaleEventPublisher;
     }
 
+    @Transactional
     public void orderV2(CreateOrderCommand command) {
-        // 이벤트 흐름의 시작: 주문 요청 이벤트 발행
-        orderEventPublisher.publishRequest(command);
+        // 0. 쿠폰 처리
+        if (command.couponId() != null) {
+            UserCoupon userCoupon = getUserCouponService.execute(command.userId(), command.couponId());
+
+            if (userCoupon.isUsed()) {
+                throw new IllegalStateException("이미 사용한 쿠폰입니다.");
+            }
+
+            getCouponService.execute(command.couponId());
+        }
+
+        // 1. 주문 생성
+        Order order = createOrderService.execute(
+            command.userId(),
+            command.items(),
+            command.couponId()
+        );
+
+        // 2. 이벤트 발행 (포인트 차감 등은 이후 단계에서 처리)
+        OrderRequestedEventPayload payload = new OrderRequestedEventPayload(
+            order.getId(),
+            order.getUserId(),
+            order.getFinalPrice(),
+            command.items(),
+            command.couponId()
+        );
+
+        orderEventPublisher.publishRequest(payload);
+        // 4. 판매 기록 + 랭킹 반영 이벤트 발행
+        productSaleEventPublisher.publishSale(order);
+
+        OrderResponse response = new OrderResponse(
+            order.getId(),
+            order.getTotalPrice(),
+            order.getDiscount(),
+            order.getFinalPrice(),
+            null,
+            order.getOrderedAt()
+        );
+
+        reportEventPublisher.publishReport(response);
     }
 
+    @Transactional
     public OrderResult order(CreateOrderCommand command) {
 
         // 0. 쿠폰 처리 준비
@@ -124,7 +175,7 @@ public class OrderFacade {
         );
 
 //        reporter.send(order.toResponse((int) updated.point()));
-        orderEventPublisher.publishReport(order.toResponse((int) updated.point()));
+        reportEventPublisher.publishReport(order.toResponse((int) updated.point()));
 
         return result;
     }

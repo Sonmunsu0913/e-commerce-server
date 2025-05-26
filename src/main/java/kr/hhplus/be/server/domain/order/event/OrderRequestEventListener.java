@@ -7,6 +7,9 @@ import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
 import kr.hhplus.be.server.domain.coupon.service.ValidateCouponService;
 import kr.hhplus.be.server.domain.order.Order;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
+import kr.hhplus.be.server.domain.order.service.GetOrderService;
+import kr.hhplus.be.server.domain.point.event.PointEventListener;
+import kr.hhplus.be.server.domain.point.event.PointEventPublisher;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.event.TransactionPhase;
 import org.springframework.transaction.event.TransactionalEventListener;
@@ -20,29 +23,23 @@ import org.springframework.transaction.event.TransactionalEventListener;
 @Component
 public class OrderRequestEventListener {
 
-    private final ValidateCouponService validateCouponService;
-    private final CreateOrderService createOrderService;
-    private final OrderEventPublisher orderEventPublisher;
+    private final GetOrderService getOrderService;
+    private final PointEventPublisher pointEventPublisher;
 
-    public OrderRequestEventListener(ValidateCouponService validateCouponService,
-                                     CreateOrderService createOrderService,
-                                     OrderEventPublisher orderEventPublisher) {
-        this.validateCouponService = validateCouponService;
-        this.createOrderService = createOrderService;
-        this.orderEventPublisher = orderEventPublisher;
+    public OrderRequestEventListener(GetOrderService getOrderService,
+                                     PointEventPublisher pointEventPublisher) {
+        this.getOrderService = getOrderService;
+        this.pointEventPublisher = pointEventPublisher;
     }
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(OrderRequestEvent event) {
-        CreateOrderCommand command = event.getCommand();
+        OrderRequestedEventPayload payload = event.getPayload();
 
-        // 1. 쿠폰 검증
-        validateCouponService.validate(command.userId(), command.couponId());
+        // 1. 주문 재조회 (주문 ID 기준)
+        Order order = getOrderService.execute(payload.orderId());
 
-        // 2. 주문 생성
-        Order order = createOrderService.execute(command.userId(), command.items(), command.couponId());
-
-        // 3. 주문 생성 완료 이벤트 발행
-        orderEventPublisher.publishCreated(order);
+        // 2. 포인트 차감 등 후속 작업을 위한 이벤트 발행
+        pointEventPublisher.publishPoint(order);
     }
 }

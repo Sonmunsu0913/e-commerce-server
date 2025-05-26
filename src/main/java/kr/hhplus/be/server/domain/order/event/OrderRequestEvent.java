@@ -9,13 +9,13 @@ import kr.hhplus.be.server.application.order.CreateOrderCommand;
  */
 public class OrderRequestEvent {
 
-    private final CreateOrderCommand command;
+    private final OrderRequestedEventPayload payload;
 
-    public OrderRequestEvent(CreateOrderCommand command) {
-        this.command = command;
+    public OrderRequestEvent(OrderRequestedEventPayload payload) {
+        this.payload = payload;
     }
 
-    public CreateOrderCommand getCommand() {
-        return command;
+    public OrderRequestedEventPayload getPayload() {
+        return payload;
     }
 }
