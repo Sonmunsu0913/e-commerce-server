@@ -88,14 +88,14 @@ public class OrderFacade {
         );
 
         // 2. 주문 생성 이벤트 발행 (→ 포인트 차감 등의 후속 처리는 이벤트 리스너에서 수행)
-        OrderRequestedEventData payload = new OrderRequestedEventData(
+        OrderRequestedEventData eventData = new OrderRequestedEventData(
                 order.getId(),
                 order.getUserId(),
                 order.getFinalPrice(),
                 command.items(),
                 command.couponId()
         );
-        orderEventPublisher.publishRequest(payload);
+        orderEventPublisher.publishRequest(eventData);
 
         // 3. 판매 기록 이벤트 발행 (→ 상품별 판매량 저장, 인기상품 랭킹 갱신 등)
         productSaleEventPublisher.publishSale(order);
