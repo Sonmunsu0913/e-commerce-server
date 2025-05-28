@@ -3,6 +3,7 @@ package kr.hhplus.be.server.infrastructure.mock;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import kr.hhplus.be.server.infrastructure.report.kafka.OrderReportMessage;
 import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,8 +23,17 @@ public class MockOrderReporter {
 
     public void send(OrderResponse orderResponse) {
         try {
-            String payload = objectMapper.writeValueAsString(orderResponse);
-            log.info("[외부 데이터 플랫폼 전송됨] {}", payload);
+            String message = objectMapper.writeValueAsString(orderResponse);
+            log.info("[외부 데이터 플랫폼 전송됨] {}", message);
+        } catch (JsonProcessingException e) {
+            log.warn("[전송 실패] JSON 직렬화 에러", e);
+        }
+    }
+
+    public void sendMessage(OrderReportMessage message) {
+        try {
+            String payload = objectMapper.writeValueAsString(message);
+            log.info("[외부 데이터 플랫폼 전송됨] {}", message);
         } catch (JsonProcessingException e) {
             log.warn("[전송 실패] JSON 직렬화 에러", e);
         }

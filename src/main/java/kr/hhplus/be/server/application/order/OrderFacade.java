@@ -20,6 +20,8 @@ import kr.hhplus.be.server.domain.product.service.RecordProductSaleService;
 import kr.hhplus.be.server.domain.product.service.UpdateProductRankingService;
 import kr.hhplus.be.server.domain.report.event.ReportEventPublisher;
 import kr.hhplus.be.server.infrastructure.mock.MockOrderReporter;
+import kr.hhplus.be.server.infrastructure.report.kafka.OrderReportEventPublisher;
+import kr.hhplus.be.server.infrastructure.report.kafka.OrderReportMessage;
 import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -45,6 +47,7 @@ public class OrderFacade {
     private final OrderEventPublisher orderEventPublisher;
     private final ReportEventPublisher reportEventPublisher;
     private final ProductSaleEventPublisher productSaleEventPublisher;
+    private final OrderReportEventPublisher orderReportEventPublisher;
 
     public OrderFacade(CreateOrderService createOrderService,
                         GetOrderService getOrderService,
@@ -58,7 +61,8 @@ public class OrderFacade {
                         ValidateCouponService validateCouponService,
                         OrderEventPublisher orderEventPublisher,
                         ReportEventPublisher reportEventPublisher,
-                        ProductSaleEventPublisher productSaleEventPublisher) {
+                        ProductSaleEventPublisher productSaleEventPublisher,
+                        OrderReportEventPublisher orderReportEventPublisher) {
         this.createOrderService = createOrderService;
         this.getOrderService = getOrderService;
         this.validatePaymentService = validatePaymentService;
@@ -73,6 +77,7 @@ public class OrderFacade {
         this.orderEventPublisher = orderEventPublisher;
         this.reportEventPublisher = reportEventPublisher;
         this.productSaleEventPublisher = productSaleEventPublisher;
+        this.orderReportEventPublisher = orderReportEventPublisher;
     }
 
     @Transactional
@@ -101,7 +106,7 @@ public class OrderFacade {
         productSaleEventPublisher.publishSale(order);
 
         // 4. 주문 결과 생성 (reporting용) 후 이벤트 발행 (→ 통계/리포트용 처리)
-        OrderResponse response = new OrderResponse(
+        /*OrderResponse response = new OrderResponse(
                 order.getId(),
                 order.getTotalPrice(),
                 order.getDiscount(),
@@ -109,7 +114,16 @@ public class OrderFacade {
                 null,
                 order.getOrderedAt()
         );
-        reportEventPublisher.publishReport(response);
+        reportEventPublisher.publishReport(response);*/
+
+        OrderReportMessage message = new OrderReportMessage(
+                order.getId(),
+                order.getTotalPrice(),
+                order.getDiscount(),
+                order.getFinalPrice(),
+                order.getOrderedAt()
+        );
+        orderReportEventPublisher.publish(message);
     }
 
     @Transactional
