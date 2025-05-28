@@ -3,6 +3,7 @@ package kr.hhplus.be.server.application.order;
 import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.service.GetCouponService;
 import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
+import kr.hhplus.be.server.domain.coupon.service.ValidateCouponService;
 import kr.hhplus.be.server.domain.order.event.OrderEventPublisher;
 import kr.hhplus.be.server.domain.order.event.OrderRequestedEventData;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
@@ -40,6 +41,7 @@ public class OrderFacade {
     private final GetUserCouponService getUserCouponService;
     private final GetCouponService getCouponService;
     private final UpdateProductRankingService updateProductRankingService;
+    private final ValidateCouponService validateCouponService;
     private final OrderEventPublisher orderEventPublisher;
     private final ReportEventPublisher reportEventPublisher;
     private final ProductSaleEventPublisher productSaleEventPublisher;
@@ -53,9 +55,10 @@ public class OrderFacade {
                         MockOrderReporter reporter, GetUserCouponService getUserCouponService,
                         GetCouponService getCouponService,
                         UpdateProductRankingService updateProductRankingService,
+                        ValidateCouponService validateCouponService,
                         OrderEventPublisher orderEventPublisher,
-        ReportEventPublisher reportEventPublisher,
-        ProductSaleEventPublisher productSaleEventPublisher) {
+                        ReportEventPublisher reportEventPublisher,
+                        ProductSaleEventPublisher productSaleEventPublisher) {
         this.createOrderService = createOrderService;
         this.getOrderService = getOrderService;
         this.validatePaymentService = validatePaymentService;
@@ -66,6 +69,7 @@ public class OrderFacade {
         this.getUserCouponService = getUserCouponService;
         this.getCouponService = getCouponService;
         this.updateProductRankingService = updateProductRankingService;
+        this.validateCouponService = validateCouponService;
         this.orderEventPublisher = orderEventPublisher;
         this.reportEventPublisher = reportEventPublisher;
         this.productSaleEventPublisher = productSaleEventPublisher;
@@ -73,46 +77,38 @@ public class OrderFacade {
 
     @Transactional
     public void orderV2(CreateOrderCommand command) {
-        // 0. 쿠폰 처리
-        if (command.couponId() != null) {
-            UserCoupon userCoupon = getUserCouponService.execute(command.userId(), command.couponId());
+        // 0. 쿠폰 처리 (사용자 보유 쿠폰 조회 및 사용 여부 확인 후, 쿠폰 정책 적용)
+        validateCouponService.validate(command.userId(), command.couponId());
 
-            if (userCoupon.isUsed()) {
-                throw new IllegalStateException("이미 사용한 쿠폰입니다.");
-            }
-
-            getCouponService.execute(command.couponId());
-        }
-
-        // 1. 주문 생성
+        // 1. 주문 생성 (상품 재고 차감 포함)
         Order order = createOrderService.execute(
-            command.userId(),
-            command.items(),
-            command.couponId()
+                command.userId(),
+                command.items(),
+                command.couponId()
         );
 
-        // 2. 이벤트 발행 (포인트 차감 등은 이후 단계에서 처리)
+        // 2. 주문 생성 이벤트 발행 (→ 포인트 차감 등의 후속 처리는 이벤트 리스너에서 수행)
         OrderRequestedEventData payload = new OrderRequestedEventData(
-            order.getId(),
-            order.getUserId(),
-            order.getFinalPrice(),
-            command.items(),
-            command.couponId()
+                order.getId(),
+                order.getUserId(),
+                order.getFinalPrice(),
+                command.items(),
+                command.couponId()
         );
-
         orderEventPublisher.publishRequest(payload);
-        // 4. 판매 기록 + 랭킹 반영 이벤트 발행
+
+        // 3. 판매 기록 이벤트 발행 (→ 상품별 판매량 저장, 인기상품 랭킹 갱신 등)
         productSaleEventPublisher.publishSale(order);
 
+        // 4. 주문 결과 생성 (reporting용) 후 이벤트 발행 (→ 통계/리포트용 처리)
         OrderResponse response = new OrderResponse(
-            order.getId(),
-            order.getTotalPrice(),
-            order.getDiscount(),
-            order.getFinalPrice(),
-            null,
-            order.getOrderedAt()
+                order.getId(),
+                order.getTotalPrice(),
+                order.getDiscount(),
+                order.getFinalPrice(),
+                null,
+                order.getOrderedAt()
         );
-
         reportEventPublisher.publishReport(response);
     }
 
