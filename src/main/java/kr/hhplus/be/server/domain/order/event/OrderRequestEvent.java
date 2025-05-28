@@ -7,13 +7,13 @@ package kr.hhplus.be.server.domain.order.event;
  */
 public class OrderRequestEvent {
 
-    private final OrderRequestedEventData payload;
+    private final OrderRequestedEventData eventData;
 
-    public OrderRequestEvent(OrderRequestedEventData payload) {
-        this.payload = payload;
+    public OrderRequestEvent(OrderRequestedEventData eventData) {
+        this.eventData = eventData;
     }
 
-    public OrderRequestedEventData getPayload() {
-        return payload;
+    public OrderRequestedEventData getEventData() {
+        return eventData;
     }
 }

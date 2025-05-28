@@ -27,10 +27,10 @@ public class OrderRequestEventListener {
 
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
     public void handle(OrderRequestEvent event) {
-        OrderRequestedEventData payload = event.getPayload();
+        OrderRequestedEventData eventData = event.getEventData();
 
         // 1. 주문 재조회 (주문 ID 기준)
-        Order order = getOrderService.execute(payload.orderId());
+        Order order = getOrderService.execute(eventData.orderId());
 
         // 2. 포인트 차감 등 후속 작업을 위한 이벤트 발행
         pointEventPublisher.publishPoint(order);

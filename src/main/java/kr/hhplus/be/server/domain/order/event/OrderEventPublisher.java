@@ -19,8 +19,8 @@ public class OrderEventPublisher {
     /**
      * 주문 요청 이벤트 발행 (쿠폰 검증 및 주문 생성 시작)
      */
-    public void publishRequest(OrderRequestedEventData payload) {
-        publisher.publishEvent(new OrderRequestEvent(payload));
+    public void publishRequest(OrderRequestedEventData eventData) {
+        publisher.publishEvent(new OrderRequestEvent(eventData));
     }
 
 }
