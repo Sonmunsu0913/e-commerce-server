@@ -4,7 +4,7 @@ import kr.hhplus.be.server.domain.coupon.UserCoupon;
 import kr.hhplus.be.server.domain.coupon.service.GetCouponService;
 import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
 import kr.hhplus.be.server.domain.order.event.OrderEventPublisher;
-import kr.hhplus.be.server.domain.order.event.OrderRequestedEventPayload;
+import kr.hhplus.be.server.domain.order.event.OrderRequestedEventData;
 import kr.hhplus.be.server.domain.order.service.CreateOrderService;
 import kr.hhplus.be.server.domain.order.service.GetOrderService;
 import kr.hhplus.be.server.domain.order.service.ValidatePaymentService;
@@ -92,7 +92,7 @@ public class OrderFacade {
         );
 
         // 2. 이벤트 발행 (포인트 차감 등은 이후 단계에서 처리)
-        OrderRequestedEventPayload payload = new OrderRequestedEventPayload(
+        OrderRequestedEventData payload = new OrderRequestedEventData(
             order.getId(),
             order.getUserId(),
             order.getFinalPrice(),
