@@ -1,10 +1,5 @@
 package kr.hhplus.be.server.domain.order.event;
 
-import kr.hhplus.be.server.domain.order.Order;
-import kr.hhplus.be.server.domain.point.UserPoint;
-import kr.hhplus.be.server.domain.product.event.ProductSaleEvent;
-import kr.hhplus.be.server.domain.report.event.OrderReportEvent;
-import kr.hhplus.be.server.interfaces.api.order.OrderResponse;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
 
@@ -24,7 +19,7 @@ public class OrderEventPublisher {
     /**
      * 주문 요청 이벤트 발행 (쿠폰 검증 및 주문 생성 시작)
      */
-    public void publishRequest(OrderRequestedEventPayload payload) {
+    public void publishRequest(OrderRequestedEventData payload) {
         publisher.publishEvent(new OrderRequestEvent(payload));
     }
 

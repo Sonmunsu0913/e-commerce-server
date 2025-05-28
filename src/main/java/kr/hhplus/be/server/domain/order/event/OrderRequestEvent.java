@@ -1,7 +1,5 @@
 package kr.hhplus.be.server.domain.order.event;
 
-import kr.hhplus.be.server.application.order.CreateOrderCommand;
-
 /**
  * 주문 요청 이벤트.
  * 사용자의 주문 요청을 수신하여,
@@ -9,13 +7,13 @@ import kr.hhplus.be.server.application.order.CreateOrderCommand;
  */
 public class OrderRequestEvent {
 
-    private final OrderRequestedEventPayload payload;
+    private final OrderRequestedEventData payload;
 
-    public OrderRequestEvent(OrderRequestedEventPayload payload) {
+    public OrderRequestEvent(OrderRequestedEventData payload) {
         this.payload = payload;
     }
 
-    public OrderRequestedEventPayload getPayload() {
+    public OrderRequestedEventData getPayload() {
         return payload;
     }
 }
