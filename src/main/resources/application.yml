@@ -21,7 +21,19 @@ spring:
       hibernate.timezone.default_storage: NORMALIZE_UTC
       hibernate.jdbc.time_zone: UTC
     defer-datasource-initialization: true
-
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      group-id: report-group
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
+      properties:
+        spring.json.value.default.type: kr.hhplus.be.server.infrastructure.report.kafka.OrderReportMessage
+        spring.json.trusted.packages: "*"
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
 ---
 spring.config.activate.on-profile: local, test
 

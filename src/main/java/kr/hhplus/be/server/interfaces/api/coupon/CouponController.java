@@ -9,6 +9,7 @@ import kr.hhplus.be.server.application.order.CouponFacade;
 import kr.hhplus.be.server.domain.coupon.service.GetUserCouponService;
 import kr.hhplus.be.server.domain.coupon.service.IssueCouponService;
 import kr.hhplus.be.server.domain.coupon.service.RedisCouponQueueService;
+import kr.hhplus.be.server.infrastructure.coupon.kafka.CouponIssueEventPublisher;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,12 +21,14 @@ public class CouponController {
     private final GetUserCouponService getUserCouponService;
     private final IssueCouponService issueCouponService;
     private final CouponFacade couponFacade;
+    private final CouponIssueEventPublisher couponIssueEventPublisher;
 
     public CouponController(GetUserCouponService getUserCouponService, IssueCouponService issueCouponService
-                            , CouponFacade couponFacade) {
+                            , CouponFacade couponFacade, CouponIssueEventPublisher couponIssueEventPublisher) {
         this.getUserCouponService = getUserCouponService;
         this.issueCouponService = issueCouponService;
         this.couponFacade = couponFacade;
+        this.couponIssueEventPublisher = couponIssueEventPublisher;
     }
 
     @GetMapping("/available/{userId}")
@@ -68,6 +71,14 @@ public class CouponController {
         } else {
             return ResponseEntity.ok("대기열에 등록됨");
         }
+    }
+
+
+    @PostMapping("/v3/{userId}/coupon/{couponId}")
+    @Operation(summary = "쿠폰 발급 (v3)", description = "Kafka 큐 기반 발급 요청")
+    public ResponseEntity<String> issueCouponV3(@PathVariable Long userId, @PathVariable Long couponId) {
+        couponIssueEventPublisher.publish(userId, couponId);
+        return ResponseEntity.ok("쿠폰 발급 요청이 접수되었습니다.");
     }
 }
 

@@ -64,6 +64,10 @@ dependencies {
 	// AOP 기능을 위한 의존성 추가
 	implementation("org.springframework.boot:spring-boot-starter-aop")
 
+	// Kafka
+	implementation("org.springframework.kafka:spring-kafka")
+	implementation("org.springframework.kafka:spring-kafka-test")
+
 	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
 	testImplementation("org.springframework.boot:spring-boot-testcontainers")
