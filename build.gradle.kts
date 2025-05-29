@@ -66,6 +66,7 @@ dependencies {
 
 	// Kafka
 	implementation("org.springframework.kafka:spring-kafka")
+	implementation("org.springframework.kafka:spring-kafka-test")
 
 	// Test
 	testImplementation("org.springframework.boot:spring-boot-starter-test")
