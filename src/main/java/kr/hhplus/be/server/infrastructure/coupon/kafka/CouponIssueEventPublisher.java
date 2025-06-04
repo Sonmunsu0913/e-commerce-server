@@ -15,7 +15,9 @@ public class CouponIssueEventPublisher {
 
     public void publish(Long userId, Long couponId) {
         CouponIssueRequest message = new CouponIssueRequest(userId, couponId);
-        System.out.println("[Kafka 발행] {}" + message); // <-- 로그 추가
-        kafkaTemplate.send("coupon.issue.request", message);
+        String partitionKey = String.valueOf(couponId);
+
+        System.out.println("[Kafka 발행] " + message);
+        kafkaTemplate.send("coupon.issue.request", partitionKey, message);
     }
 }
