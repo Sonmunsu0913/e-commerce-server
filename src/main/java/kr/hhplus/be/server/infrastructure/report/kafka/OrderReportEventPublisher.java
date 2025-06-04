@@ -14,7 +14,7 @@ public class OrderReportEventPublisher {
 
     public void publish(OrderReportMessage message) {
         try {
-            kafkaTemplate.send("order-report-topic", message);
+            kafkaTemplate.send("order.completed", String.valueOf(message.orderId()), message);
         } catch (Exception e) {
             // 로깅만 하고 예외는 흘려보내지 않음
             // 테스트나 운영 환경에 따라 필요시 Alert 처리
