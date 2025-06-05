@@ -24,8 +24,8 @@ spring:
   kafka:
     bootstrap-servers: localhost:9092
     consumer:
-      group-id: report-group
-      auto-offset-reset: earliest
+      group-id: report-group-${random.uuid}
+      auto-offset-reset: latest
       enable-auto-commit: false
       key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.springframework.kafka.support.serializer.JsonDeserializer
@@ -35,6 +35,8 @@ spring:
     producer:
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+    listener:
+      ack-mode: manual
 ---
 spring.config.activate.on-profile: local, test
 
